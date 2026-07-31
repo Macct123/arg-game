@@ -1,0 +1,844 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酆江市第三医院 - 官方网站</title>
+    <style>
+        /* ===== 基础重置 ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2980b9;
+            --primary-dark: #0e2f44;
+            --accent: #16a085;
+            --accent-glow: #1abc9c;
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #e0e4e8;
+            --danger: #c0392b;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --radius: 8px;
+            --transition: 0.3s ease;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.7;
+        }
+        a { color: var(--primary-light); text-decoration: none; transition: color var(--transition); }
+        a:hover { color: var(--accent); }
+        ul, ol { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== 顶部通栏 ===== */
+        .top-bar {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.75);
+            font-size: 12px;
+            height: 36px;
+            line-height: 36px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+        .top-bar-left { display: flex; align-items: center; gap: 20px; }
+        .top-bar-right { display: flex; align-items: center; gap: 16px; }
+        .top-bar a { color: rgba(255,255,255,0.7); font-size: 12px; }
+        .top-bar a:hover { color: #fff; }
+        .top-bar .divider { color: rgba(255,255,255,0.2); }
+        .lang-switch {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.85);
+            padding: 2px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all var(--transition);
+        }
+        .lang-switch:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .lang-switch.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        /* ===== 头部 ===== */
+        .header {
+            background: #fff;
+            padding: 20px 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            position: relative;
+            z-index: 10;
+        }
+        .header .container { display: flex; align-items: center; justify-content: space-between; }
+        .logo-area { display: flex; align-items: center; gap: 16px; }
+        .logo-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 28px; font-weight: 700;
+            font-family: "KaiTi", "楷体", serif;
+            box-shadow: 0 2px 8px rgba(26,82,118,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        /* ARG: Logo微弱脉冲光晕 */
+        .logo-icon::after {
+            content: '';
+            position: absolute; inset: -50%;
+            background: radial-gradient(circle, rgba(22,160,133,0.15) 0%, transparent 70%);
+            animation: logoPulse 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes logoPulse {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .logo-text h1 {
+            font-size: 26px; color: var(--primary); font-weight: 700;
+            letter-spacing: 2px; line-height: 1.3;
+        }
+        .logo-text .subtitle {
+            font-size: 12px; color: var(--text-light); letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        .header-hotline {
+            text-align: right;
+        }
+        .header-hotline .label { font-size: 11px; color: var(--text-light); }
+        .header-hotline .number {
+            font-size: 20px; color: var(--danger); font-weight: 700;
+            letter-spacing: 1px; font-family: "Consolas", monospace;
+        }
+        .header-search {
+            display: flex; align-items: center;
+            background: var(--bg);
+            border-radius: 20px;
+            padding: 0 4px 0 14px;
+            border: 1px solid var(--border);
+            transition: border-color var(--transition);
+        }
+        .header-search:focus-within { border-color: var(--primary-light); }
+        .header-search input {
+            border: none; background: transparent; height: 34px; width: 180px;
+            font-size: 13px; outline: none; color: var(--text);
+        }
+        .header-search input::placeholder { color: #bbb; }
+        .header-search button {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--primary); color: #fff; border: none;
+            cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+            transition: background var(--transition);
+        }
+        .header-search button:hover { background: var(--accent); }
+
+        /* ===== 导航 ===== */
+        .main-nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow: 0 2px 8px rgba(26,82,118,0.2);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .main-nav ul { display: flex; }
+        .main-nav li { position: relative; }
+        .main-nav a {
+            display: block; padding: 0 28px; height: 48px; line-height: 48px;
+            color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500;
+            letter-spacing: 1px; transition: all var(--transition);
+        }
+        .main-nav a:hover, .main-nav a.active {
+            color: #fff; background: rgba(255,255,255,0.1);
+        }
+        .main-nav a.active::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
+        }
+
+        /* ===== Banner / Hero ===== */
+        .hero {
+            position: relative;
+            height: 380px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, #1a6b5a 100%);
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* ARG: 背景隐约网格纹理 */
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+        /* ARG: 微弱扫描线 */
+        .hero::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+            animation: scanShift 8s linear infinite;
+        }
+        @keyframes scanShift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+        .hero-content {
+            text-align: center; color: #fff; position: relative; z-index: 1;
+            padding: 0 20px;
+        }
+        .hero-content h2 {
+            font-size: 42px; font-weight: 700; letter-spacing: 6px;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        .hero-content .motto-sub {
+            font-size: 16px; opacity: 0.8; letter-spacing: 4px; font-weight: 300;
+        }
+        .hero-content .motto-divider {
+            width: 60px; height: 2px; background: var(--accent-glow);
+            margin: 20px auto; border-radius: 1px;
+        }
+        .hero-content .motto-desc {
+            font-size: 14px; opacity: 0.65; letter-spacing: 2px;
+        }
+
+        /* ===== 快捷服务条 ===== */
+        .quick-bar {
+            background: #fff;
+            box-shadow: var(--shadow);
+            margin-top: -40px;
+            position: relative; z-index: 5;
+            border-radius: var(--radius);
+        }
+        .quick-bar .container {
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            padding: 0;
+        }
+        .quick-bar-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px 10px;
+            gap: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            border-right: 1px solid var(--border);
+        }
+        .quick-bar-item:last-child { border-right: none; }
+        .quick-bar-item:hover { background: var(--bg); }
+        .quick-bar-item .qb-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 18px; font-weight: 700;
+            transition: transform var(--transition);
+        }
+        .quick-bar-item:hover .qb-icon { transform: scale(1.1); }
+        .quick-bar-item .qb-text { font-size: 13px; color: var(--text); font-weight: 500; }
+
+        /* ===== 主体内容 ===== */
+        .main-content { padding: 40px 0; }
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+
+        /* 通用卡片 */
+        .card {
+            background: var(--card); border-radius: var(--radius);
+            box-shadow: var(--shadow); overflow: hidden;
+            transition: box-shadow var(--transition);
+        }
+        .card:hover { box-shadow: var(--shadow-lg); }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-header h3 {
+            font-size: 16px; color: var(--primary); font-weight: 600;
+            position: relative; padding-left: 14px;
+        }
+        .card-header h3::before {
+            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            width: 4px; height: 18px; background: var(--accent); border-radius: 2px;
+        }
+        .card-header .more-link { font-size: 12px; color: var(--text-light); }
+        .card-header .more-link:hover { color: var(--accent); }
+        .card-body { padding: 16px 20px; }
+
+        /* ===== 医院简介 ===== */
+        .intro-card .card-body { padding: 20px 24px; }
+        .intro-card p {
+            text-indent: 2em; margin-bottom: 12px; text-align: justify;
+            color: var(--text); line-height: 1.85; font-size: 14px;
+        }
+        .intro-card strong { color: var(--primary); }
+
+        /* ===== 新闻列表 ===== */
+        .news-list li {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+            transition: all var(--transition);
+        }
+        .news-list li:last-child { border-bottom: none; }
+        .news-list li:hover { padding-left: 8px; }
+        .news-list li:hover a { color: var(--accent); }
+        .news-list li a {
+            flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            color: var(--text); font-size: 14px;
+        }
+        .news-list li a::before {
+            content: ''; display: inline-block;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--primary-light); margin-right: 10px;
+            vertical-align: middle;
+            transition: background var(--transition);
+        }
+        .news-list li:hover a::before { background: var(--accent); }
+        .news-list li .date { color: var(--text-light); font-size: 12px; margin-left: 16px; flex-shrink: 0; }
+
+        /* ===== 右侧卡片 ===== */
+        .sidebar-card { margin-bottom: 20px; }
+        .info-row {
+            display: flex; padding: 8px 0; font-size: 13px;
+            border-bottom: 1px dashed var(--border);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .info-label {
+            color: var(--primary); font-weight: 600; min-width: 72px; flex-shrink: 0;
+        }
+        .info-row .info-value { color: var(--text); }
+
+        /* 特色专科列表 */
+        .dept-list li {
+            padding: 10px 0; border-bottom: 1px dashed var(--border);
+            display: flex; align-items: center; gap: 8px;
+            transition: all var(--transition);
+        }
+        .dept-list li:last-child { border-bottom: none; }
+        .dept-list li:hover { padding-left: 6px; }
+        .dept-list li .dept-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+            background: var(--primary-light);
+        }
+        .dept-list li:first-child .dept-dot { background: var(--accent); }
+        .dept-list li a { color: var(--text); font-size: 14px; }
+        .dept-list li a:hover { color: var(--accent); }
+        .dept-tag {
+            font-size: 11px; background: rgba(22,160,133,0.1); color: var(--accent);
+            padding: 1px 6px; border-radius: 3px; margin-left: auto;
+        }
+
+        /* ===== 底部 ===== */
+        .site-footer {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.6);
+            margin-top: 60px;
+            padding: 40px 0 0;
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-col h4 {
+            color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .footer-col p { font-size: 13px; line-height: 2; }
+        .footer-col a { color: rgba(255,255,255,0.55); font-size: 13px; display: block; line-height: 2.2; }
+        .footer-col a:hover { color: var(--accent-glow); }
+        .footer-bottom {
+            text-align: center; padding: 20px 0; font-size: 12px;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* ===== ARG: 隐藏彩蛋层 ===== */
+        .arg-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        .arg-overlay.show { opacity: 1; }
+        .arg-overlay .glitch-bar {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background: rgba(22,160,133,0.08);
+            animation: glitchSweep 12s linear infinite;
+        }
+        @keyframes glitchSweep {
+            0% { top: -2px; }
+            100% { top: 100%; }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .quick-bar .container { grid-template-columns: repeat(3, 1fr); }
+            .hero { height: 280px; }
+            .hero-content h2 { font-size: 28px; letter-spacing: 3px; }
+            .hero-content .motto-sub { font-size: 14px; }
+            .main-nav a { padding: 0 14px; font-size: 13px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .header-right { gap: 12px; }
+            .header-hotline .number { font-size: 16px; }
+            .header-search input { width: 120px; }
+        }
+        @media (max-width: 480px) {
+            .quick-bar .container { grid-template-columns: repeat(2, 1fr); }
+            .hero-content h2 { font-size: 22px; }
+            .main-nav a { padding: 0 10px; font-size: 12px; letter-spacing: 0; }
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+    </style>
+</head>
+<body>
+
+    <!-- ARG: 全局微弱扫描线 -->
+    <div class="arg-overlay show"><div class="glitch-bar"></div></div>
+
+    <!-- 顶部通栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-left">
+                <span data-i18n="topDate">今天是 2026年7月31日 星期五</span>
+                <span style="color:rgba(255,255,255,0.2);">|</span>
+                <a href="notice.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
+            </div>
+            <div class="top-bar-right">
+                <a href="blank.html" data-i18n="topSitemap">网站地图</a>
+                <span class="divider">|</span>
+                <a href="blank.html" data-i18n="topAccessibility">无障碍浏览</a>
+                <span class="divider">|</span>
+                <button class="lang-switch active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-switch" onclick="switchLang('en')">English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <div class="header">
+        <div class="container">
+            <div class="logo-area">
+                <div class="logo-icon">三</div>
+                <div class="logo-text">
+                    <h1 data-i18n="hospitalName">酆江市第三医院</h1>
+                    <div class="subtitle" data-i18n="hospitalNameEn">FENGJIANG THIRD HOSPITAL</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-hotline">
+                    <div class="label" data-i18n="hotlineLabel">咨询热线</div>
+                    <div class="number">333-3625 3828</div>
+                </div>
+                <div class="header-search">
+                    <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
+                    <button>🔍</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主导航 -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="新建%20文本文档.html" class="active" data-i18n="navHome">首页</a></li>
+                <li><a href="about.html" data-i18n="navAbout">医院概况</a></li>
+                <li><a href="dept.html" data-i18n="navDepts">科室导航</a></li>
+                <li><a href="experts.html" data-i18n="navExperts">专家团队</a></li>
+                <li><a href="guide.html" data-i18n="navGuide">就医指南</a></li>
+                <li><a href="news.html" data-i18n="navNews">新闻公告</a></li>
+                <li><a href="health.html" data-i18n="navHealth">健康科普</a></li>
+                <li><a href="jobs.html" data-i18n="navJobs">人才招聘</a></li>
+                <li><a href="contact.html" data-i18n="navContact">联系我们</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 横幅 -->
+    <div class="hero">
+        <div class="hero-content">
+            <h2 data-i18n="heroTitle">精医厚德 · 仁心济世</h2>
+            <div class="motto-divider"></div>
+            <div class="motto-sub" data-i18n="heroSub">FENGJIANG THIRD HOSPITAL · EST.1992</div>
+            <div class="motto-desc" data-i18n="heroDesc">守护一方百姓身心健康，努力打造群众信赖的综合性诊疗阵地</div>
+        </div>
+    </div>
+
+    <!-- 快捷服务条 -->
+    <div class="quick-bar">
+        <div class="container">
+            <a href="schedule.html" class="quick-bar-item">
+                <div class="qb-icon">📋</div>
+                <span class="qb-text" data-i18n="qbSchedule">门诊排班</span>
+            </a>
+            <a href="booking.html" class="quick-bar-item">
+                <div class="qb-icon">📅</div>
+                <span class="qb-text" data-i18n="qbBooking">预约挂号</span>
+            </a>
+            <a href="report.html" class="quick-bar-item">
+                <div class="qb-icon">📊</div>
+                <span class="qb-text" data-i18n="qbReport">报告查询</span>
+            </a>
+            <a href="guide.html" class="quick-bar-item">
+                <div class="qb-icon">📖</div>
+                <span class="qb-text" data-i18n="qbGuide">就医指南</span>
+            </a>
+            <a href="insurance.html" class="quick-bar-item">
+                <div class="qb-icon">🛡️</div>
+                <span class="qb-text" data-i18n="qbInsurance">医保政策</span>
+            </a>
+            <a href="feedback.html" class="quick-bar-item">
+                <div class="qb-icon">💬</div>
+                <span class="qb-text" data-i18n="qbFeedback">投诉建议</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <div class="container content-grid">
+
+            <!-- 左栏 -->
+            <div class="col-left">
+                <!-- 医院简介 -->
+                <div class="card intro-card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="introTitle">医院概况</h3>
+                        <a href="about.html" class="more-link" data-i18n="moreLink">更多 &raquo;</a>
+                    </div>
+                    <div class="card-body">
+                        <p data-i18n="introP1">酆江市第三医院始建于1992年，坐落于酆江沿岸阴阳交界城区，是酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。医院地处城西老城区琼湾路76号，紧邻酆江，长期承担周边居民日常诊疗、急危重症抢救与公共卫生保障任务。</p>
+                        <p data-i18n="introP2">医院占地32亩，开放床位480张。设有急诊科、心血管内科、神经内科、普外科、骨科、妇产科、儿科、精神心理科、康复医学科以及检验科、影像中心、药剂科等完备临床与医技科室。其中<strong>精神心理科</strong>为区域特色专科，专注各类情绪障碍、心理创伤与重症精神疾病干预治疗。</p>
+                        <p data-i18n="introP3">建院以来，医院始终恪守"精医厚德，仁心济世"办院理念，持续完善诊疗设施，优化就医流程。全院医护人员坚守临床一线，兼顾躯体疾病与心理关怀，致力于为群众提供安全、规范、人性化的医疗服务。</p>
+                    </div>
+                </div>
+
+                <!-- 新闻动态 -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="newsTitle">新闻动态</h3>
+                        <a href="news.html" class="more-link" data-i18n="moreLink">更多 &raquo;</a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="news-list">
+                            <li><a href="blank.html" data-i18n="news1">我院精神心理科成功开展"世界心理健康日"社区义诊活动</a> <span class="date">2026-07-28</span></li>
+                            <li><a href="blank.html" data-i18n="news2">酆江市卫健委专家组莅临我院进行二级医院复审督导检查</a> <span class="date">2026-07-25</span></li>
+                            <li><a href="blank.html" data-i18n="news3">【喜报】我院心血管内科张建国主任荣获"酆江市优秀医师"称号</a> <span class="date">2026-07-20</span></li>
+                            <li><a href="blank.html" data-i18n="news4">关于调整门诊挂号时间及优化就诊流程的通知</a> <span class="date">2026-07-18</span></li>
+                            <li><a href="blank.html" data-i18n="news5">我院与市红十字会联合举办急救技能进企业培训活动</a> <span class="date">2026-07-15</span></li>
+                            <li><a href="blank.html" data-i18n="news6">城西片区老年人免费体检工作在我院全面铺开</a> <span class="date">2026-07-10</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 健康科普 -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="healthTitle">健康科普</h3>
+                        <a href="health.html" class="more-link" data-i18n="moreLink">更多 &raquo;</a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="news-list">
+                            <li><a href="blank.html" data-i18n="health1">夏季防暑降温：精神障碍患者用药注意事项</a> <span class="date">2026-07-29</span></li>
+                            <li><a href="blank.html" data-i18n="health2">高血压患者夏季能否自行停药？专家为您解答</a> <span class="date">2026-07-22</span></li>
+                            <li><a href="blank.html" data-i18n="health3">关注青少年心理健康：识别抑郁情绪的早期信号</a> <span class="date">2026-07-16</span></li>
+                            <li><a href="blank.html" data-i18n="health4">骨折术后康复黄金期，这几个动作不能少</a> <span class="date">2026-07-08</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右栏 -->
+            <div class="col-right">
+                <!-- 就医须知 -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="infoTitle">就医须知</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label" data-i18n="infoOpHours">门诊时间</span>
+                            <span class="info-value" data-i18n="infoOpHoursVal">周一至周日 08:00–17:30</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label" data-i18n="infoEmergency">急诊服务</span>
+                            <span class="info-value" data-i18n="infoEmergencyVal">24小时开放</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label" data-i18n="infoPhone">咨询电话</span>
+                            <span class="info-value">333-3625 3828</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label" data-i18n="infoAddress">医院地址</span>
+                            <span class="info-value" data-i18n="infoAddressVal">酆江市琼湾路76号</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label" data-i18n="infoBus">公交路线</span>
+                            <span class="info-value" data-i18n="infoBusVal">102路、307路 三院站</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 特色专科 -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="deptTitle">特色专科</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="dept-list">
+                            <li>
+                                <span class="dept-dot"></span>
+                                <a href="blank.html" data-i18n="dept1">精神心理科</a>
+                                <span class="dept-tag" data-i18n="deptTag1">区域重点</span>
+                            </li>
+                            <li>
+                                <span class="dept-dot"></span>
+                                <a href="blank.html" data-i18n="dept2">康复医学科</a>
+                            </li>
+                            <li>
+                                <span class="dept-dot"></span>
+                                <a href="blank.html" data-i18n="dept3">心血管内科</a>
+                            </li>
+                            <li>
+                                <span class="dept-dot"></span>
+                                <a href="blank.html" data-i18n="dept4">骨科</a>
+                            </li>
+                            <li>
+                                <span class="dept-dot"></span>
+                                <a href="blank.html" data-i18n="dept5">妇产科</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 通知公告 -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <h3 data-i18n="noticeTitle">通知公告</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="news-list">
+                            <li><a href="blank.html" data-i18n="notice1">关于2026年暑期门诊工作安排的通知</a> <span class="date">07-30</span></li>
+                            <li><a href="blank.html" data-i18n="notice2">精神心理科夜间门诊试运行公告</a> <span class="date">07-22</span></li>
+                            <li><a href="blank.html" data-i18n="notice3">城西院区停车场改造施工通知</a> <span class="date">07-15</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 data-i18n="footerAboutTitle">酆江市第三医院</h4>
+                    <p data-i18n="footerAboutDesc">始建于1992年，酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。</p>
+                    <p style="margin-top:12px;">
+                        <span data-i18n="footerAddr">地址：酆江市琼湾路76号</span><br>
+                        <span data-i18n="footerPhone">咨询：333-3625 3828</span>
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footerQuickTitle">快速链接</h4>
+                    <a href="about.html" data-i18n="navAbout">医院概况</a>
+                    <a href="guide.html" data-i18n="navGuide">就医指南</a>
+                    <a href="news.html" data-i18n="navNews">新闻公告</a>
+                    <a href="jobs.html" data-i18n="navJobs">人才招聘</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footerContactTitle">联系方式</h4>
+                    <a href="contact.html" data-i18n="footerBus">公交：102路 / 307路 三院站</a>
+                    <a href="contact.html" data-i18n="footerEmergency">急诊：24小时</a>
+                    <a href="guide.html" data-i18n="footerOpHours">门诊：08:00–17:30</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright &copy; 2026 Fengjiang Third Hospital. All Rights Reserved.</p>
+                <p data-i18n="footerICP">酆ICP备20260001号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // ===== 多语言支持 =====
+    const i18n = {
+        zh: {
+            topDate: '今天是 2026年7月31日 星期五',
+            topNotice: '公告：门诊挂号时间调整通知',
+            topSitemap: '网站地图',
+            topAccessibility: '无障碍浏览',
+            hospitalName: '酆江市第三医院',
+            hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
+            hotlineLabel: '咨询热线',
+            searchPlaceholder: '请输入搜索关键词...',
+            navHome: '首页', navAbout: '医院概况', navDepts: '科室导航',
+            navExperts: '专家团队', navGuide: '就医指南', navNews: '新闻公告',
+            navHealth: '健康科普', navJobs: '人才招聘', navContact: '联系我们',
+            heroTitle: '精医厚德 · 仁心济世',
+            heroSub: 'FENGJIANG THIRD HOSPITAL · EST.1992',
+            heroDesc: '守护一方百姓身心健康，努力打造群众信赖的综合性诊疗阵地',
+            qbSchedule: '门诊排班', qbBooking: '预约挂号', qbReport: '报告查询',
+            qbGuide: '就医指南', qbInsurance: '医保政策', qbFeedback: '投诉建议',
+            introTitle: '医院概况', moreLink: '更多 »',
+            introP1: '酆江市第三医院始建于1992年，坐落于酆江沿岸阴阳交界城区，是酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。医院地处城西老城区琼湾路76号，紧邻酆江，长期承担周边居民日常诊疗、急危重症抢救与公共卫生保障任务。',
+            introP2: '医院占地32亩，开放床位480张。设有急诊科、心血管内科、神经内科、普外科、骨科、妇产科、儿科、精神心理科、康复医学科以及检验科、影像中心、药剂科等完备临床与医技科室。其中精神心理科为区域特色专科，专注各类情绪障碍、心理创伤与重症精神疾病干预治疗。',
+            introP3: '建院以来，医院始终恪守"精医厚德，仁心济世"办院理念，持续完善诊疗设施，优化就医流程。全院医护人员坚守临床一线，兼顾躯体疾病与心理关怀，致力于为群众提供安全、规范、人性化的医疗服务。',
+            newsTitle: '新闻动态',
+            news1: '我院精神心理科成功开展"世界心理健康日"社区义诊活动',
+            news2: '酆江市卫健委专家组莅临我院进行二级医院复审督导检查',
+            news3: '【喜报】我院心血管内科张建国主任荣获"酆江市优秀医师"称号',
+            news4: '关于调整门诊挂号时间及优化就诊流程的通知',
+            news5: '我院与市红十字会联合举办急救技能进企业培训活动',
+            news6: '城西片区老年人免费体检工作在我院全面铺开',
+            healthTitle: '健康科普',
+            health1: '夏季防暑降温：精神障碍患者用药注意事项',
+            health2: '高血压患者夏季能否自行停药？专家为您解答',
+            health3: '关注青少年心理健康：识别抑郁情绪的早期信号',
+            health4: '骨折术后康复黄金期，这几个动作不能少',
+            infoTitle: '就医须知',
+            infoOpHours: '门诊时间', infoOpHoursVal: '周一至周日 08:00–17:30',
+            infoEmergency: '急诊服务', infoEmergencyVal: '24小时开放',
+            infoPhone: '咨询电话', infoAddress: '医院地址',
+            infoAddressVal: '酆江市琼湾路76号',
+            infoBus: '公交路线', infoBusVal: '102路、307路 三院站',
+            deptTitle: '特色专科',
+            dept1: '精神心理科', deptTag1: '区域重点',
+            dept2: '康复医学科', dept3: '心血管内科', dept4: '骨科', dept5: '妇产科',
+            noticeTitle: '通知公告',
+            notice1: '关于2026年暑期门诊工作安排的通知',
+            notice2: '精神心理科夜间门诊试运行公告',
+            notice3: '城西院区停车场改造施工通知',
+            footerAboutTitle: '酆江市第三医院',
+            footerAboutDesc: '始建于1992年，酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。',
+            footerAddr: '地址：酆江市琼湾路76号',
+            footerPhone: '咨询：333-3625 3828',
+            footerQuickTitle: '快速链接',
+            footerContactTitle: '联系方式',
+            footerBus: '公交：102路 / 307路 三院站',
+            footerEmergency: '急诊：24小时',
+            footerOpHours: '门诊：08:00–17:30',
+            footerICP: '酆ICP备20260001号'
+        },
+        en: {
+            topDate: 'Friday, July 31, 2026',
+            topNotice: 'Notice: Outpatient registration schedule adjustment',
+            topSitemap: 'Sitemap',
+            topAccessibility: 'Accessibility',
+            hospitalName: 'Fengjiang Third Hospital',
+            hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
+            hotlineLabel: 'HOTLINE',
+            searchPlaceholder: 'Search keywords...',
+            navHome: 'Home', navAbout: 'About Us', navDepts: 'Departments',
+            navExperts: 'Experts', navGuide: 'Patient Guide', navNews: 'News',
+            navHealth: 'Health Tips', navJobs: 'Careers', navContact: 'Contact',
+            heroTitle: 'Healing with Virtue · Compassion for All',
+            heroSub: 'FENGJIANG THIRD HOSPITAL · EST.1992',
+            heroDesc: 'Safeguarding the physical and mental health of our community with trusted comprehensive care',
+            qbSchedule: 'Schedule', qbBooking: 'Appointment', qbReport: 'Results',
+            qbGuide: 'Guide', qbInsurance: 'Insurance', qbFeedback: 'Feedback',
+            introTitle: 'About the Hospital', moreLink: 'More »',
+            introP1: 'Founded in 1992, Fengjiang Third Hospital is located at the yin-yang boundary district along the Fengjiang River. It is a comprehensive public Grade-II hospital integrating medical care, teaching, rehabilitation, psychiatric intervention, and critical care. Located at No. 76 Qiongwan Road, the hospital has long served surrounding residents with routine and emergency care.',
+            introP2: 'The hospital covers 32 mu with 480 beds. It features complete clinical and medical technology departments including Emergency, Cardiovascular, Neurology, General Surgery, Orthopedics, OB/GYN, Pediatrics, Psychiatry & Psychology, Rehabilitation, Laboratory, Imaging Center, and Pharmacy. The Psychiatry & Psychology department is a regional specialty focusing on mood disorders, psychological trauma, and severe mental illness.',
+            introP3: 'Since its founding, the hospital has upheld the philosophy of "Healing with Virtue, Compassion for All," continuously improving facilities and streamlining care processes. All staff are committed to providing safe, standardized, and compassionate medical services.',
+            newsTitle: 'News',
+            news1: 'Psychiatry department hosts World Mental Health Day community outreach',
+            news2: 'Municipal Health Commission inspection team visits for Grade-II hospital review',
+            news3: '[Award] Dr. Zhang Jianguo of Cardiovascular Dept. named Outstanding Physician',
+            news4: 'Notice on adjusted outpatient registration hours and streamlined process',
+            news5: 'Joint first-aid training program with Municipal Red Cross',
+            news6: 'Free health screening for seniors in Chengxi district now underway',
+            healthTitle: 'Health Tips',
+            health1: 'Summer heat precautions: medication guidelines for psychiatric patients',
+            health2: 'Can hypertension patients stop medication in summer? Expert answers',
+            health3: 'Youth mental health: recognizing early signs of depression',
+            health4: 'Post-fracture rehab golden period: essential exercises',
+            infoTitle: 'Patient Info',
+            infoOpHours: 'OP Hours', infoOpHoursVal: 'Mon–Sun 08:00–17:30',
+            infoEmergency: 'Emergency', infoEmergencyVal: '24 Hours',
+            infoPhone: 'Hotline', infoAddress: 'Address',
+            infoAddressVal: 'No. 76 Qiongwan Rd, Fengjiang',
+            infoBus: 'Bus', infoBusVal: 'Route 102/307, Third Hosp. Stop',
+            deptTitle: 'Key Departments',
+            dept1: 'Psychiatry & Psychology', deptTag1: 'Regional Key',
+            dept2: 'Rehabilitation', dept3: 'Cardiovascular', dept4: 'Orthopedics', dept5: 'OB/GYN',
+            noticeTitle: 'Notices',
+            notice1: '2026 summer outpatient schedule notice',
+            notice2: 'Psychiatry evening clinic pilot program announcement',
+            notice3: 'Chengxi campus parking renovation notice',
+            footerAboutTitle: 'Fengjiang Third Hospital',
+            footerAboutDesc: 'Founded in 1992, a comprehensive public Grade-II hospital integrating medical care, teaching, rehabilitation, psychiatric intervention, and critical care.',
+            footerAddr: 'Address: No. 76 Qiongwan Rd, Fengjiang',
+            footerPhone: 'Hotline: 333-3625 3828',
+            footerQuickTitle: 'Quick Links',
+            footerContactTitle: 'Contact',
+            footerBus: 'Bus: Route 102/307, Third Hosp. Stop',
+            footerEmergency: 'Emergency: 24 Hours',
+            footerOpHours: 'Outpatient: 08:00–17:30',
+            footerICP: 'Feng ICP No. 20260001'
+        }
+    };
+
+    let currentLang = 'zh';
+
+    function switchLang(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+        // 更新按钮状态
+        document.querySelectorAll('.lang-switch').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.trim() === (lang === 'zh' ? '中文' : 'English'));
+        });
+
+        // 更新所有 data-i18n 元素
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18n[lang][key] !== undefined) {
+                // 保留 strong 标签（简介段落）
+                if (key === 'introP2') {
+                    const text = i18n[lang][key];
+                    const strongWord = lang === 'zh' ? '精神心理科' : 'Psychiatry & Psychology';
+                    const parts = text.split(strongWord);
+                    if (parts.length === 2) {
+                        el.innerHTML = parts[0] + '<strong>' + strongWord + '</strong>' + parts[1];
+                        return;
+                    }
+                }
+                el.textContent = i18n[lang][key];
+            }
+        });
+
+        // 更新 placeholder
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (i18n[lang][key] !== undefined) {
+                el.placeholder = i18n[lang][key];
+            }
+        });
+
+        // 更新页面标题
+        document.title = lang === 'zh' ? '酆江市第三医院 - 官方网站' : 'Fengjiang Third Hospital - Official Website';
+    }
+    </script>
+
+</body>
+</html>

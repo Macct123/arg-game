@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科室导航 - 酆江市第三医院</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2980b9;
+            --primary-dark: #0e2f44;
+            --accent: #16a085;
+            --accent-glow: #1abc9c;
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #e0e4e8;
+            --danger: #c0392b;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --radius: 8px;
+            --transition: 0.3s ease;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.7;
+        }
+        a { color: var(--primary-light); text-decoration: none; transition: color var(--transition); }
+        a:hover { color: var(--accent); }
+        ul, ol { list-style: none; }
+        img { max-width: 100%; display: block; }
+        .top-bar {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.75);
+            font-size: 12px;
+            height: 36px;
+            line-height: 36px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+        .top-bar-left { display: flex; align-items: center; gap: 20px; }
+        .top-bar-right { display: flex; align-items: center; gap: 16px; }
+        .top-bar a { color: rgba(255,255,255,0.7); font-size: 12px; }
+        .top-bar a:hover { color: #fff; }
+        .top-bar .divider { color: rgba(255,255,255,0.2); }
+        .lang-switch {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.85);
+            padding: 2px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all var(--transition);
+        }
+        .lang-switch:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .lang-switch.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .header {
+            background: #fff;
+            padding: 20px 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            position: relative;
+            z-index: 10;
+        }
+        .header .container { display: flex; align-items: center; justify-content: space-between; }
+        .logo-area { display: flex; align-items: center; gap: 16px; }
+        .logo-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 28px; font-weight: 700;
+            font-family: "KaiTi", "楷体", serif;
+            box-shadow: 0 2px 8px rgba(26,82,118,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-icon::after {
+            content: '';
+            position: absolute; inset: -50%;
+            background: radial-gradient(circle, rgba(22,160,133,0.15) 0%, transparent 70%);
+            animation: logoPulse 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes logoPulse {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .logo-text h1 {
+            font-size: 26px; color: var(--primary); font-weight: 700;
+            letter-spacing: 2px; line-height: 1.3;
+        }
+        .logo-text .subtitle {
+            font-size: 12px; color: var(--text-light); letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        .header-hotline { text-align: right; }
+        .header-hotline .label { font-size: 11px; color: var(--text-light); }
+        .header-hotline .number {
+            font-size: 20px; color: var(--danger); font-weight: 700;
+            letter-spacing: 1px; font-family: "Consolas", monospace;
+        }
+        .header-search {
+            display: flex; align-items: center;
+            background: var(--bg);
+            border-radius: 20px;
+            padding: 0 4px 0 14px;
+            border: 1px solid var(--border);
+            transition: border-color var(--transition);
+        }
+        .header-search:focus-within { border-color: var(--primary-light); }
+        .header-search input {
+            border: none; background: transparent; height: 34px; width: 180px;
+            font-size: 13px; outline: none; color: var(--text);
+        }
+        .header-search input::placeholder { color: #bbb; }
+        .header-search button {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--primary); color: #fff; border: none;
+            cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+            transition: background var(--transition);
+        }
+        .header-search button:hover { background: var(--accent); }
+        .main-nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow: 0 2px 8px rgba(26,82,118,0.2);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .main-nav ul { display: flex; }
+        .main-nav li { position: relative; }
+        .main-nav a {
+            display: block; padding: 0 28px; height: 48px; line-height: 48px;
+            color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500;
+            letter-spacing: 1px; transition: all var(--transition);
+        }
+        .main-nav a:hover, .main-nav a.active {
+            color: #fff; background: rgba(255,255,255,0.1);
+        }
+        .main-nav a.active::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
+        }
+        .page-banner {
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, #1a6b5a 100%);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; position: relative; overflow: hidden;
+        }
+        .page-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+        .page-banner h2 {
+            font-size: 28px; font-weight: 700; letter-spacing: 4px;
+            position: relative; z-index: 1;
+        }
+        .page-banner .breadcrumb {
+            margin-top: 8px; font-size: 13px; opacity: 0.7;
+            position: relative; z-index: 1;
+        }
+        .page-banner .breadcrumb a { color: rgba(255,255,255,0.8); }
+        .main-content { padding: 40px 0; min-height: 500px; }
+        .content-container {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-height: 400px;
+        }
+        .site-footer {
+            background: var(--primary-dark);
+            color: rgba(255,255,255,0.6);
+            margin-top: 60px;
+            padding: 40px 0 0;
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .footer-col h4 {
+            color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .footer-col p { font-size: 13px; line-height: 2; }
+        .footer-col a { color: rgba(255,255,255,0.55); font-size: 13px; display: block; line-height: 2.2; }
+        .footer-col a:hover { color: var(--accent-glow); }
+        .footer-bottom {
+            text-align: center; padding: 20px 0; font-size: 12px;
+            color: rgba(255,255,255,0.35);
+        }
+        @media (max-width: 768px) {
+            .main-nav a { padding: 0 14px; font-size: 13px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .header-right { gap: 12px; }
+            .header-hotline .number { font-size: 16px; }
+            .header-search input { width: 120px; }
+            .page-banner h2 { font-size: 22px; }
+        }
+        @media (max-width: 480px) {
+            .main-nav a { padding: 0 10px; font-size: 12px; letter-spacing: 0; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-left">
+                <span data-i18n="topDate">今天是 2026年7月31日 星期五</span>
+                <span style="color:rgba(255,255,255,0.2);">|</span>
+                <a href="blank.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
+            </div>
+            <div class="top-bar-right">
+                <a href="blank.html" data-i18n="topSitemap">网站地图</a>
+                <span class="divider">|</span>
+                <a href="blank.html" data-i18n="topAccessibility">无障碍浏览</a>
+                <span class="divider">|</span>
+                <button class="lang-switch active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-switch" onclick="switchLang('en')">English</button>
+            </div>
+        </div>
+    </div>
+    <div class="header">
+        <div class="container">
+            <div class="logo-area">
+                <a href="新建%20文本文档.html" style="display:flex;align-items:center;gap:16px;text-decoration:none;">
+                    <div class="logo-icon">三</div>
+                    <div class="logo-text">
+                        <h1 data-i18n="hospitalName">酆江市第三医院</h1>
+                        <div class="subtitle" data-i18n="hospitalNameEn">FENGJIANG THIRD HOSPITAL</div>
+                    </div>
+                </a>
+            </div>
+            <div class="header-right">
+                <div class="header-hotline">
+                    <div class="label" data-i18n="hotlineLabel">咨询热线</div>
+                    <div class="number">333-3625 3828</div>
+                </div>
+                <div class="header-search">
+                    <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
+                    <button>🔍</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="新建%20文本文档.html" data-i18n="navHome">首页</a></li>
+                <li><a href="about.html" data-i18n="navAbout">医院概况</a></li>
+                <li><a href="dept.html" data-i18n="navDepts">科室导航</a></li>
+                <li><a href="experts.html" data-i18n="navExperts">专家团队</a></li>
+                <li><a href="guide.html" data-i18n="navGuide">就医指南</a></li>
+                <li><a href="news.html" data-i18n="navNews">新闻公告</a></li>
+                <li><a href="health.html" data-i18n="navHealth">健康科普</a></li>
+                <li><a href="jobs.html" data-i18n="navJobs">人才招聘</a></li>
+                <li><a href="contact.html" data-i18n="navContact">联系我们</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="page-banner">
+        <div style="text-align:center;">
+            <h2 id="pageTitle">科室导航</h2>
+            <div class="breadcrumb">
+                <a href="新建%20文本文档.html" data-i18n="navHome">首页</a> / <span id="crumbCurrent">科室导航</span>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="container">
+            <div class="content-container" style="padding:40px;"></div>
+        </div>
+    </div>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 data-i18n="footerAboutTitle">酆江市第三医院</h4>
+                    <p data-i18n="footerAboutDesc">始建于1992年，酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。</p>
+                    <p style="margin-top:12px;">
+                        <span data-i18n="footerAddr">地址：酆江市琼湾路76号</span><br>
+                        <span data-i18n="footerPhone">咨询：333-3625 3828</span>
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footerQuickTitle">快速链接</h4>
+                    <a href="about.html" data-i18n="navAbout">医院概况</a>
+                    <a href="guide.html" data-i18n="navGuide">就医指南</a>
+                    <a href="news.html" data-i18n="navNews">新闻公告</a>
+                    <a href="jobs.html" data-i18n="navJobs">人才招聘</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footerContactTitle">联系方式</h4>
+                    <a href="contact.html" data-i18n="footerBus">公交：102路 / 307路 三院站</a>
+                    <a href="contact.html" data-i18n="footerEmergency">急诊：24小时</a>
+                    <a href="guide.html" data-i18n="footerOpHours">门诊：08:00–17:30</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Copyright &copy; 2026 Fengjiang Third Hospital. All Rights Reserved.</p>
+                <p data-i18n="footerICP">酆ICP备20260001号</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+    const i18n = {
+        zh: {
+            topDate: '今天是 2026年7月31日 星期五',
+            topNotice: '公告：门诊挂号时间调整通知',
+            topSitemap: '网站地图',
+            topAccessibility: '无障碍浏览',
+            hospitalName: '酆江市第三医院',
+            hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
+            hotlineLabel: '咨询热线',
+            searchPlaceholder: '请输入搜索关键词...',
+            navHome: '首页', navAbout: '医院概况', navDepts: '科室导航',
+            navExperts: '专家团队', navGuide: '就医指南', navNews: '新闻公告',
+            navHealth: '健康科普', navJobs: '人才招聘', navContact: '联系我们',
+            footerAboutTitle: '酆江市第三医院',
+            footerAboutDesc: '始建于1992年，酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。',
+            footerAddr: '地址：酆江市琼湾路76号',
+            footerPhone: '咨询：333-3625 3828',
+            footerQuickTitle: '快速链接',
+            footerContactTitle: '联系方式',
+            footerBus: '公交：102路 / 307路 三院站',
+            footerEmergency: '急诊：24小时',
+            footerOpHours: '门诊：08:00–17:30',
+            footerICP: '酆ICP备20260001号'
+        },
+        en: {
+            topDate: 'Friday, July 31, 2026',
+            topNotice: 'Notice: Outpatient registration schedule adjustment',
+            topSitemap: 'Sitemap',
+            topAccessibility: 'Accessibility',
+            hospitalName: 'Fengjiang Third Hospital',
+            hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
+            hotlineLabel: 'HOTLINE',
+            searchPlaceholder: 'Search keywords...',
+            navHome: 'Home', navAbout: 'About Us', navDepts: 'Departments',
+            navExperts: 'Experts', navGuide: 'Patient Guide', navNews: 'News',
+            navHealth: 'Health Tips', navJobs: 'Careers', navContact: 'Contact',
+            footerAboutTitle: 'Fengjiang Third Hospital',
+            footerAboutDesc: 'Founded in 1992, a comprehensive public Grade-II hospital.',
+            footerAddr: 'Address: No. 76 Qiongwan Rd, Fengjiang',
+            footerPhone: 'Hotline: 333-3625 3828',
+            footerQuickTitle: 'Quick Links',
+            footerContactTitle: 'Contact',
+            footerBus: 'Bus: Route 102/307, Third Hosp. Stop',
+            footerEmergency: 'Emergency: 24 Hours',
+            footerOpHours: 'Outpatient: 08:00–17:30',
+            footerICP: 'Feng ICP No. 20260001'
+        }
+    };
+    let currentLang = 'zh';
+    function switchLang(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        document.querySelectorAll('.lang-switch').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.trim() === (lang === 'zh' ? '中文' : 'English'));
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18n[lang][key] !== undefined) {
+                el.textContent = i18n[lang][key];
+            }
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (i18n[lang][key] !== undefined) {
+                el.placeholder = i18n[lang][key];
+            }
+        });
+    }
+    </script>
+</body>
+</html>

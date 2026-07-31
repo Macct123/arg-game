@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -164,21 +164,18 @@
         .hero {
             position: relative;
             height: 380px;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, #1a6b5a 100%);
+            background: url('hospital.jpg') center center / cover no-repeat;
             overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
-        /* ARG: 背景隐约网格纹理 */
+        /* 半透明遮罩 */
         .hero::before {
             content: '';
             position: absolute; inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background: linear-gradient(135deg, rgba(14,47,68,0.75) 0%, rgba(26,82,118,0.65) 50%, rgba(26,107,90,0.55) 100%);
             pointer-events: none;
         }
-        /* ARG: 微弱扫描线 */
+        /* 微弱扫描线 */
         .hero::after {
             content: '';
             position: absolute; inset: 0;

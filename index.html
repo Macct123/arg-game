@@ -150,12 +150,16 @@
             box-shadow: 0 2px 8px rgba(26,82,118,0.2);
             position: sticky; top: 0; z-index: 100;
         }
-        .main-nav ul { display: flex; }
+        .main-nav ul { display: flex; justify-content: center; flex-wrap: wrap; }
         .main-nav li { position: relative; }
         .main-nav a {
-            display: block; padding: 0 28px; height: 48px; line-height: 48px;
+            display: block; padding: 0 24px; height: 48px; line-height: 48px;
             color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500;
-            letter-spacing: 1px; transition: all var(--transition);
+            letter-spacing: 1px; white-space: nowrap; transition: all var(--transition);
+        }
+        /* 英文菜单更长，收紧间距与字距以保证单行排布 */
+        html[lang="en"] .main-nav a {
+            padding: 0 16px; letter-spacing: 0.3px; font-size: 14px;
         }
         .main-nav a:hover, .main-nav a.active {
             color: #fff; background: rgba(255,255,255,0.1);

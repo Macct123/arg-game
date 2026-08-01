@@ -526,7 +526,7 @@
     <!-- 横幅 -->
     <div class="hero" id="heroCarousel">
         <div class="hero-track" id="heroTrack">
-            <div class="hero-slide" style="background-image:url('hero2.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('hero2.jpg'); background-position:center 78%;"></div>
             <div class="hero-slide" style="background-image:url('hero1.jpg')"></div>
         </div>
         <div class="hero-content">
@@ -898,7 +898,7 @@
         document.title = lang === 'zh' ? '酆江市第三医院 - 官方网站' : 'Fengjiang Third Hospital - Official Website';
     }
 
-    /* ===== Hero 轮播：自动翻页 + 手动滑动/拖拽 + 箭头 + 圆点 ===== */
+    /* ===== Hero 轮播：单向无缝循环 + 自动翻页 + 手动滑动/拖拽 + 箭头 + 圆点 ===== */
     (function () {
         const carousel = document.getElementById('heroCarousel');
         const track = document.getElementById('heroTrack');
@@ -907,39 +907,70 @@
         const nextBtn = document.getElementById('heroNext');
         if (!carousel || !track) return;
 
-        const slides = Array.from(track.children);
-        const total = slides.length;
-        let index = 0;
-        let timer = null;
+        const realSlides = Array.from(track.children);
+        const total = realSlides.length;
         const INTERVAL = 5000;
 
-        // 生成圆点
-        const dots = slides.map((_, i) => {
+        // 末尾克隆第一张，用于单向无缝循环
+        const clone = realSlides[0].cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+
+        let index = 0;          // 当前位置（0 ~ total，total 为克隆张）
+        let timer = null;
+        let animating = false;
+
+        // 生成圆点（只对应真实幻灯片）
+        const dots = realSlides.map((_, i) => {
             const b = document.createElement('button');
             b.className = 'hero-dot' + (i === 0 ? ' active' : '');
             b.setAttribute('aria-label', '第' + (i + 1) + '张');
-            b.addEventListener('click', () => goTo(i));
+            b.addEventListener('click', () => { goTo(i); start(); });
             dotsWrap.appendChild(b);
             return b;
         });
 
-        function render(animate) {
+        function setActiveDot() {
+            const real = index % total;
+            dots.forEach((d, i) => d.classList.toggle('active', i === real));
+        }
+        function place(animate) {
             track.classList.toggle('no-anim', !animate);
             track.style.transform = 'translateX(' + (-index * 100) + '%)';
-            dots.forEach((d, i) => d.classList.toggle('active', i === index));
         }
-        function goTo(i, animate) {
+        const ANIM = 600; // 与 CSS transition 时长保持一致(ms)
+        // 直接跳到某张真实幻灯片
+        function goTo(i) {
+            if (animating) return;
             index = (i + total) % total;
-            render(animate !== false);
+            place(true);
+            setActiveDot();
         }
-        function next() { goTo(index + 1); }
-        function prev() { goTo(index - 1); }
+        // 单向前进（始终向左滑），到克隆张后无缝重置回真实第一张
+        function next() {
+            if (animating) return;
+            animating = true;
+            index++;
+            place(true);
+            setActiveDot();
+            // 用定时器兜底：动画结束后解锁；若停在克隆张则无动画跳回首张
+            setTimeout(() => {
+                if (index >= total) {
+                    index = 0;
+                    place(false);
+                    // 强制回流后再解锁，保证下次动画正常
+                    void track.offsetWidth;
+                }
+                animating = false;
+            }, ANIM);
+        }
 
         // 自动播放
         function start() { stop(); timer = setInterval(next, INTERVAL); }
         function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
-        prevBtn.addEventListener('click', () => { prev(); start(); });
+        // 箭头：均向单一方向循环推进
+        prevBtn.addEventListener('click', () => { next(); start(); });
         nextBtn.addEventListener('click', () => { next(); start(); });
 
         // 鼠标悬停暂停
@@ -950,9 +981,10 @@
             document.hidden ? stop() : start();
         });
 
-        // 拖拽 / 触摸滑动
+        // 拖拽 / 触摸滑动（松手后统一向前推进，保持单向循环）
         let dragging = false, startX = 0, deltaX = 0, width = 0;
         function pointerDown(x) {
+            if (animating) return;
             dragging = true; startX = x; deltaX = 0;
             width = carousel.offsetWidth;
             stop();
@@ -968,9 +1000,9 @@
             dragging = false;
             track.classList.remove('no-anim');
             const threshold = width * 0.15;
-            if (deltaX > threshold) prev();
-            else if (deltaX < -threshold) next();
-            else render(true);
+            // 无论左滑右滑，都向前推进一张（单向循环）
+            if (Math.abs(deltaX) > threshold) { next(); }
+            else { place(true); }
             start();
         }
 
@@ -983,7 +1015,8 @@
         carousel.addEventListener('touchmove', e => pointerMove(e.touches[0].clientX), { passive: true });
         carousel.addEventListener('touchend', pointerUp);
 
-        render(false);
+        place(false);
+        setActiveDot();
         start();
     })();
     </script>

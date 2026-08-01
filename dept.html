@@ -216,6 +216,21 @@
             background: #fff; color: var(--accent);
             box-shadow: var(--shadow);
         }
+        .dept-cats a.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(26,82,118,0.25);
+            font-weight: 600;
+        }
+        .dept-cats a.active::before {
+            content: '';
+            display: inline-block;
+            width: 4px; height: 4px;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
         .dept-main { min-width: 0; }
         .dept-section { margin-bottom: 48px; scroll-margin-top: 80px; }
         .dept-section:last-child { margin-bottom: 0; }
@@ -609,6 +624,34 @@
             }
         });
     }
+
+    /* 科室导航分类高亮联动（外卖平台式侧边栏） */
+    (function () {
+        const cats = document.querySelectorAll('.dept-cats a');
+        const sections = Array.from(cats).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+        function setActive(id) {
+            cats.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+        }
+
+        cats.forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setActive(a.getAttribute('href'));
+            });
+        });
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) setActive('#' + entry.target.id);
+            });
+        }, { rootMargin: '-15% 0px -55% 0px', threshold: 0 });
+
+        sections.forEach(sec => observer.observe(sec));
+        if (cats.length) setActive(cats[0].getAttribute('href'));
+    })();
     </script>
 </body>
 </html>

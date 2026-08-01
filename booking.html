@@ -129,6 +129,11 @@
             transition: background var(--transition);
         }
         .header-search button:hover { background: var(--accent); }
+        .header-search button svg {
+            width: 15px; height: 15px;
+            fill: none; stroke: currentColor; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
         .main-nav {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             box-shadow: 0 2px 8px rgba(26,82,118,0.2);
@@ -254,7 +259,7 @@
                 </div>
                 <div class="header-search">
                     <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
-                    <button>🔍</button>
+                    <button type="button" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
                 </div>
             </div>
         </div>

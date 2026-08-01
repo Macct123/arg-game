@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医保政策 - 酆江市第三医院</title>
+    <title>搜索结果 - 酆江市第三医院</title>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -149,10 +149,6 @@
         .main-nav a:hover, .main-nav a.active {
             color: #fff; background: rgba(255,255,255,0.1);
         }
-        .main-nav a.active::after {
-            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
-        }
         .page-banner {
             height: 140px;
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 40%, #1a6b5a 100%);
@@ -183,7 +179,50 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             min-height: 400px;
+            padding: 32px 40px;
         }
+        /* 搜索栏（页面内） */
+        .search-hero {
+            display: flex; align-items: center; gap: 10px;
+            max-width: 640px; margin: 0 auto 28px;
+        }
+        .search-hero input {
+            flex: 1; height: 46px; padding: 0 18px;
+            border: 1px solid var(--border); border-radius: 24px;
+            font-size: 15px; color: var(--text); outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .search-hero input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(41,128,185,0.12);
+        }
+        .search-hero button {
+            height: 46px; padding: 0 26px; border: none; border-radius: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff; font-size: 15px; font-weight: 600; letter-spacing: 1px;
+            cursor: pointer; transition: filter var(--transition);
+        }
+        .search-hero button:hover { filter: brightness(1.08); }
+        .search-summary {
+            font-size: 14px; color: var(--text-light);
+            padding-bottom: 16px; margin-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .search-summary .kw { color: var(--primary); font-weight: 600; }
+        /* 空结果占位 */
+        .search-empty {
+            text-align: center; padding: 70px 20px 40px;
+            color: var(--text-light);
+        }
+        .search-empty .icon { margin-bottom: 16px; }
+        .search-empty .icon svg {
+            width: 56px; height: 56px;
+            fill: none; stroke: currentColor; stroke-width: 1.4;
+            stroke-linecap: round; stroke-linejoin: round;
+            opacity: 0.35;
+        }
+        .search-empty .title { font-size: 18px; color: var(--text); font-weight: 600; margin-bottom: 8px; }
+        .search-empty .desc { font-size: 14px; }
         .site-footer {
             background: var(--primary-dark);
             color: rgba(255,255,255,0.6);
@@ -213,9 +252,11 @@
             .header-hotline .number { font-size: 16px; }
             .header-search input { width: 120px; }
             .page-banner h2 { font-size: 22px; }
+            .content-container { padding: 24px 18px; }
         }
         @media (max-width: 480px) {
             .main-nav a { padding: 0 10px; font-size: 12px; letter-spacing: 0; }
+            .search-hero button { padding: 0 16px; }
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
@@ -227,9 +268,9 @@
     <div class="top-bar">
         <div class="container">
             <div class="top-bar-left">
-                <span data-i18n="topDate">今天是 2026年7月31日 星期五</span>
+                <span id="topDate"></span>
                 <span style="color:rgba(255,255,255,0.2);">|</span>
-                <a href="blank.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
+                <a href="notice.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
             </div>
             <div class="top-bar-right">
                 <a href="blank.html" data-i18n="topSitemap">网站地图</a>
@@ -258,8 +299,8 @@
                     <div class="number">333-3625 3828</div>
                 </div>
                 <div class="header-search">
-                    <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
-                    <button type="button" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+                    <input type="text" id="siteSearchInput" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
+                    <button id="siteSearchBtn" type="button" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
                 </div>
             </div>
         </div>
@@ -281,15 +322,31 @@
     </nav>
     <div class="page-banner">
         <div style="text-align:center;">
-            <h2 id="pageTitle">医保政策</h2>
+            <h2 data-i18n="searchPageTitle">搜索结果</h2>
             <div class="breadcrumb">
-                <a href="index.html" data-i18n="navHome">首页</a> / <span id="crumbCurrent">医保政策</span>
+                <a href="index.html" data-i18n="navHome">首页</a> / <span data-i18n="searchPageTitle">搜索结果</span>
             </div>
         </div>
     </div>
     <div class="main-content">
         <div class="container">
-            <div class="content-container" style="padding:40px;"></div>
+            <div class="content-container">
+                <!-- 页面内搜索栏 -->
+                <div class="search-hero">
+                    <input type="text" id="pageSearchInput" data-i18n-placeholder="searchPlaceholder" placeholder="请输入搜索关键词...">
+                    <button id="pageSearchBtn" type="button" data-i18n="searchBtn">搜索</button>
+                </div>
+                <!-- 搜索概况 -->
+                <div class="search-summary" id="searchSummary"></div>
+                <!-- 结果区（当前留空，仅占位） -->
+                <div id="searchResults">
+                    <div class="search-empty">
+                        <div class="icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+                        <div class="title" data-i18n="searchEmptyTitle">暂无相关内容</div>
+                        <div class="desc" data-i18n="searchEmptyDesc">未能找到与您搜索内容匹配的结果，请尝试更换关键词。</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <footer class="site-footer">
@@ -312,9 +369,9 @@
                 </div>
                 <div class="footer-col">
                     <h4 data-i18n="footerContactTitle">联系方式</h4>
-                    <a href="contact.html" data-i18n="footerBus">公交：102路 / 307路 三院站</a>
-                    <a href="contact.html" data-i18n="footerEmergency">急诊：24小时</a>
-                    <a href="guide.html" data-i18n="footerOpHours">门诊：08:00–17:30</a>
+                    <p data-i18n="footerBus">公交：102路 / 307路 三院站</p>
+                    <p data-i18n="footerEmergency">急诊：24小时</p>
+                    <p data-i18n="footerOpHours">门诊：08:00–17:30</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -326,7 +383,6 @@
     <script>
     const i18n = {
         zh: {
-            topDate: '今天是 2026年7月31日 星期五',
             topNotice: '公告：门诊挂号时间调整通知',
             topSitemap: '网站地图',
             topAccessibility: '无障碍浏览',
@@ -334,9 +390,15 @@
             hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
             hotlineLabel: '咨询热线',
             searchPlaceholder: '请输入搜索关键词...',
+            searchBtn: '搜索',
             navHome: '首页', navAbout: '医院概况', navDepts: '科室导航',
             navExperts: '专家团队', navGuide: '就医指南', navNews: '新闻公告',
             navHealth: '健康科普', navJobs: '人才招聘', navContact: '联系我们',
+            searchPageTitle: '搜索结果',
+            searchEmptyTitle: '暂无相关内容',
+            searchEmptyDesc: '未能找到与您搜索内容匹配的结果，请尝试更换关键词。',
+            searchSummaryTpl: '为您找到与 “{kw}” 相关的结果，共 0 条',
+            searchSummaryEmpty: '请输入关键词进行搜索',
             footerAboutTitle: '酆江市第三医院',
             footerAboutDesc: '始建于1992年，酆江市集医疗、教学、康复、精神干预、重症救治为一体的综合性公立二级医院。',
             footerAddr: '地址：酆江市琼湾路76号',
@@ -349,7 +411,6 @@
             footerICP: '酆ICP备20260001号'
         },
         en: {
-            topDate: 'Friday, July 31, 2026',
             topNotice: 'Notice: Outpatient registration schedule adjustment',
             topSitemap: 'Sitemap',
             topAccessibility: 'Accessibility',
@@ -357,9 +418,15 @@
             hospitalNameEn: 'FENGJIANG THIRD HOSPITAL',
             hotlineLabel: 'HOTLINE',
             searchPlaceholder: 'Search keywords...',
+            searchBtn: 'Search',
             navHome: 'Home', navAbout: 'About Us', navDepts: 'Departments',
             navExperts: 'Experts', navGuide: 'Patient Guide', navNews: 'News',
             navHealth: 'Health Tips', navJobs: 'Careers', navContact: 'Contact',
+            searchPageTitle: 'Search Results',
+            searchEmptyTitle: 'No Results Found',
+            searchEmptyDesc: 'No content matched your search. Please try different keywords.',
+            searchSummaryTpl: 'Found 0 results for “{kw}”',
+            searchSummaryEmpty: 'Please enter a keyword to search',
             footerAboutTitle: 'Fengjiang Third Hospital',
             footerAboutDesc: 'Founded in 1992, a comprehensive public Grade-II hospital.',
             footerAddr: 'Address: No. 76 Qiongwan Rd, Fengjiang',
@@ -373,6 +440,37 @@
         }
     };
     let currentLang = 'zh';
+
+    // 当前搜索关键词
+    function getQuery() {
+        const params = new URLSearchParams(window.location.search);
+        return (params.get('q') || '').trim();
+    }
+
+    // 刷新搜索概况文案（随语言切换）
+    function renderSummary() {
+        const el = document.getElementById('searchSummary');
+        if (!el) return;
+        const kw = getQuery();
+        if (!kw) {
+            el.textContent = i18n[currentLang].searchSummaryEmpty;
+            return;
+        }
+        const tpl = i18n[currentLang].searchSummaryTpl;
+        const idx = tpl.indexOf('{kw}');
+        if (idx >= 0) {
+            el.textContent = '';
+            el.appendChild(document.createTextNode(tpl.slice(0, idx)));
+            const span = document.createElement('span');
+            span.className = 'kw';
+            span.textContent = kw;
+            el.appendChild(span);
+            el.appendChild(document.createTextNode(tpl.slice(idx + 4)));
+        } else {
+            el.textContent = tpl;
+        }
+    }
+
     function switchLang(lang) {
         currentLang = lang;
         document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
@@ -391,7 +489,59 @@
                 el.placeholder = i18n[lang][key];
             }
         });
+        document.title = (lang === 'zh' ? '搜索结果' : 'Search Results') + ' - ' + i18n[lang].hospitalName;
+        renderSummary();
     }
+
+    // 顶部真实日期（随系统时间变化）
+    function updateTopDate() {
+        const el = document.getElementById('topDate');
+        if (!el) return;
+        const now = new Date();
+        let text;
+        if (currentLang === 'en') {
+            const weekEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            const monthEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            text = `${weekEn[now.getDay()]}, ${monthEn[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+        } else {
+            const weekZh = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+            text = `今天是 ${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekZh[now.getDay()]}`;
+        }
+        el.textContent = text;
+    }
+
+    // 页面内搜索框：跳转（保持在本页并更新 q）
+    (function () {
+        const input = document.getElementById('pageSearchInput');
+        const btn = document.getElementById('pageSearchBtn');
+        const headInput = document.getElementById('siteSearchInput');
+        const headBtn = document.getElementById('siteSearchBtn');
+        function go(val) {
+            const q = (val || '').trim();
+            if (!q) { if (input) input.focus(); return; }
+            window.location.href = 'search.html?q=' + encodeURIComponent(q);
+        }
+        if (input && btn) {
+            btn.addEventListener('click', () => go(input.value));
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(input.value); } });
+        }
+        if (headInput && headBtn) {
+            headBtn.addEventListener('click', () => go(headInput.value));
+            headInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(headInput.value); } });
+        }
+    })();
+
+    // 初始化：把 URL 关键词回填到输入框
+    (function init() {
+        const kw = getQuery();
+        const pi = document.getElementById('pageSearchInput');
+        const hi = document.getElementById('siteSearchInput');
+        if (pi) pi.value = kw;
+        if (hi) hi.value = kw;
+        renderSummary();
+        updateTopDate();
+        setInterval(updateTopDate, 60 * 1000);
+    })();
     </script>
 </body>
 </html>

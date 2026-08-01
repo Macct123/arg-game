@@ -160,22 +160,40 @@
             width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
         }
 
-        /* ===== Banner / Hero ===== */
+        /* ===== Banner / Hero 轮播 ===== */
         .hero {
             position: relative;
             height: 380px;
-            background: url('hospital.jpg') center center / cover no-repeat;
             overflow: hidden;
             display: flex; align-items: center; justify-content: center;
+            background: var(--primary-dark);
+            user-select: none;
         }
-        /* 半透明遮罩 */
-        .hero::before {
+        /* 轮播轨道 */
+        .hero-track {
+            position: absolute; inset: 0;
+            display: flex;
+            width: 100%; height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        .hero-track.no-anim { transition: none; }
+        .hero-slide {
+            position: relative;
+            flex: 0 0 100%;
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+        /* 半透明遮罩（叠加在每张图上，保证文字可读） */
+        .hero-slide::before {
             content: '';
             position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(14,47,68,0.35) 0%, rgba(26,82,118,0.30) 50%, rgba(26,107,90,0.25) 100%);
+            background: linear-gradient(135deg, rgba(14,47,68,0.45) 0%, rgba(26,82,118,0.38) 50%, rgba(26,107,90,0.32) 100%);
             pointer-events: none;
         }
-        /* 微弱扫描线 */
+        /* 微弱扫描线（覆盖整个 hero） */
         .hero::after {
             content: '';
             position: absolute; inset: 0;
@@ -187,15 +205,52 @@
                 rgba(0,0,0,0.03) 4px
             );
             pointer-events: none;
+            z-index: 2;
             animation: scanShift 8s linear infinite;
         }
         @keyframes scanShift {
             0% { transform: translateY(0); }
             100% { transform: translateY(4px); }
         }
+        /* 左右箭头 */
+        .hero-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            z-index: 5;
+            width: 46px; height: 46px;
+            border: none; border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(4px);
+            color: #fff; font-size: 22px; line-height: 1;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.25s, transform 0.25s;
+        }
+        .hero-arrow:hover { background: rgba(255,255,255,0.38); }
+        .hero-arrow:active { transform: translateY(-50%) scale(0.92); }
+        .hero-arrow.prev { left: 22px; }
+        .hero-arrow.next { right: 22px; }
+        /* 底部圆点指示器 */
+        .hero-dots {
+            position: absolute; left: 50%; bottom: 18px;
+            transform: translateX(-50%);
+            z-index: 5;
+            display: flex; gap: 10px;
+        }
+        .hero-dot {
+            width: 11px; height: 11px; border-radius: 50%;
+            border: none; padding: 0; cursor: pointer;
+            background: rgba(255,255,255,0.45);
+            transition: background 0.25s, transform 0.25s, width 0.25s;
+        }
+        .hero-dot:hover { background: rgba(255,255,255,0.75); }
+        .hero-dot.active {
+            background: #fff;
+            width: 26px; border-radius: 6px;
+        }
         .hero-content {
-            text-align: center; color: #fff; position: relative; z-index: 1;
+            text-align: center; color: #fff; position: relative; z-index: 3;
             padding: 0 20px;
+            pointer-events: none;
         }
         .hero-content h2 {
             font-size: 42px; font-weight: 700; letter-spacing: 6px;
@@ -469,13 +524,20 @@
     </nav>
 
     <!-- 横幅 -->
-    <div class="hero">
+    <div class="hero" id="heroCarousel">
+        <div class="hero-track" id="heroTrack">
+            <div class="hero-slide" style="background-image:url('hero2.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('hero1.jpg')"></div>
+        </div>
         <div class="hero-content">
             <h2 data-i18n="heroTitle">精医厚德 · 仁心济世</h2>
             <div class="motto-divider"></div>
             <div class="motto-sub" data-i18n="heroSub">FENGJIANG THIRD HOSPITAL · EST.1992</div>
             <div class="motto-desc" data-i18n="heroDesc">守护一方百姓身心健康，努力打造群众信赖的综合性诊疗阵地</div>
         </div>
+        <button class="hero-arrow prev" id="heroPrev" aria-label="上一张">‹</button>
+        <button class="hero-arrow next" id="heroNext" aria-label="下一张">›</button>
+        <div class="hero-dots" id="heroDots"></div>
     </div>
 
     <!-- 快捷服务条 -->
@@ -835,6 +897,95 @@
         // 更新页面标题
         document.title = lang === 'zh' ? '酆江市第三医院 - 官方网站' : 'Fengjiang Third Hospital - Official Website';
     }
+
+    /* ===== Hero 轮播：自动翻页 + 手动滑动/拖拽 + 箭头 + 圆点 ===== */
+    (function () {
+        const carousel = document.getElementById('heroCarousel');
+        const track = document.getElementById('heroTrack');
+        const dotsWrap = document.getElementById('heroDots');
+        const prevBtn = document.getElementById('heroPrev');
+        const nextBtn = document.getElementById('heroNext');
+        if (!carousel || !track) return;
+
+        const slides = Array.from(track.children);
+        const total = slides.length;
+        let index = 0;
+        let timer = null;
+        const INTERVAL = 5000;
+
+        // 生成圆点
+        const dots = slides.map((_, i) => {
+            const b = document.createElement('button');
+            b.className = 'hero-dot' + (i === 0 ? ' active' : '');
+            b.setAttribute('aria-label', '第' + (i + 1) + '张');
+            b.addEventListener('click', () => goTo(i));
+            dotsWrap.appendChild(b);
+            return b;
+        });
+
+        function render(animate) {
+            track.classList.toggle('no-anim', !animate);
+            track.style.transform = 'translateX(' + (-index * 100) + '%)';
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        }
+        function goTo(i, animate) {
+            index = (i + total) % total;
+            render(animate !== false);
+        }
+        function next() { goTo(index + 1); }
+        function prev() { goTo(index - 1); }
+
+        // 自动播放
+        function start() { stop(); timer = setInterval(next, INTERVAL); }
+        function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+        prevBtn.addEventListener('click', () => { prev(); start(); });
+        nextBtn.addEventListener('click', () => { next(); start(); });
+
+        // 鼠标悬停暂停
+        carousel.addEventListener('mouseenter', stop);
+        carousel.addEventListener('mouseleave', start);
+        // 页面切到后台时暂停
+        document.addEventListener('visibilitychange', () => {
+            document.hidden ? stop() : start();
+        });
+
+        // 拖拽 / 触摸滑动
+        let dragging = false, startX = 0, deltaX = 0, width = 0;
+        function pointerDown(x) {
+            dragging = true; startX = x; deltaX = 0;
+            width = carousel.offsetWidth;
+            stop();
+            track.classList.add('no-anim');
+        }
+        function pointerMove(x) {
+            if (!dragging) return;
+            deltaX = x - startX;
+            track.style.transform = 'translateX(' + (-index * 100 + (deltaX / width) * 100) + '%)';
+        }
+        function pointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            track.classList.remove('no-anim');
+            const threshold = width * 0.15;
+            if (deltaX > threshold) prev();
+            else if (deltaX < -threshold) next();
+            else render(true);
+            start();
+        }
+
+        // 鼠标
+        carousel.addEventListener('mousedown', e => { pointerDown(e.clientX); });
+        window.addEventListener('mousemove', e => pointerMove(e.clientX));
+        window.addEventListener('mouseup', pointerUp);
+        // 触摸
+        carousel.addEventListener('touchstart', e => pointerDown(e.touches[0].clientX), { passive: true });
+        carousel.addEventListener('touchmove', e => pointerMove(e.touches[0].clientX), { passive: true });
+        carousel.addEventListener('touchend', pointerUp);
+
+        render(false);
+        start();
+    })();
     </script>
 
 </body>

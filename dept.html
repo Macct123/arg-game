@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -184,6 +184,105 @@
             box-shadow: var(--shadow);
             min-height: 400px;
         }
+
+        /* ===== 科室导航布局 ===== */
+        .dept-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 32px;
+            padding: 40px;
+        }
+        .dept-sidebar {
+            position: sticky;
+            top: 72px;
+            align-self: start;
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            height: fit-content;
+        }
+        .dept-sidebar h3 {
+            font-size: 16px; color: var(--primary);
+            margin-bottom: 16px; padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+        }
+        .dept-cats { display: flex; flex-direction: column; gap: 4px; }
+        .dept-cats a {
+            display: block; padding: 10px 12px;
+            border-radius: 6px; font-size: 14px;
+            color: var(--text); transition: all 0.2s;
+        }
+        .dept-cats a:hover {
+            background: #fff; color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+        .dept-main { min-width: 0; }
+        .dept-section { margin-bottom: 48px; scroll-margin-top: 80px; }
+        .dept-section:last-child { margin-bottom: 0; }
+        .dept-section-title {
+            font-size: 20px; color: var(--primary);
+            margin-bottom: 20px; padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .dept-section-title::before {
+            content: ''; width: 5px; height: 22px;
+            background: var(--accent); border-radius: 3px;
+        }
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .dept-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            transition: all 0.25s;
+        }
+        .dept-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        .dept-card h4 {
+            font-size: 15px; color: var(--primary);
+            margin-bottom: 8px; font-weight: 600;
+        }
+        .dept-card p {
+            font-size: 13px; color: var(--text-light);
+            line-height: 1.6;
+        }
+        .dept-subs {
+            margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;
+        }
+        .dept-sub {
+            font-size: 12px; color: var(--primary-light);
+            background: rgba(26,82,118,0.06);
+            padding: 3px 8px; border-radius: 4px;
+        }
+        .dept-tip {
+            margin-top: 40px;
+            background: linear-gradient(135deg, rgba(22,160,133,0.08), rgba(26,82,118,0.06));
+            border-left: 4px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .dept-tip h4 {
+            font-size: 15px; color: var(--primary); margin-bottom: 12px;
+        }
+        .dept-tip p {
+            font-size: 13px; color: var(--text-light); line-height: 2;
+        }
+        @media (max-width: 992px) {
+            .dept-layout { grid-template-columns: 1fr; padding: 24px; }
+            .dept-sidebar { position: static; }
+            .dept-cats {
+                flex-direction: row; flex-wrap: wrap;
+            }
+            .dept-cats a { white-space: nowrap; }
+        }
         .site-footer {
             background: var(--primary-dark);
             color: rgba(255,255,255,0.6);
@@ -289,7 +388,125 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <div class="content-container" style="padding:40px;"></div>
+            <div class="content-container">
+                <div class="dept-layout">
+                    <aside class="dept-sidebar">
+                        <h3>科室分类</h3>
+                        <nav class="dept-cats">
+                            <a href="#internal">内科</a>
+                            <a href="#surgery">外科</a>
+                            <a href="#gynecology">妇产科</a>
+                            <a href="#pediatrics">儿科</a>
+                            <a href="#ent-skin">五官及皮肤</a>
+                            <a href="#emergency">急重症及特殊</a>
+                            <a href="#rehab">康复及预防</a>
+                            <a href="#platform">平台综合</a>
+                        </nav>
+                    </aside>
+                    <div class="dept-main">
+                        <section class="dept-section" id="internal">
+                            <h3 class="dept-section-title">内科</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>心血管内科</h4><p>冠心病、高血压、心律失常等心血管疾病的规范化诊治。</p></div>
+                                <div class="dept-card"><h4>呼吸内科</h4><p>肺炎、哮喘、慢阻肺等呼吸系统疾病的诊疗与肺功能评估。</p></div>
+                                <div class="dept-card"><h4>消化内科</h4><p>胃肠、肝胆、胰腺等消化系统疾病及内镜下微创诊疗。</p></div>
+                                <div class="dept-card"><h4>神经内科</h4><p>脑血管病、头痛、癫痫、帕金森等神经系统疾病的综合治疗。</p></div>
+                                <div class="dept-card"><h4>内分泌科</h4><p>糖尿病、甲状腺疾病、肥胖等内分泌代谢病的长期管理。</p></div>
+                                <div class="dept-card"><h4>肾内科</h4><p>肾炎、肾病综合征、尿毒症等肾脏疾病的药物与透析治疗。</p></div>
+                                <div class="dept-card"><h4>血液内科</h4><p>贫血、白血病、淋巴瘤等血液系统疾病的诊断与治疗。</p></div>
+                                <div class="dept-card"><h4>风湿免疫科</h4><p>类风湿关节炎、红斑狼疮、痛风等风湿免疫病的系统诊疗。</p></div>
+                                <div class="dept-card"><h4>感染科</h4><p>各类感染性疾病、发热待查及传染病的规范化诊治。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="surgery">
+                            <h3 class="dept-section-title">外科</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card">
+                                    <h4>普外科</h4>
+                                    <p>普通外科常见病、多发病的外科综合治疗。</p>
+                                    <div class="dept-subs"><span class="dept-sub">肝胆外科</span><span class="dept-sub">胃肠外科</span><span class="dept-sub">甲乳外科</span></div>
+                                </div>
+                                <div class="dept-card">
+                                    <h4>骨科</h4>
+                                    <p>骨骼、关节、肌肉系统疾病与创伤的精准治疗。</p>
+                                    <div class="dept-subs"><span class="dept-sub">创伤骨科</span><span class="dept-sub">关节外科</span><span class="dept-sub">脊柱外科</span><span class="dept-sub">手足外科</span></div>
+                                </div>
+                                <div class="dept-card"><h4>神经外科</h4><p>脑外伤、脑血管病、脑肿瘤等神经系统外科疾病的手术治疗。</p></div>
+                                <div class="dept-card"><h4>心胸外科</h4><p>心脏、肺部、食管、肋骨等胸部疾病的外科治疗。</p></div>
+                                <div class="dept-card"><h4>泌尿外科</h4><p>泌尿系结石、肿瘤、前列腺疾病及男性生殖系统疾病的微创治疗。</p></div>
+                                <div class="dept-card"><h4>整形外科</h4><p>先天畸形矫正、外伤后修复重建及医学美容整形。</p></div>
+                                <div class="dept-card"><h4>烧伤科</h4><p>烧伤、烫伤、化学灼伤救治及创面修复与功能重建。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="gynecology">
+                            <h3 class="dept-section-title">妇产科</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>妇科</h4><p>妇科常见病、肿瘤、内分泌疾病及微创手术治疗。</p></div>
+                                <div class="dept-card"><h4>产科</h4><p>孕期保健、分娩服务及高危妊娠的系统化管理。</p></div>
+                                <div class="dept-card"><h4>计划生育科</h4><p>避孕指导、人工流产及优生优育咨询服务。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="pediatrics">
+                            <h3 class="dept-section-title">儿科</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>小儿内科</h4><p>儿童呼吸、消化、感染等常见病的诊断与治疗。</p></div>
+                                <div class="dept-card"><h4>小儿外科</h4><p>儿童常见外科疾病、先天畸形及微创手术。</p></div>
+                                <div class="dept-card"><h4>小儿骨科</h4><p>儿童骨折、骨骼发育畸形及运动损伤的专科治疗。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="ent-skin">
+                            <h3 class="dept-section-title">五官及皮肤</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>眼科</h4><p>白内障、青光眼、眼底病等眼科疾病的诊疗与手术。</p></div>
+                                <div class="dept-card"><h4>耳鼻喉科</h4><p>耳、鼻、咽喉疾病及听力障碍、眩晕的综合治疗。</p></div>
+                                <div class="dept-card">
+                                    <h4>口腔科</h4>
+                                    <p>口腔综合诊疗，涵盖牙体、颌面及正畸等专业方向。</p>
+                                    <div class="dept-subs"><span class="dept-sub">口腔颌面外科</span><span class="dept-sub">牙体牙髓科</span><span class="dept-sub">正畸科</span></div>
+                                </div>
+                                <div class="dept-card"><h4>皮肤科</h4><p>皮肤病、性病、皮肤美容及过敏性疾病的规范化诊治。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="emergency">
+                            <h3 class="dept-section-title">急重症及特殊</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>急诊科</h4><p>医院首诊科室，24小时接诊急危重症患者，快速分流救治。</p></div>
+                                <div class="dept-card"><h4>ICU（重症医学科）</h4><p>危重病人集中监护、生命支持与多器官功能维护。</p></div>
+                                <div class="dept-card"><h4>麻醉科</h4><p>手术麻醉、疼痛治疗、急救复苏及舒适化医疗。</p></div>
+                                <div class="dept-card"><h4>疼痛科</h4><p>慢性疼痛、癌痛、神经痛等顽固性疼痛的综合诊疗。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="rehab">
+                            <h3 class="dept-section-title">康复及预防</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>康复医学科</h4><p>术后恢复、运动损伤、神经康复及功能重建训练。</p></div>
+                                <div class="dept-card"><h4>预防保健科</h4><p>健康体检、疫苗接种、慢病管理及健康宣教。</p></div>
+                                <div class="dept-card"><h4>营养科</h4><p>临床营养支持、疾病膳食指导及体重管理。</p></div>
+                            </div>
+                        </section>
+
+                        <section class="dept-section" id="platform">
+                            <h3 class="dept-section-title">平台综合</h3>
+                            <div class="dept-grid">
+                                <div class="dept-card"><h4>全科医学科</h4><p>常见病、多发病综合诊疗及连续性健康管理服务。</p></div>
+                                <div class="dept-card"><h4>日间手术中心</h4><p>择期手术日间完成，快速康复出院，缩短住院时间。</p></div>
+                                <div class="dept-card"><h4>介入科</h4><p>血管及非血管介入诊断与治疗，微创精准。</p></div>
+                            </div>
+                        </section>
+
+                        <div class="dept-tip">
+                            <h4>温馨提示</h4>
+                            <p>急诊科为医院首诊窗口，24小时开放；创伤骨科主要负责四肢骨折等创伤救治；手足外科专注于手指、脚趾等显微外科治疗；小儿骨科针对儿童骨骼发育与创伤；口腔颌面外科处理下巴、颧骨等颌面部疾病；心胸外科涵盖肋骨、肺部及心脏等胸部疾病；康复医学科为术后及伤后患者提供系统恢复训练。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <footer class="site-footer">

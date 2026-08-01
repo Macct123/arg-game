@@ -468,7 +468,7 @@
     <div class="top-bar">
         <div class="container">
             <div class="top-bar-left">
-                <span data-i18n="topDate">今天是 2026年7月31日 星期五</span>
+                <span id="topDate"></span>
                 <span style="color:rgba(255,255,255,0.2);">|</span>
                 <a href="notice.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
             </div>
@@ -896,7 +896,30 @@
 
         // 更新页面标题
         document.title = lang === 'zh' ? '酆江市第三医院 - 官方网站' : 'Fengjiang Third Hospital - Official Website';
+
+        // 顶部日期随语言切换同步
+        updateTopDate();
     }
+
+    /* ===== 顶部真实日期（随系统时间变化） ===== */
+    function updateTopDate() {
+        const el = document.getElementById('topDate');
+        if (!el) return;
+        const now = new Date();
+        let text;
+        if (currentLang === 'en') {
+            const weekEn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+            const monthEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            text = `${weekEn[now.getDay()]}, ${monthEn[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+        } else {
+            const weekZh = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+            text = `今天是 ${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekZh[now.getDay()]}`;
+        }
+        el.textContent = text;
+    }
+    // 首次渲染并每分钟刷新，确保跨日/跨语言时保持真实
+    updateTopDate();
+    setInterval(updateTopDate, 60 * 1000);
 
     /* ===== Hero 轮播：单向无缝循环 + 自动翻页 + 手动滑动/拖拽 + 箭头 + 圆点 ===== */
     (function () {

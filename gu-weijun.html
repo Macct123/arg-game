@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>骨科 - 酆江市第三医院</title>
+    <title>顾维钧 - 骨科中心主任 - 酆江市第三医院</title>
     <style>
         /* ===== 基础重置 ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,7 +87,6 @@
             object-fit: contain;
             display: block;
         }
-        /* ARG: Logo微弱脉冲光晕 */
         .logo-icon::after {
             content: '';
             position: absolute; inset: -50%;
@@ -109,9 +108,7 @@
         }
 
         .header-right { display: flex; align-items: center; gap: 24px; }
-        .header-hotline {
-            text-align: right;
-        }
+        .header-hotline { text-align: right; }
         .header-hotline .label { font-size: 11px; color: var(--text-light); }
         .header-hotline .number {
             font-size: 20px; color: var(--danger); font-weight: 700;
@@ -157,7 +154,6 @@
             color: rgba(255,255,255,0.9); font-size: 15px; font-weight: 500;
             letter-spacing: 1px; white-space: nowrap; transition: all var(--transition);
         }
-        /* 英文菜单更长，收紧间距与字距以保证单行排布 */
         html[lang="en"] .main-nav a {
             padding: 0 16px; letter-spacing: 0.3px; font-size: 14px;
         }
@@ -196,14 +192,13 @@
         .page-banner .breadcrumb a:hover { color: var(--accent-glow); }
         .page-banner .breadcrumb .sep { margin: 0 8px; opacity: 0.6; }
 
-        /* ===== 主体内容 ===== */
+        /* ===== 主体 ===== */
         .main-content { padding: 40px 0; min-height: 500px; }
         .dept-page-layout {
             display: grid;
             grid-template-columns: 240px 1fr;
             gap: 32px;
         }
-        /* 左侧科室导航（同科室导航页样式） */
         .dept-sidebar {
             position: sticky;
             top: 72px;
@@ -243,6 +238,8 @@
             margin-right: 8px;
             vertical-align: middle;
         }
+
+        /* 右侧专家详情 */
         .dept-main {
             min-width: 0;
             background: #fff;
@@ -250,7 +247,7 @@
             box-shadow: var(--shadow);
             padding: 40px;
         }
-        .dept-section { margin-bottom: 48px; }
+        .dept-section { margin-bottom: 40px; }
         .dept-section:last-child { margin-bottom: 0; }
         .dept-section-title {
             font-size: 22px; color: var(--primary);
@@ -262,138 +259,145 @@
             content: ''; width: 5px; height: 24px;
             background: var(--accent); border-radius: 3px;
         }
-        .dept-intro-text p {
-            text-indent: 2em; margin-bottom: 14px;
-            color: var(--text); line-height: 1.9; font-size: 15px;
-            text-align: justify;
-        }
-        .dept-stats {
+
+        /* 专家头部名片 */
+        .expert-hero {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin: 28px 0;
-            padding: 24px;
-            background: linear-gradient(135deg, rgba(26,82,118,0.04), rgba(22,160,133,0.04));
+            grid-template-columns: 220px 1fr;
+            gap: 32px;
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(22,160,133,0.08), rgba(26,82,118,0.05));
             border-radius: var(--radius);
+            border: 1px solid rgba(22,160,133,0.15);
+            margin-bottom: 40px;
         }
-        .stat-item { text-align: center; }
-        .stat-num {
-            font-size: 32px; font-weight: 700;
-            color: var(--primary);
-            font-family: "Consolas", monospace;
-        }
-        .stat-num .unit { font-size: 14px; color: var(--accent); margin-left: 2px; font-weight: 500; }
-        .stat-label {
-            margin-top: 6px; font-size: 13px;
-            color: var(--text-light);
-        }
-        .sub-dept-tags {
-            display: flex; flex-wrap: wrap; gap: 8px;
-            margin-top: 8px;
-        }
-        .sub-dept-tag {
-            background: rgba(26,82,118,0.06);
-            color: var(--primary-light);
-            font-size: 13px;
-            padding: 5px 12px;
-            border-radius: 16px;
-        }
-        /* 专家团队 */
-        .doctors-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-        .doctor-card {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 20px;
-            padding: 24px;
-            background: var(--bg);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            transition: all 0.25s;
-        }
-        .doctor-card:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-        .doctor-card.is-chief {
-            grid-column: 1 / -1;
-            grid-template-columns: 180px 1fr;
-            background: linear-gradient(135deg, rgba(22,160,133,0.06), rgba(26,82,118,0.04));
-            border-color: rgba(22,160,133,0.2);
-        }
-        .doctor-avatar {
+        .expert-portrait {
             width: 100%;
             aspect-ratio: 3 / 4;
             border-radius: var(--radius);
-            background: linear-gradient(135deg, #dfe6e9, #b2bec3);
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 42px; font-weight: 700;
-            overflow: hidden;
-        }
-        .doctor-card.is-chief .doctor-avatar {
             background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 72px; font-weight: 700;
+            letter-spacing: 4px;
+            box-shadow: 0 8px 24px rgba(26,82,118,0.2);
         }
-        .doctor-info { min-width: 0; }
-        .doctor-name {
-            font-size: 20px; color: var(--primary);
-            font-weight: 700; margin-bottom: 6px;
-            display: flex; align-items: center; gap: 10px;
+        .expert-meta .expert-name {
+            font-size: 32px; color: var(--primary);
+            font-weight: 700; letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: flex; align-items: center; gap: 14px;
         }
-        .doctor-tag {
+        .expert-tag {
             display: inline-block;
-            padding: 2px 8px;
-            font-size: 12px;
+            padding: 4px 12px;
+            font-size: 13px; font-weight: 500;
             background: var(--accent);
             color: #fff;
             border-radius: 4px;
-            font-weight: 500;
         }
-        .doctor-title {
-            font-size: 14px; color: var(--text-light);
-            margin-bottom: 14px; line-height: 1.5;
-        }
-        .doctor-block { margin-bottom: 12px; }
-        .doctor-block:last-child { margin-bottom: 0; }
-        .doctor-block h5 {
-            font-size: 14px; color: var(--primary);
-            margin-bottom: 6px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .doctor-block h5::before {
-            content: '';
-            display: inline-block;
-            width: 3px; height: 14px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-        .doctor-block p, .doctor-block li {
-            font-size: 13.5px;
-            color: var(--text);
+        .expert-titles {
+            font-size: 16px; color: var(--text-light);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border);
             line-height: 1.8;
         }
-        .doctor-block ul { padding-left: 4px; }
-        .doctor-block li {
-            padding-left: 14px;
-            position: relative;
+        .expert-tags {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            margin-bottom: 20px;
         }
-        .doctor-block li::before {
-            content: '·';
-            position: absolute; left: 2px; top: -2px;
-            font-size: 20px; color: var(--accent);
-            font-weight: 700;
+        .expert-tag-sm {
+            padding: 6px 14px;
+            background: rgba(26,82,118,0.06);
+            color: var(--primary-light);
+            border-radius: 16px;
+            font-size: 13px;
+            border: 1px solid rgba(26,82,118,0.1);
         }
-        .clinic-info {
+        .expert-clinic-quick {
             background: #fff;
-            padding: 10px 14px;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent);
-            font-size: 13px; color: var(--text);
+            padding: 14px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            font-size: 14px;
             line-height: 2;
         }
+        .expert-clinic-quick strong { color: var(--primary); }
+        .clinic-btn {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 22px;
+            background: var(--primary);
+            color: #fff !important;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .clinic-btn:hover { background: var(--accent); }
+        .clinic-btn.secondary {
+            background: transparent;
+            color: var(--primary) !important;
+            border: 1px solid var(--primary);
+            margin-left: 10px;
+        }
+        .clinic-btn.secondary:hover {
+            background: var(--primary);
+            color: #fff !important;
+        }
+
+        /* 详情分块 */
+        .expert-block { margin-bottom: 28px; }
+        .expert-block:last-child { margin-bottom: 0; }
+        .expert-block h4 {
+            font-size: 17px; color: var(--primary);
+            margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .expert-block h4::before {
+            content: '';
+            display: inline-block;
+            width: 5px; height: 18px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        .expert-block p {
+            font-size: 15px;
+            color: var(--text);
+            line-height: 2;
+            text-indent: 2em;
+            text-align: justify;
+        }
+        .expert-block ul { padding-left: 4px; }
+        .expert-block li {
+            position: relative;
+            padding-left: 20px;
+            font-size: 15px;
+            color: var(--text);
+            line-height: 2.1;
+        }
+        .expert-block li::before {
+            content: '▸';
+            position: absolute; left: 0; top: 0;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .clinic-box {
+            background: var(--bg);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--accent);
+        }
+        .clinic-row {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 16px;
+            padding: 8px 0;
+            font-size: 15px;
+        }
+        .clinic-row .label { color: var(--text-light); font-weight: 500; }
+        .clinic-row .val { color: var(--text); }
+        .clinic-row:nth-child(n+2) { border-top: 1px dashed var(--border); }
 
         /* ===== 响应式 ===== */
         @media (max-width: 992px) {
@@ -401,26 +405,25 @@
             .dept-sidebar { position: static; }
             .dept-cats { flex-direction: row; flex-wrap: wrap; }
             .dept-cats a { white-space: nowrap; }
-            .dept-stats { grid-template-columns: repeat(2, 1fr); }
-            .doctors-grid { grid-template-columns: 1fr; }
-            .doctor-card.is-chief { grid-template-columns: 150px 1fr; }
+            .expert-hero { grid-template-columns: 160px 1fr; }
+            .expert-portrait { font-size: 52px; }
         }
         @media (max-width: 640px) {
             .header-right { gap: 12px; }
             .header-hotline .number { font-size: 16px; }
             .header-search input { width: 120px; }
-            .page-banner h2 { font-size: 22px; }
+            .page-banner h2 { font-size: 22px; letter-spacing: 2px; }
             .main-nav a { padding: 0 14px; font-size: 13px; }
             .dept-main { padding: 20px; }
-            .dept-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
-            .stat-num { font-size: 24px; }
-            .doctor-card, .doctor-card.is-chief {
-                grid-template-columns: 1fr;
-            }
-            .doctor-avatar {
-                width: 120px;
+            .expert-hero { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+            .expert-portrait {
+                width: 140px; aspect-ratio: 3/4;
                 justify-self: start;
+                font-size: 48px;
             }
+            .expert-name { font-size: 24px !important; flex-wrap: wrap; }
+            .clinic-row { grid-template-columns: 1fr; gap: 2px; }
+            .clinic-row:nth-child(n+2) { padding-top: 8px; }
         }
 
         /* ===== 页脚 ===== */
@@ -439,9 +442,7 @@
             color: #fff; font-size: 15px;
             margin-bottom: 16px; letter-spacing: 1px;
         }
-        .footer-col p {
-            font-size: 13px; line-height: 1.9;
-        }
+        .footer-col p { font-size: 13px; line-height: 1.9; }
         .footer-col a {
             display: block; font-size: 13px;
             color: rgba(255,255,255,0.55);
@@ -524,13 +525,15 @@
     <!-- 页面Banner -->
     <div class="page-banner">
         <div class="container">
-            <h2>骨科中心</h2>
+            <h2>专家详情</h2>
             <div class="breadcrumb">
                 <a href="index.html" data-i18n="navHome">首页</a>
                 <span class="sep">/</span>
                 <a href="dept.html" data-i18n="navDepts">科室导航</a>
                 <span class="sep">/</span>
-                <span>骨科</span>
+                <a href="orthopedics.html">骨科</a>
+                <span class="sep">/</span>
+                <span>顾维钧 教授</span>
             </div>
         </div>
     </div>
@@ -554,135 +557,112 @@
                     </nav>
                 </aside>
 
-                <!-- 右侧内容 -->
+                <!-- 右侧专家详情 -->
                 <div class="dept-main">
-                    <!-- 科室介绍 -->
-                    <section class="dept-section" id="intro">
-                        <h3 class="dept-section-title">科室介绍</h3>
-                        <div class="dept-intro-text">
-                            <p>酆江市第三医院骨科是集医疗、教学、科研于一体的医院重点建设学科，现为酆江市创伤骨科急救中心、酆江市骨科质量控制中心挂靠单位。科室开放床位120张，下设创伤骨科、关节外科、手足外科、脊柱外科四个亚专业组，年门急诊量逾5万人次，年手术量超4000台次。</p>
 
-                            <div class="dept-stats">
-                                <div class="stat-item">
-                                    <div class="stat-num">120<span class="unit">张</span></div>
-                                    <div class="stat-label">开放床位</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-num">5<span class="unit">万+</span></div>
-                                    <div class="stat-label">年门急诊量</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-num">4000<span class="unit">+</span></div>
-                                    <div class="stat-label">年手术量</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-num">4<span class="unit">个</span></div>
-                                    <div class="stat-label">亚专业组</div>
-                                </div>
+                    <!-- 专家头部名片 -->
+                    <div class="expert-hero">
+                        <div class="expert-portrait">顾</div>
+                        <div class="expert-meta">
+                            <div class="expert-name">
+                                顾维钧
+                                <span class="expert-tag">学科带头人</span>
                             </div>
+                            <div class="expert-titles">骨科中心主任 | 主任医师 | 博士生导师 | 教授</div>
+                            <div class="expert-tags">
+                                <span class="expert-tag-sm">创伤骨科</span>
+                                <span class="expert-tag-sm">多发伤救治</span>
+                                <span class="expert-tag-sm">骨盆髋臼骨折</span>
+                                <span class="expert-tag-sm">微创复位</span>
+                                <span class="expert-tag-sm">损伤控制</span>
+                                <span class="expert-tag-sm">快速康复</span>
+                            </div>
+                            <div class="expert-clinic-quick">
+                                <div><strong>特需门诊：</strong>每周二上午</div>
+                                <div><strong>专家门诊：</strong>每周四全天</div>
+                                <a href="booking.html" class="clinic-btn">在线预约</a>
+                                <a href="orthopedics.html#team" class="clinic-btn secondary">返回骨科团队</a>
+                            </div>
+                        </div>
+                    </div>
 
-                            <p>科室现有主任医师5名、副主任医师8名，其中具有博士学位者10人、硕士学位者15人。学科带头人顾维钧教授为国内知名创伤骨科专家，担任中华医学会骨科学分会创伤骨科学组委员。科室拥有骨科手术机器人、三维C型臂X线机、椎间孔镜、关节镜、显微外科手术显微镜、术中神经电生理监测仪等先进设备，能够开展从复杂骨盆髋臼骨折急救重建、膝髋关节置换及翻修、断肢断指再植与游离皮瓣移植，到脊柱侧弯三维矫形与椎体肿瘤全切重建等各类高难度手术。</p>
+                    <!-- 专家简介 -->
+                    <section class="dept-section" id="bio">
+                        <h3 class="dept-section-title">专家简介</h3>
+                        <div class="expert-block">
+                            <p>顾维钧教授，现任酆江市第三医院骨科中心主任、学科带头人，大外科系统副主任。从事骨科临床、教学与科研工作二十余年，在创伤骨科及复杂骨折修复重建领域具有深厚的学术造诣和丰富的临床经验，尤其擅长全身多发伤合并骨折的急救与一体化治疗。他曾先后赴德国柏林夏里特医科大学、美国哈佛大学附属麻省总医院进行长期学术交流与研修，将国际前沿损伤控制理念与微创复位技术引入国内临床实践。</p>
+                        </div>
+                    </section>
 
-                            <p>近年来，科室承担国家自然科学基金项目3项、省市级科研课题10余项，获省级科技进步奖2项，在国内外核心期刊发表论文80余篇。科室秉持精准微创、快速康复的治疗理念，致力于为患者提供规范化、个体化的诊疗服务。</p>
+                    <!-- 专业特长 -->
+                    <section class="dept-section" id="skills">
+                        <h3 class="dept-section-title">专业特长</h3>
+                        <div class="expert-block">
+                            <p>长期专注于全身各部位骨与关节创伤的精准治疗，尤其在以下领域造诣深厚：</p>
+                        </div>
+                        <div class="expert-block" style="margin-top:0;">
+                            <ul>
+                                <li>全身多发伤伴骨折的急诊损伤控制与分期手术治疗</li>
+                                <li>四肢复杂骨折、关节内骨折的微创复位与髓内钉、锁定钢板内固定术</li>
+                                <li>骨盆环损伤与髋臼骨折的急救损伤控制及解剖复位重建</li>
+                                <li>老年骨质疏松性骨折的个体化治疗与快速康复</li>
+                                <li>骨折术后骨不连、骨缺损的修复重建及骨感染的外科治疗</li>
+                                <li>陈旧性骨折畸形愈合的截骨矫形与功能重建</li>
+                            </ul>
+                        </div>
+                    </section>
 
-                            <div style="margin-top: 16px;">
-                                <div style="font-size:14px;color:var(--text-light);margin-bottom:6px;">亚专业方向：</div>
-                                <div class="sub-dept-tags">
-                                    <span class="sub-dept-tag">创伤骨科</span>
-                                    <span class="sub-dept-tag">关节外科</span>
-                                    <span class="sub-dept-tag">手足外科</span>
-                                    <span class="sub-dept-tag">脊柱外科</span>
+                    <!-- 学术任职 -->
+                    <section class="dept-section" id="positions">
+                        <h3 class="dept-section-title">学术任职</h3>
+                        <div class="expert-block">
+                            <ul>
+                                <li>中华医学会骨科学分会创伤骨科学组委员</li>
+                                <li>中国医师协会骨科医师分会创伤骨科工作委员会委员</li>
+                                <li>中国医疗保健国际交流促进会创伤医学分会常务委员</li>
+                                <li>上海市医学会骨科专科分会创伤学组副组长</li>
+                                <li>《中华创伤骨科杂志》《中华骨科杂志》编委</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- 科研成果 -->
+                    <section class="dept-section" id="research">
+                        <h3 class="dept-section-title">科研成果</h3>
+                        <div class="expert-block">
+                            <p>主持国家自然科学基金面上项目2项、上海市科委科技创新重点项目1项，获省级科技进步二等奖1项。以第一或通讯作者发表SCI论文15篇，核心期刊论文30余篇，主编专著《骨盆髋臼骨折手术精要》，获国家发明专利3项。</p>
+                        </div>
+                    </section>
+
+                    <!-- 出诊信息 -->
+                    <section class="dept-section" id="clinic">
+                        <h3 class="dept-section-title">出诊信息</h3>
+                        <div class="expert-block">
+                            <div class="clinic-box">
+                                <div class="clinic-row">
+                                    <div class="label">特需门诊</div>
+                                    <div class="val">每周二上午</div>
+                                </div>
+                                <div class="clinic-row">
+                                    <div class="label">专家门诊</div>
+                                    <div class="val">每周四全天</div>
+                                </div>
+                                <div class="clinic-row">
+                                    <div class="label">预约方式</div>
+                                    <div class="val">医院官方APP、电话预约、现场挂号</div>
+                                </div>
+                                <div class="clinic-row">
+                                    <div class="label">所在科室</div>
+                                    <div class="val">骨科中心（门诊楼3层）</div>
+                                </div>
+                                <div class="clinic-row">
+                                    <div class="label">联系电话</div>
+                                    <div class="val">333-3625 3828 转骨科中心分诊台</div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <!-- 医疗团队 -->
-                    <section class="dept-section" id="team">
-                        <h3 class="dept-section-title">医疗团队</h3>
-                        <div class="doctors-grid">
-                            <!-- 主任（可点击查看详情） -->
-                            <a class="doctor-card is-chief" href="gu-weijun.html" style="display:grid;color:inherit;text-decoration:none;">
-                                <div class="doctor-avatar">顾</div>
-                                <div class="doctor-info">
-                                    <div class="doctor-name">
-                                        顾维钧
-                                        <span class="doctor-tag">学科带头人</span>
-                                        <span style="margin-left:auto;font-size:13px;color:var(--accent);font-weight:600;">查看详情 →</span>
-                                    </div>
-                                    <div class="doctor-title">骨科中心主任 | 主任医师 | 博士生导师 | 教授</div>
-                                    <p style="font-size:14px;color:var(--text);line-height:1.9;margin-bottom:12px;">
-                                        国内知名创伤骨科专家，从事骨科临床、教学与科研工作二十余年，擅长全身多发伤合并骨折的急救与一体化治疗，在复杂骨盆髋臼骨折、四肢复杂骨折微创复位等领域造诣深厚。
-                                    </p>
-                                    <div class="clinic-info" style="margin-bottom:0;">
-                                        <div>特需门诊：每周二上午 &nbsp;|&nbsp; 专家门诊：每周四全天</div>
-                                        <div>预约方式：医院官方APP、电话、现场挂号</div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <!-- 其他医生 1（仅简版展示，不跳转） -->
-                            <div class="doctor-card">
-                                <div class="doctor-avatar">陈</div>
-                                <div class="doctor-info">
-                                    <div class="doctor-name">陈秉义</div>
-                                    <div class="doctor-title">关节外科亚专业组长 | 副主任医师 | 副教授 | 硕士生导师</div>
-                                    <p style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-                                        医学博士，从事骨科临床工作18年，擅长髋膝关节置换及翻修手术，累计完成人工关节置换手术3000余例。
-                                    </p>
-                                    <div class="clinic-info" style="margin-bottom:0;">
-                                        <div>专家门诊：每周一全天、每周五上午</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 其他医生 2（仅简版展示，不跳转） -->
-                            <div class="doctor-card">
-                                <div class="doctor-avatar">林</div>
-                                <div class="doctor-info">
-                                    <div class="doctor-name">林思远</div>
-                                    <div class="doctor-title">脊柱外科亚专业组长 | 主任医师 | 教授 | 硕士生导师</div>
-                                    <p style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-                                        北京大学医学部博士，美国Mayo Clinic脊柱外科访问学者，专注脊柱退行性疾病、脊柱畸形、脊髓损伤及肿瘤的外科治疗。
-                                    </p>
-                                    <div class="clinic-info" style="margin-bottom:0;">
-                                        <div>特需门诊：每周三上午 &nbsp;|&nbsp; 专家门诊：每周六全天</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 其他医生 3（仅简版展示，不跳转） -->
-                            <div class="doctor-card">
-                                <div class="doctor-avatar">韩</div>
-                                <div class="doctor-info">
-                                    <div class="doctor-name">韩清川</div>
-                                    <div class="doctor-title">手足外科亚专业组长 | 副主任医师 | 医学博士</div>
-                                    <p style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-                                        复旦大学上海医学院博士，擅长断肢断指再植、游离皮瓣移植与手足先天畸形矫形，断指再植成活率达96%以上。
-                                    </p>
-                                    <div class="clinic-info" style="margin-bottom:0;">
-                                        <div>专家门诊：每周二全天、每周四下午</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 其他医生 4（仅简版展示，不跳转） -->
-                            <div class="doctor-card">
-                                <div class="doctor-avatar">赵</div>
-                                <div class="doctor-info">
-                                    <div class="doctor-name">赵景行</div>
-                                    <div class="doctor-title">创伤骨科骨干 | 主治医师 | 医学博士</div>
-                                    <p style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px;">
-                                        华中科技大学同济医学院博士，德国BG Trauma Center Tübingen访问学者，熟练掌握MIPPO微创接骨与复杂骨盆骨折前后路联合入路技术。
-                                    </p>
-                                    <div class="clinic-info" style="margin-bottom:0;">
-                                        <div>专科门诊：每周一至周四下午</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </section>
                 </div>
             </div>
         </div>

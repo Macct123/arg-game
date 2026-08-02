@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -186,7 +186,247 @@
             background: #fff;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            min-height: 400px;
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* ===== 在线客服对话界面 ===== */
+        .chat-header {
+            padding: 18px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .chat-avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .chat-header-info { min-width: 0; flex: 1; }
+        .chat-header-name {
+            font-size: 16px; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .chat-status {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 12px; font-weight: 400;
+            background: rgba(255,255,255,0.15);
+            padding: 2px 8px; border-radius: 10px;
+        }
+        .chat-status::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(46,204,113,0.2);
+        }
+        .chat-header-desc {
+            margin-top: 3px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.75);
+        }
+        .chat-clear-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .chat-clear-btn:hover {
+            background: rgba(192,57,43,0.85);
+            border-color: rgba(192,57,43,0.5);
+        }
+
+        .chat-body {
+            flex: 1;
+            min-height: 360px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding: 24px;
+            background:
+                linear-gradient(135deg, rgba(26,82,118,0.02), rgba(22,160,133,0.02)),
+                repeating-linear-gradient(0deg, rgba(26,82,118,0.01) 0 28px, transparent 28px 29px);
+        }
+        .msg {
+            display: flex;
+            margin-bottom: 18px;
+            gap: 10px;
+            max-width: 82%;
+        }
+        .msg-bot { align-self: flex-start; }
+        .msg-user {
+            flex-direction: row-reverse;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .msg-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 700;
+            color: #fff;
+        }
+        .msg-bot .msg-avatar { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+        .msg-user .msg-avatar { background: linear-gradient(135deg, #7f8c8d, #95a5a6); }
+        .msg-main { min-width: 0; flex: 1; }
+        .msg-meta {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .msg-user .msg-meta { justify-content: flex-end; }
+        .msg-bubble {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 10px;
+            line-height: 1.75;
+            font-size: 14px;
+            word-break: break-word;
+            max-width: 100%;
+            position: relative;
+            white-space: pre-wrap;
+        }
+        .msg-bot .msg-bubble {
+            background: #fff;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-top-left-radius: 2px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .msg-user .msg-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border-top-right-radius: 2px;
+            box-shadow: 0 2px 8px rgba(26,82,118,0.18);
+        }
+        .msg-sys {
+            display: flex; justify-content: center;
+            margin: 10px 0 18px;
+        }
+        .msg-sys span {
+            background: rgba(149,165,166,0.12);
+            color: var(--text-light);
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .typing-ind {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 10px 14px;
+        }
+        .typing-ind span {
+            width: 6px; height: 6px;
+            background: #95a5a6; border-radius: 50%;
+            animation: typingBounce 1.2s infinite;
+        }
+        .typing-ind span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-ind span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        .chat-footer {
+            border-top: 1px solid var(--border);
+            background: #fff;
+            padding: 14px 18px 18px;
+        }
+        .chat-quick {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 12px;
+        }
+        .chat-quick button {
+            padding: 5px 12px;
+            font-size: 12px;
+            background: rgba(26,82,118,0.05);
+            color: var(--primary-light);
+            border: 1px solid rgba(26,82,118,0.12);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chat-quick button:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .chat-input-bar {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .chat-input-bar textarea {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            height: 58px;
+            outline: none;
+            transition: border-color var(--transition);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .chat-input-bar textarea:focus {
+            border-color: var(--primary-light);
+            background: #fff;
+        }
+        .chat-send-btn {
+            height: 58px;
+            padding: 0 26px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .chat-send-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 4px 14px rgba(26,82,118,0.3);
+            transform: translateY(-1px);
+        }
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .chat-send-btn svg {
+            width: 16px; height: 16px;
+            fill: none; stroke: currentColor; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .chat-hint {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-light);
+        }
+        @media (max-width: 768px) {
+            .msg { max-width: 92%; }
+            .chat-body { padding: 16px 14px; }
+            .chat-header, .chat-footer { padding-left: 14px; padding-right: 14px; }
+            .chat-send-btn { padding: 0 18px; }
         }
         .site-footer {
             background: var(--primary-dark);
@@ -279,7 +519,7 @@
                 <li><a href="news.html" data-i18n="navNews">新闻公告</a></li>
                 <li><a href="health.html" data-i18n="navHealth">健康科普</a></li>
                 <li><a href="jobs.html" data-i18n="navJobs">人才招聘</a></li>
-                <li><a href="contact.html" data-i18n="navContact">联系我们</a></li>
+                <li><a href="contact.html" class="active" data-i18n="navContact">联系我们</a></li>
             </ul>
         </div>
     </nav>
@@ -293,7 +533,44 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <div class="content-container" style="padding:40px;"></div>
+            <div class="content-container">
+                <!-- 对话头部 -->
+                <div class="chat-header">
+                    <div class="chat-avatar">客</div>
+                    <div class="chat-header-info">
+                        <div class="chat-header-name">
+                            酆江市第三医院在线客服
+                            <span class="chat-status">在线</span>
+                        </div>
+                        <div class="chat-header-desc">平均响应时间 30 秒内 · 人工客服 08:00–21:00</div>
+                    </div>
+                    <button class="chat-clear-btn" onclick="clearChat()">清空对话</button>
+                </div>
+
+                <!-- 消息体 -->
+                <div class="chat-body" id="chatBody">
+                    <div class="msg-sys"><span id="chatSysTip">对话已开始，您的咨询内容将仅用于本次服务</span></div>
+                </div>
+
+                <!-- 输入区 -->
+                <div class="chat-footer">
+                    <div class="chat-quick">
+                        <button type="button" onclick="sendQuick('如何预约挂号？')">如何预约挂号？</button>
+                        <button type="button" onclick="sendQuick('门诊工作时间是几点？')">门诊工作时间</button>
+                        <button type="button" onclick="sendQuick('医院地址和交通方式？')">地址与交通</button>
+                        <button type="button" onclick="sendQuick('如何获取检查报告？')">检查报告查询</button>
+                        <button type="button" onclick="sendQuick('医保/自费结算政策？')">医保结算咨询</button>
+                    </div>
+                    <form class="chat-input-bar" onsubmit="event.preventDefault(); sendMessage();">
+                        <textarea id="chatInput" placeholder="请输入您的咨询问题，按 Ctrl/⌘ + Enter 可快速发送..." onkeydown="handleKey(event)"></textarea>
+                        <button type="submit" id="chatSendBtn" class="chat-send-btn">
+                            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            发送
+                        </button>
+                    </form>
+                    <div class="chat-hint">温馨提示：紧急情况请立即拨打 120 或本院急诊 333-3625 3999。</div>
+                </div>
+            </div>
         </div>
     </div>
     <footer class="site-footer">
@@ -328,6 +605,12 @@
         </div>
     </footer>
     <script>
+    /* ===== 站内搜索 ===== */
+    function doSiteSearch(q) {
+        if (!q || !q.trim()) return;
+        location.href = 'search.html?q=' + encodeURIComponent(q.trim());
+    }
+
     const i18n = {
         zh: {
             topDate: '今天是 2026年7月31日 星期五',
@@ -395,7 +678,218 @@
                 el.placeholder = i18n[lang][key];
             }
         });
+        updateTopDate();
     }
+
+    /* ===== 顶部真实日期 ===== */
+    function updateTopDate() {
+        const el = document.querySelector('#topDate, [data-i18n="topDate"]');
+        if (!el) return;
+        const now = new Date();
+        if (currentLang === 'zh') {
+            const wk = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()];
+            el.textContent = `今天是 ${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${wk}`;
+        } else {
+            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            el.textContent = now.toLocaleDateString('en-US', opts);
+        }
+    }
+    updateTopDate();
+    setInterval(updateTopDate, 60 * 1000);
+
+    /* ===== 头部搜索框提交 ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchForm = document.querySelector('.header-search');
+        if (searchForm && !searchForm.getAttribute('data-bound')) {
+            searchForm.setAttribute('data-bound', '1');
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = searchForm.querySelector('input[type="text"]');
+                doSiteSearch(input ? input.value : '');
+            });
+        }
+    });
+
+    /* ===== 联系我们 - 对话界面 ===== */
+    // 系统提示文案（占位，之后你给我替换）
+    const CONTACT_SYS_NOTICE = '123';
+    const STORAGE_KEY = 'fj3h_contact_chat_v1';
+
+    function nowStr() {
+        const n = new Date();
+        const p = (x) => String(x).padStart(2, '0');
+        return `${p(n.getHours())}:${p(n.getMinutes())}`;
+    }
+
+    function appendMessage(role, text, opts = {}) {
+        const body = document.getElementById('chatBody');
+        if (!body) return null;
+
+        if (role === 'system') {
+            const sys = document.createElement('div');
+            sys.className = 'msg-sys';
+            const s = document.createElement('span');
+            s.textContent = text;
+            sys.appendChild(s);
+            body.appendChild(sys);
+            body.scrollTop = body.scrollHeight;
+            return sys;
+        }
+
+        const wrap = document.createElement('div');
+        wrap.className = 'msg ' + (role === 'user' ? 'msg-user' : 'msg-bot');
+
+        const avatar = document.createElement('div');
+        avatar.className = 'msg-avatar';
+        avatar.textContent = role === 'user' ? '我' : '客';
+
+        const main = document.createElement('div');
+        main.className = 'msg-main';
+
+        const meta = document.createElement('div');
+        meta.className = 'msg-meta';
+        const name = document.createElement('span');
+        name.textContent = role === 'user' ? '我' : '酆江三院客服';
+        const time = document.createElement('span');
+        time.textContent = opts.time || nowStr();
+        meta.appendChild(name);
+        meta.appendChild(time);
+
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        if (opts.isTyping) {
+            bubble.classList.add('typing-ind');
+            bubble.innerHTML = '<span></span><span></span><span></span>';
+        } else {
+            bubble.textContent = text;
+        }
+
+        main.appendChild(meta);
+        main.appendChild(bubble);
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(main);
+        body.appendChild(wrap);
+        body.scrollTop = body.scrollHeight;
+
+        return { wrap, bubble, meta };
+    }
+
+    function loadChatHistory() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return [];
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+        } catch (_) {
+            return [];
+        }
+    }
+    function saveChatHistory(list) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (_) {}
+    }
+
+    function botReplyFor(text) {
+        const t = (text || '').trim();
+        const lower = t.toLowerCase();
+        if (/预约|挂号/.test(t)) {
+            return '您好！您可以通过以下三种方式预约挂号：\n1. 医院官方 APP「酆江三院」→ 预约挂号（推荐，支持选时段）\n2. 拨打预约热线 333-3625 3828（08:00–20:00）\n3. 门诊楼一层大厅自助机 / 人工挂号窗口现场办理\n\n如需帮助，请告诉我您想预约的科室和日期，我可以为您指引具体流程。';
+        }
+        if (/时间|几点|上下班|下班|工作/.test(t)) {
+            return '我院门诊工作时间为每日 08:00 – 17:30（午间 12:00–13:30 保留值班窗口）；\n急诊服务 24 小时不间断；\n节假日与周末正常开诊，部分专家门诊可能调整，建议提前查询排班表。';
+        }
+        if (/地址|位置|交通|公交|地铁|开车|停车/.test(t)) {
+            return '我院地址：酆江市琼湾路76号。\n公共交通：\n · 公交 102 路 / 307 路 →「三院站」下车即达；\n · 地铁 4 号线「琼湾路站」B 出口步行约 8 分钟。\n自驾：门诊楼地下及东侧停车场共 420 个车位，30 分钟内免费。';
+        }
+        if (/报告|检查|化验|结果/.test(t)) {
+            return '检查报告获取方式：\n1. 线上：医院官方 APP →「我的报告」（一般项目 24 小时内可查）\n2. 线下：门诊楼一层报告自助打印机（刷就诊卡 / 身份证）\n3. 如需纸质盖章版，请到对应检验科窗口办理\n\n如超过常规时间仍未出，可留下您的姓名 + 检查项目，我为您跟进。';
+        }
+        if (/医保|报销|自费|结算/.test(t)) {
+            return '医保结算相关说明：\n · 本院为酆江市医保定点医疗机构，支持职工医保、居民医保直接结算；\n · 异地参保人员需先在参保地办理异地就医备案，即可持社保卡实时结算；\n · 自费患者可在收费窗口办理「门诊大病」等专项登记以享受对应减免。\n具体金额因项目而异，建议带上就诊卡或社保卡到一楼收费窗口 3–6 号详细咨询。';
+        }
+        // 默认兜底
+        return '您好！我是酆江市第三医院在线客服，已收到您的咨询。稍后会有工作人员为您跟进处理，如您方便，可以留下联系方式（手机号/就诊卡号）和具体问题，我们会在 1 个工作日内回复您。\n\n紧急情况请直接拨打我院急诊电话 333-3625 3999 或 120。';
+    }
+
+    const history = loadChatHistory();
+    let sessionStarted = history.length > 0;
+
+    function renderHistory() {
+        history.forEach(m => appendMessage(m.role, m.text, { time: m.time }));
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const btn = document.getElementById('chatSendBtn');
+        const text = (input ? input.value : '').trim();
+        if (!text) return;
+
+        const time = nowStr();
+        appendMessage('user', text, { time });
+        history.push({ role: 'user', text, time });
+        saveChatHistory(history);
+        input.value = '';
+        btn.disabled = true;
+
+        // 显示"客服正在输入中"
+        const typing = appendMessage('bot', '', { isTyping: true });
+
+        setTimeout(() => {
+            if (typing && typing.wrap && typing.wrap.parentNode) typing.wrap.remove();
+            const reply = botReplyFor(text);
+            const rTime = nowStr();
+            appendMessage('bot', reply, { time: rTime });
+            history.push({ role: 'bot', text: reply, time: rTime });
+            saveChatHistory(history);
+            btn.disabled = false;
+            setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
+        }, 900 + Math.random() * 600);
+    }
+
+    function sendQuick(text) {
+        const input = document.getElementById('chatInput');
+        if (input) input.value = text;
+        sendMessage();
+    }
+
+    function handleKey(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function clearChat() {
+        if (!confirm('确定要清空当前的所有聊天记录吗？此操作不可恢复。')) return;
+        const body = document.getElementById('chatBody');
+        if (body) {
+            body.innerHTML = '<div class="msg-sys"><span>对话已开始，您的咨询内容将仅用于本次服务</span></div>';
+        }
+        history.length = 0;
+        saveChatHistory(history);
+        sessionStarted = false;
+    }
+
+    /* 页面加载完：弹出系统提示 + 恢复历史 + 无历史时发送欢迎语 */
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1) 自动弹出系统提示（暂时用 123）
+        try { alert(CONTACT_SYS_NOTICE); } catch (_) {}
+
+        // 2) 恢复历史（按医生/客服稳定标识 key，这里按联系我们固定 key 存）
+        renderHistory();
+
+        // 3) 若无历史，则发一句客服欢迎语
+        if (history.length === 0) {
+            const welcome =
+                '您好，欢迎联系酆江市第三医院在线客服！\n' +
+                '我可以为您提供预约挂号、门诊时间、交通指引、检查报告查询、医保结算等咨询服务。\n\n' +
+                '如需人工客服，请直接留言您的问题和联系方式，我们将在 08:00–21:00 内回复。';
+            const t = nowStr();
+            appendMessage('bot', welcome, { time: t });
+            history.push({ role: 'bot', text: welcome, time: t });
+            saveChatHistory(history);
+        }
+    });
     </script>
 </body>
 </html>

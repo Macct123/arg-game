@@ -1601,27 +1601,211 @@
                     if (icon) { icon.classList.add('spin'); icon.setAttribute('class', icon.getAttribute('class').replace(/spin/, '') + ' spin'); }
                     const delay = 600 + Math.floor(Math.random() * 350);
                     setTimeout(() => {
-                        // 1. 触发全屏闪白一下
+                        // 1. 触发全屏闪白一下（短一点，卡顿感不像跳脸那么强）
                         if (flashWhite) {
                             flashWhite.classList.remove('flash');
-                            // 强制重排
                             void flashWhite.offsetWidth;
                             flashWhite.classList.add('flash');
                             setTimeout(() => flashWhite.classList.remove('flash'), 460);
                         }
-                        // 2. hero 区域换成图片，用 jump-scare 动画突然出现
-                        modalHero.innerHTML = '';
-                        const img = document.createElement('img');
-                        img.className = 'hero-img jump-scare';
-                        img.src = imgSrc;
-                        img.alt = imgAlt || '影像图';
-                        img.onerror = function() {
-                            modalHero.innerHTML =
-                                '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
-                        };
-                        modalHero.appendChild(img);
+                        // 2. 卡顿式出现：雪花 → 14 条水平切片逐片刷出(随机延迟) → 撕裂+抖动 → 稳定
+                        playGlitchReveal(imgSrc, imgAlt);
                     }, delay);
                 });
+            }
+        }
+
+        // ===== 第4条 BO3 专属：卡顿解码式出现（雪花 + 水平切片逐片延迟 + 少量撕裂 + 末尾抖动）=====
+        function playGlitchReveal(imgSrc, imgAlt) {
+            if (!modalHero) return;
+            modalHero.innerHTML = '';
+
+            // —— Stage 0: 先放一张图片用于预加载，不显示，等它 onload 再开演（否则切片会是空的）——
+            const preImg = new Image();
+            preImg.crossOrigin = 'anonymous';
+            let stageStarted = false;
+            preImg.onerror = function() {
+                modalHero.innerHTML =
+                    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
+            };
+            preImg.onload = function() {
+                if (stageStarted) return;
+                stageStarted = true;
+                startGlitchStage(preImg);
+            };
+            preImg.src = imgSrc;
+            if (preImg.complete && !stageStarted) {
+                // 已缓存，直接开演
+                stageStarted = true;
+                setTimeout(() => startGlitchStage(preImg), 0);
+            }
+
+            function startGlitchStage(loadedImg) {
+                modalHero.innerHTML = '';
+
+                // —— Stage 1: 雪花噪点（静态 canvas 随机刷新 150~220ms，模拟连接抖动）——
+                const noiseCanvas = document.createElement('canvas');
+                noiseCanvas.style.position = 'absolute';
+                noiseCanvas.style.inset = '0';
+                noiseCanvas.style.width = '100%';
+                noiseCanvas.style.height = '100%';
+                noiseCanvas.style.display = 'block';
+                noiseCanvas.style.zIndex = '1';
+                modalHero.appendChild(noiseCanvas);
+                const ctx = noiseCanvas.getContext('2d');
+                // 适配 devicePixelRatio 让雪花清晰
+                function resizeCanvas() {
+                    const dpr = Math.max(1, window.devicePixelRatio || 1);
+                    const r = modalHero.getBoundingClientRect();
+                    const w = Math.max(1, Math.floor(r.width));
+                    const h = Math.max(1, Math.floor(r.height));
+                    noiseCanvas.width = w * dpr;
+                    noiseCanvas.height = h * dpr;
+                    noiseCanvas.style.width = w + 'px';
+                    noiseCanvas.style.height = h + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    return { w, h };
+                }
+                const size = resizeCanvas();
+                let noiseTimer = null;
+                let noiseRAF = null;
+                let frameCount = 0;
+                const totalFrames = 8; // 只刷 8 帧就走下一个 stage，不要太长
+                function drawNoiseFrame() {
+                    const imgData = ctx.createImageData(size.w, size.h);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        // 偶尔有一行高亮的扫描线效果 + 白/黑雪花随机
+                        const y = (i / 4) / size.w;
+                        const scan = (y - Math.floor(y)) < 0.01 ? 30 : 0;
+                        const r = Math.random();
+                        let v;
+                        if (r < 0.02) v = 255;                 // 亮白
+                        else if (r < 0.06) v = 10 + scan;       // 略亮
+                        else if (r < 0.28) v = 20;              // 偏暗
+                        else v = 2;                             // 接近黑
+                        d[i] = d[i+1] = d[i+2] = Math.min(255, v + scan);
+                        d[i+3] = 255;
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    frameCount++;
+                    if (frameCount < totalFrames) {
+                        noiseRAF = requestAnimationFrame(drawNoiseFrame);
+                    }
+                }
+                noiseRAF = requestAnimationFrame(drawNoiseFrame);
+
+                // —— Stage 2: 14 条水平切片逐片出现（随机延迟 + 2~3 条长时间卡顿）——
+                const N = 14;
+                const sliceWrap = document.createElement('div');
+                sliceWrap.style.position = 'absolute';
+                sliceWrap.style.inset = '0';
+                sliceWrap.style.zIndex = '2';
+                modalHero.appendChild(sliceWrap);
+
+                const slices = [];
+                const offsets = new Array(N).fill(0);
+                // 挑 3 条做撕裂：随机水平偏移 ±8~14px
+                const tearIdx = new Set();
+                let t1 = Math.floor(Math.random() * N);
+                let t2 = (t1 + 2 + Math.floor(Math.random() * 6)) % N;
+                let t3 = (t2 + 2 + Math.floor(Math.random() * 6)) % N;
+                tearIdx.add(t1); tearIdx.add(t2); tearIdx.add(t3);
+                tearIdx.forEach(i => {
+                    offsets[i] = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.floor(Math.random() * 7));
+                });
+                for (let i = 0; i < N; i++) {
+                    const slice = document.createElement('div');
+                    slice.style.position = 'absolute';
+                    slice.style.inset = '0';
+                    slice.style.opacity = '0';
+                    slice.style.overflow = 'hidden';
+                    slice.style.transform = 'translateX(' + (offsets[i] || 0) + 'px)';
+                    slice.style.transition = 'opacity 0.06s linear';
+                    // 用 clip-path 只显示这一条水平条：top / right / bottom / left
+                    const topPct = (i * (100 / N));
+                    const bottomPct = 100 - ((i + 1) * (100 / N));
+                    slice.style.clipPath = 'inset(' + topPct + '% 0 ' + Math.max(0, bottomPct) + '% 0)';
+                    slice.style.webkitClipPath = 'inset(' + topPct + '% 0 ' + Math.max(0, bottomPct) + '% 0)';
+                    const imgEl = document.createElement('img');
+                    imgEl.src = imgSrc;
+                    imgEl.alt = '';
+                    imgEl.style.position = 'absolute';
+                    imgEl.style.inset = '0';
+                    imgEl.style.width = '100%';
+                    imgEl.style.height = '100%';
+                    imgEl.style.objectFit = 'contain';
+                    imgEl.style.objectPosition = 'center center';
+                    imgEl.style.pointerEvents = 'none';
+                    slice.appendChild(imgEl);
+                    sliceWrap.appendChild(slice);
+                    slices.push(slice);
+                }
+
+                // 决定每条的延迟（非均匀：大多数快，1~2 条突然卡住很久）
+                const delays = slices.map((_, i) => {
+                    // 基础按顺序给一点感觉
+                    const base = i * (4 + Math.floor(Math.random() * 6));
+                    // 主体部分随机 20~110ms
+                    const rnd = 20 + Math.floor(Math.random() * 90);
+                    // 30% 挑 2 条卡一下
+                    let stall = 0;
+                    if (i === Math.floor(N * 0.3) || i === Math.floor(N * 0.72)) {
+                        stall = 140 + Math.floor(Math.random() * 190); // 140~330ms 卡顿
+                    }
+                    return base + rnd + stall;
+                });
+                // 再整体给一个最短的起步：雪花演 130ms 后才开始刷片
+                const SLICE_START = 130;
+
+                // —— Stage 3: 最后片出来后 → 整体抖动 3 次 + 短暂灰度 → 收敛为稳定 img ——
+                const maxDelay = Math.max.apply(null, delays) + SLICE_START;
+                setTimeout(() => {
+                    // 雪花停：开始放第一片
+                    if (noiseRAF) { try { cancelAnimationFrame(noiseRAF); } catch(_) {} noiseRAF = null; }
+                    slices.forEach((s, i) => {
+                        setTimeout(() => {
+                            s.style.opacity = '1';
+                            // 撕裂条在短暂停留后偶尔再偏一下（再卡一下）
+                            if (tearIdx.has(i)) {
+                                setTimeout(() => {
+                                    s.style.transform = 'translateX(' + (-(offsets[i] || 0) / 2) + 'px)';
+                                }, 90 + Math.floor(Math.random() * 60));
+                            }
+                        }, SLICE_START + delays[i]);
+                    });
+                }, 170); // 雪花阶段总时长 170ms
+
+                // 等最晚那条+额外 60ms → 抖动阶段
+                const glitchStart = SLICE_START + maxDelay + 70;
+                setTimeout(() => {
+                    // 抖动 3 次：整体水平位移 ±3px
+                    let shakes = 0;
+                    const shakeSeq = [3, -2, 2];
+                    (function doShake() {
+                        if (shakes >= shakeSeq.length) {
+                            // 抖完 → 短暂灰度 filter 100ms → 最终稳定
+                            sliceWrap.style.filter = 'grayscale(0.9) contrast(1.25)';
+                            setTimeout(() => {
+                                // 最终收敛：把切片和 canvas 全去掉，换成正常 hero-img 一张图稳定显示
+                                modalHero.innerHTML = '';
+                                const stableImg = document.createElement('img');
+                                stableImg.className = 'hero-img show';
+                                stableImg.src = imgSrc;
+                                stableImg.alt = imgAlt || '影像图';
+                                stableImg.onerror = function() {
+                                    modalHero.innerHTML =
+                                        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
+                                };
+                                modalHero.appendChild(stableImg);
+                            }, 110);
+                            return;
+                        }
+                        const dx = shakeSeq[shakes++];
+                        sliceWrap.style.transform = 'translateX(' + dx + 'px)';
+                        setTimeout(doShake, 70);
+                    })();
+                }, glitchStart);
             }
         }
         function openModal(caseIndex) {

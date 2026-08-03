@@ -968,13 +968,18 @@
                 if (t === askText) {
                     doctorStage = 'done';
                     return {
-                        speaker: 'doctor-lu',
-                        useHtml: true,
-                        text:
+                        type: 'director-done-return-bot',
+                        doctorText:
                             '按照你这个描述，情况不太乐观。你这个病啊，比较严重，而且不太好治。<br>' +
                             '但你也别慌，我跟你说清楚——不是说没救了，是说这条路会比较长，也比较折腾。你得有心理准备，别想着三五天就能好。<br>' +
                             '我先给你一个病历生成码，在报告查询那生成病历，来医院的时候记得带上<br>' +
-                            '<span class="code-em">117-726-623</span>'
+                            '<span class="code-em">117-726-623</span>',
+                        useHtml: true,
+                        dividerText: '陆敬尧 主任已下线，当前转回客服接待',
+                        botText:
+                            '您好，我是酆江市第三医院在线客服，陆敬尧主任已结束本次在线接诊。\n' +
+                            '您的病历生成码：117-726-623，可在【报告查询】页面凭该码查询电子报告。\n' +
+                            '如有其他咨询、预约、挂号、报告查询、医保结算等问题，可直接留言，我将为您继续服务。'
                     };
                 }
                 // 未命中关键症状 → 主任继续追问
@@ -1094,6 +1099,49 @@
                     text: reply.doctorText,
                     time: rTime,
                     speaker: 'doctor-lu'
+                });
+                saveChatHistory(history);
+                btn.disabled = false;
+                setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
+                return;
+            }
+
+            // 处理主任诊断结束 → 自动下线并转回客服（发完病历号后）
+            if (reply && typeof reply === 'object' && reply.type === 'director-done-return-bot') {
+                const useHtml = !!reply.useHtml;
+                // ① 主任先发带病历号的回复
+                appendMessage('bot', reply.doctorText, {
+                    time: rTime,
+                    speaker: 'doctor-lu',
+                    useHtml
+                });
+                history.push({
+                    role: 'bot',
+                    text: reply.doctorText,
+                    time: rTime,
+                    speaker: 'doctor-lu',
+                    useHtml
+                });
+                saveChatHistory(history);
+
+                // ② 插入中间横线+文字（主任下线，转回客服）
+                appendDivider(reply.dividerText);
+
+                // ③ 切换回客服对话方
+                currentSpeaker = 'bot';
+                doctorStage = 'intro';
+
+                // ④ 客服发一句转回问候
+                const nextTime = nowStr();
+                appendMessage('bot', reply.botText, {
+                    time: nextTime,
+                    speaker: 'bot'
+                });
+                history.push({
+                    role: 'bot',
+                    text: reply.botText,
+                    time: nextTime,
+                    speaker: 'bot'
                 });
                 saveChatHistory(history);
                 btn.disabled = false;

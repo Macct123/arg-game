@@ -946,18 +946,234 @@
         // —— 详情 Modal 控件 ——
         const modal = document.getElementById('reportModal');
         const modalClose = document.getElementById('reportModalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('reportModalBody');
 
-        function openModal() {
-            if (!modal) return;
+        // ===== 命中该病历号时返回的多条病例（每条独立卡片 + 点击卡片按钮弹各自详情） =====
+        // 每条包含：卡片展示信息（card）+ 详情正文 HTML（detailHtml，含影像图/十节入院记录/签名）
+        const CASES = [
+            // ——————— 第 1 条：张小明 · 社区获得性肺炎（bingli1）———————
+            {
+                card: {
+                    title: '社区获得性肺炎 · 入院记录',
+                    tags: [
+                        { text: '住院观察', urgent: true },
+                        { text: '呼吸内科' },
+                        { text: '2026-08-03' }
+                    ],
+                    patient: '张小明 &nbsp; 男 / 22 岁',
+                    admitTime: '2026-08-03 11:40',
+                    doctor: '沈嘉彦 &nbsp;（呼吸与危重症医学科）',
+                    summary:
+                        '<b>主要诊断：</b>社区获得性肺炎（右下肺，非重症）。患者发热伴咳嗽、咳痰 4 天，最高体温 39.2℃，咳黄色脓痰，伴右侧胸痛；查体右下肺叩诊浊音，可闻及湿性啰音；胸部 CT 提示右肺下叶大片状高密度影，CRP、白细胞及中性粒细胞百分比明显升高。建议呼吸内科住院，经验性抗感染 + 化痰退热补液支持治疗。',
+                    thumb: 'bingli1.jpg',
+                    thumbAlt: '张小明 本次就诊影像/扫描件'
+                },
+                modalHeader: '社区获得性肺炎 · 入院记录详情',
+                detailHtml: (function(){
+                    return (
+                        '<div class="img-wrap">' +
+                        '<img src="bingli1.jpg" alt="张小明 影像/扫描件 bingli1">' +
+                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli1）</div>' +
+                        '</div>' +
+                        '<h1 class="mr-h1">入 院 记 录</h1>' +
+
+                        '<h2 class="mr-h2">一、一般情况</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>姓名：</b>张小明</span>' +
+                          '<span><b>性别：</b>男</span>' +
+                          '<span><b>年龄：</b>22岁</span>' +
+                          '<span><b>民族：</b>汉族</span>' +
+                          '<span><b>婚姻：</b>未婚</span>' +
+                          '<span><b>职业：</b>在校大学生</span>' +
+                          '<span><b>出生地：</b>酆江市</span>' +
+                          '<span><b>病史陈述者：</b>患者本人</span>' +
+                          '<span><b>入院时间：</b>2026-08-03 11:40</span>' +
+                          '<span><b>记录时间：</b>2026-08-03 12:10</span>' +
+                        '</div>' +
+
+                        '<h2 class="mr-h2">二、主诉</h2>' +
+                        '<div class="mr-row single"><span>发热伴咳嗽、咳痰 4 天。</span></div>' +
+
+                        '<h2 class="mr-h2">三、现病史</h2>' +
+                        '<div class="mr-row single"><span>患者于 4 天前（7 月 30 日）受凉后出现发热，体温最高达 <b>39.2℃</b>，呈弛张热型，伴畏寒，无寒战。同时出现阵发性咳嗽，咳黄色脓痰，量中等，无痰中带血。伴右侧胸痛，深呼吸及咳嗽时加重，无胸闷气短。自服 &ldquo;阿莫西林&rdquo;&ldquo;复方氨酚烷胺&rdquo; 3 天，症状无明显好转，今日来我院就诊。</span></div>' +
+                        '<div class="mr-row single"><span>发病以来精神萎靡，食欲减退，夜间睡眠欠佳，大小便正常，体重无明显变化。</span></div>' +
+
+                        '<h2 class="mr-h2">四、既往史</h2>' +
+                        '<div class="mr-row single"><span>平素体健。否认高血压、糖尿病、心脏病史。否认肝炎结核等传染病史。否认手术外伤史。否认输血史。否认药物及食物过敏史。按计划接种疫苗，无遗漏。</span></div>' +
+
+                        '<h2 class="mr-h2">五、个人史、婚育史</h2>' +
+                        '<div class="mr-row single"><span>生于原籍，无疫水疫区接触史，无烟酒嗜好。未婚，无冶游史。</span></div>' +
+
+                        '<h2 class="mr-h2">六、家族史</h2>' +
+                        '<div class="mr-row single"><span>父母及兄妹体健，否认家族性遗传病史。</span></div>' +
+
+                        '<h2 class="mr-h2">七、体格检查</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>T：</b>38.8℃</span>' +
+                          '<span><b>P：</b>98 次/分</span>' +
+                          '<span><b>R：</b>22 次/分</span>' +
+                          '<span><b>BP：</b>118 / 76 mmHg</span>' +
+                        '</div>' +
+                        '<div class="mr-row single"><span>发育正常，营养良好，急性病容，神志清，精神差。全身皮肤黏膜无黄染、出血点，浅表淋巴结未触及肿大。咽部充血，扁桃体无肿大。胸廓对称，<b>右下肺叩诊浊音</b>，听诊可闻及<b>湿性啰音及支气管呼吸音</b>。心率 98 次/分，律齐，各瓣膜区未闻及杂音。腹软，无压痛，肝脾肋下未及。双下肢无水肿。</span></div>' +
+
+                        '<h2 class="mr-h2">八、辅助检查</h2>' +
+                        '<ul class="mr-list">' +
+                          '<li><b>血常规</b>（本院 2026-08-03）：WBC 16.2×10⁹ / L，N 88%，Hb 138 g / L。</li>' +
+                          '<li><b>C 反应蛋白</b>（本院 2026-08-03）：CRP 85 mg / L。</li>' +
+                          '<li><b>胸部 CT</b>（本院 2026-08-03）：右肺下叶大片状高密度影，边界模糊，可见空气支气管征，考虑社区获得性肺炎。</li>' +
+                        '</ul>' +
+
+                        '<h2 class="mr-h2">九、初步诊断</h2>' +
+                        '<div class="mr-row single"><span><b>社区获得性肺炎（右下肺，非重症）</b></span></div>' +
+
+                        '<h2 class="mr-h2">十、治疗意见</h2>' +
+                        '<ol class="mr-list">' +
+                          '<li>收呼吸内科住院。</li>' +
+                          '<li>完善痰培养 + 药敏、血培养、支原体抗体等检查。</li>' +
+                          '<li>经验性抗感染治疗（头孢类 + 大环内酯类）。</li>' +
+                          '<li>化痰、退热、补液支持治疗。</li>' +
+                          '<li>注意观察体温及呼吸情况变化。</li>' +
+                        '</ol>' +
+
+                        '<div class="mr-sign">' +
+                          '<div>' +
+                            '<div><b>书写医师：</b>王芳</div>' +
+                            '<div style="margin-top:6px;">审核：酆江市第三医院 呼吸与危重症医学科</div>' +
+                          '</div>' +
+                          '<div class="sign-right">' +
+                            '<div><b>医师签名：</b></div>' +
+                            '<div class="sign-stamp">沈嘉彦 印</div>' +
+                            '<div style="margin-top:10px; font-size:12px; color:var(--text-light);">签发时间：2026-08-03 12:55</div>' +
+                          '</div>' +
+                        '</div>'
+                    );
+                })()
+            },
+
+            // ——————— 第 2 条：赵国强 · 急性广泛前壁心梗（bingli2）———————
+            {
+                card: {
+                    title: '急性广泛前壁心肌梗死 · 入院记录',
+                    tags: [
+                        { text: 'CCU 告病危', urgent: true },
+                        { text: '心血管内科' },
+                        { text: '2026-08-03' }
+                    ],
+                    patient: '赵国强 &nbsp; 男 / 58 岁',
+                    admitTime: '2026-08-03 06:50',
+                    doctor: '陆思远 &nbsp;（心血管内科 · 冠心病监护室）',
+                    summary:
+                        '<b>主要诊断：</b>冠状动脉粥样硬化性心脏病 · 急性广泛前壁心肌梗死（Killip Ⅰ级）· 高血压病 3 级（极高危组）。患者今晨活动时突发心前区压榨样剧痛 2 小时，向左肩背部放射，大汗、濒死感，含服硝酸甘油 2 片未缓解；既往高血压 10 年，父亲 60 岁心梗去世。心电图 V1–V4 ST 段弓背向上抬高 0.3–0.5 mV，T 波倒置；血压偏低，痛苦面容，心音低钝。急诊建议 CCU 监护、绝对卧床、急诊 PCI 或溶栓、综合抗栓治疗，已告病危。',
+                    thumb: 'bingli2.jpg',
+                    thumbAlt: '赵国强 本次就诊影像/扫描件'
+                },
+                modalHeader: '急性广泛前壁心肌梗死 · 入院记录详情',
+                detailHtml: (function(){
+                    return (
+                        '<div class="img-wrap">' +
+                        '<img src="bingli2.jpg" alt="赵国强 影像/扫描件 bingli2">' +
+                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli2）</div>' +
+                        '</div>' +
+                        '<h1 class="mr-h1">入 院 记 录</h1>' +
+
+                        '<h2 class="mr-h2">一、一般情况</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>姓名：</b>赵国强</span>' +
+                          '<span><b>性别：</b>男</span>' +
+                          '<span><b>年龄：</b>58岁</span>' +
+                          '<span><b>民族：</b>汉族</span>' +
+                          '<span><b>婚姻：</b>已婚</span>' +
+                          '<span><b>职业：</b>退休工人</span>' +
+                          '<span><b>出生地：</b>上海市</span>' +
+                          '<span><b>病史陈述者：</b>患者本人</span>' +
+                          '<span><b>入院时间：</b>2026-08-03 06:50</span>' +
+                          '<span><b>记录时间：</b>2026-08-03 07:30</span>' +
+                        '</div>' +
+
+                        '<h2 class="mr-h2">二、主诉</h2>' +
+                        '<div class="mr-row single"><span>突发胸痛 2 小时。</span></div>' +
+
+                        '<h2 class="mr-h2">三、现病史</h2>' +
+                        '<div class="mr-row single"><span>患者于 2 小时前（今晨 04:50）晨起活动时突发<b>心前区压榨样剧痛</b>，<b>向左肩背部放射</b>，伴<b>大汗淋漓、胸闷气短、濒死感</b>，休息及含服 &ldquo;硝酸甘油&rdquo; 2 片后疼痛<b>无明显缓解</b>。无恶心呕吐，无头晕黑矇，无咳嗽咳痰。发病以来精神极度紧张，大小便未解。</span></div>' +
+
+                        '<h2 class="mr-h2">四、既往史</h2>' +
+                        '<div class="mr-row single"><span><b>高血压病史 10 年</b>，最高 180 / 110 mmHg，平时口服 &ldquo;硝苯地平&rdquo; 控制，血压波动于 140–150 / 90–95 mmHg。否认糖尿病史。否认肝炎结核史。<b>吸烟史 30 年</b>，每天约 20 支，已戒 5 年；偶饮酒。</span></div>' +
+
+                        '<h2 class="mr-h2">五、个人史、婚育史</h2>' +
+                        '<div class="mr-row single"><span>生于上海，无疫区接触史。已婚，育有 1 女，配偶及女体健。</span></div>' +
+
+                        '<h2 class="mr-h2">六、家族史</h2>' +
+                        '<div class="mr-row single"><span>父亲 60 岁时因 &ldquo;心梗&rdquo; 去世，母亲健在，否认其他家族遗传病史。</span></div>' +
+
+                        '<h2 class="mr-h2">七、体格检查</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>T：</b>36.2℃</span>' +
+                          '<span><b>P：</b>102 次/分</span>' +
+                          '<span><b>R：</b>24 次/分</span>' +
+                          '<span><b>BP：</b>95 / 65 mmHg</span>' +
+                        '</div>' +
+                        '<div class="mr-row single"><span>神志清，<b>痛苦面容，面色苍白，皮肤湿冷</b>。颈静脉无怒张。双肺呼吸音清，未闻及干湿啰音。心率 102 次/分，律齐，<b>心音低钝</b>，各瓣膜区未闻及病理性杂音。腹部平软，无压痛。双下肢无水肿。</span></div>' +
+
+                        '<h2 class="mr-h2">八、辅助检查</h2>' +
+                        '<ul class="mr-list">' +
+                          '<li><b>心电图</b>（本院 2026-08-03 07:00）：窦性心律，<b>V1–V4 导联 ST 段弓背向上抬高 0.3–0.5 mV，T 波倒置</b>。</li>' +
+                          '<li><b>心肌损伤标志物</b>（本院急查，结果未回）：待报。</li>' +
+                        '</ul>' +
+
+                        '<h2 class="mr-h2">九、初步诊断</h2>' +
+                        '<div class="mr-row single"><span>' +
+                          '<b>冠状动脉粥样硬化性心脏病</b><br>' +
+                          '　<b>急性广泛前壁心肌梗死</b><br>' +
+                          '　<b>心功能 Ⅰ 级（Killip 分级）</b><br>' +
+                          '<b>高血压病 3 级（极高危组）</b>' +
+                        '</span></div>' +
+
+                        '<h2 class="mr-h2">十、治疗意见</h2>' +
+                        '<ol class="mr-list">' +
+                          '<li>心内科监护室（CCU）住院，<b>绝对卧床，吸氧</b>。</li>' +
+                          '<li>心电、血压、血氧饱和度监护。</li>' +
+                          '<li><b>急诊 PCI 或溶栓治疗</b>。</li>' +
+                          '<li>抗凝、抗血小板、调脂、扩冠、营养心肌等综合治疗。</li>' +
+                          '<li><b>告病危</b>，签署知情同意书。</li>' +
+                        '</ol>' +
+
+                        '<div class="mr-sign">' +
+                          '<div>' +
+                            '<div><b>书写医师：</b>刘洋</div>' +
+                            '<div style="margin-top:6px;">审核：酆江市第三医院 心血管内科 · 冠心病监护室（CCU）</div>' +
+                          '</div>' +
+                          '<div class="sign-right">' +
+                            '<div><b>医师签名：</b></div>' +
+                            '<div class="sign-stamp">陆思远 印</div>' +
+                            '<div style="margin-top:10px; font-size:12px; color:var(--text-light);">签发时间：2026-08-03 07:58</div>' +
+                          '</div>' +
+                        '</div>'
+                    );
+                })()
+            }
+        ];
+
+        function openModal(caseIndex) {
+            if (!modal || !modalBody) return;
+            const c = CASES[caseIndex];
+            if (!c) return;
+            // 填标题 + 详情正文
+            if (modalTitle) {
+                modalTitle.innerHTML =
+                    '<span>' + (c.modalHeader || '入院记录 · 电子病历详情') + '</span>' +
+                    '<span class="code-chip">' + HIT_CODE + '</span>';
+            }
+            modalBody.innerHTML = c.detailHtml;
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
-            // 聚焦到关闭按钮，便于键盘退出
             setTimeout(() => { try { modalClose && modalClose.focus(); } catch(_) {} }, 180);
         }
         function closeModal() {
             if (!modal) return;
             modal.classList.remove('show');
             document.body.style.overflow = '';
+            if (modalBody) modalBody.innerHTML = '';
         }
         if (modalClose) modalClose.addEventListener('click', closeModal);
         // 点击遮罩空白处（不是 modal-box 内部）关闭
@@ -980,9 +1196,53 @@
             }[c]));
         }
 
-        function bindDetailBtn() {
-            const el = document.getElementById('btnOpenReportDetail');
-            if (el) el.addEventListener('click', openModal);
+        function renderCasesHit() {
+            const cardsHtml = CASES.map(function(c, i){
+                const cs = c.card;
+                const tags = (cs.tags || []).map(function(t){
+                    return '<span class="tag' + (t.urgent ? ' urgent' : '') + '">' + esc(t.text) + '</span>';
+                }).join('');
+                return (
+                    '<div class="report-card" style="margin-top:' + (i === 0 ? '0' : '18px') + ';">' +
+                      '<div class="thumb">' +
+                        '<img src="' + esc(cs.thumb) + '" alt="' + esc(cs.thumbAlt) + '">' +
+                      '</div>' +
+                      '<div class="info">' +
+                        '<div class="top">' +
+                          '<div class="title">' + esc(cs.title) + '</div>' + tags +
+                        '</div>' +
+                        '<div class="meta">' +
+                          '<span><b>患者：</b>' + cs.patient + '</span>' +
+                          '<span><b>病历号：</b>' + esc(HIT_CODE) + '</span>' +
+                          '<span><b>入院时间：</b>' + esc(cs.admitTime) + '</span>' +
+                          '<span><b>开具医师：</b>' + cs.doctor + '</span>' +
+                        '</div>' +
+                        '<div class="summary">' + cs.summary + '</div>' +
+                      '</div>' +
+                      '<div class="actions">' +
+                        '<button class="btn-detail btn-open-case" type="button" data-case-index="' + i + '">查看详情</button>' +
+                      '</div>' +
+                    '</div>'
+                );
+            }).join('');
+
+            result.classList.remove('hidden');
+            result.innerHTML =
+                '<div class="result-hit">' +
+                '<div class="hit-title"><span class="badge">✓</span>查询成功：已匹配该病历号，共 <b>' + CASES.length + '</b> 条电子报告</div>' +
+                '<div style="margin-top:2px; margin-bottom:6px; color:#4a5a63; font-size:13px; line-height:2;">' +
+                '以下为该病历号下的入院记录列表，点击每条右侧【查看详情】可查看完整病例（含影像/扫描件原文 + 完整结构化入院记录 + 医师签章）。' +
+                '</div>' +
+                cardsHtml +
+                '</div>';
+            // 绑定每张卡片按钮
+            const btns = result.querySelectorAll('.btn-open-case');
+            btns.forEach(function(b){
+                b.addEventListener('click', function(){
+                    const idx = parseInt(b.getAttribute('data-case-index'), 10);
+                    openModal(idx);
+                });
+            });
         }
 
         function doSearch() {
@@ -998,43 +1258,9 @@
                 return;
             }
 
-            // 严格全等匹配：命中 HIT_CODE → 显示病例卡（缩略图+摘要+查看详情）
+            // 严格全等匹配：命中 HIT_CODE → 渲染多条病例卡
             if (raw === HIT_CODE) {
-                result.classList.remove('hidden');
-                result.innerHTML =
-                    '<div class="result-hit">' +
-                    '<div class="hit-title"><span class="badge">✓</span>查询成功：已匹配该病历号，共 1 条电子报告</div>' +
-                    '<div style="margin-top:2px; margin-bottom:16px; color:#4a5a63; font-size:13px; line-height:2;">' +
-                    '以下是您本次就诊的电子入院记录预览，点击右侧【查看详情】可查看完整病例（含影像/扫描件原文 + 完整结构化入院记录）。' +
-                    '</div>' +
-
-                    '<div class="report-card">' +
-                      '<div class="thumb">' +
-                        '<img src="bingli1.jpg" alt="张小明 本次就诊影像/扫描件">' +
-                      '</div>' +
-                      '<div class="info">' +
-                        '<div class="top">' +
-                          '<div class="title">社区获得性肺炎 · 入院记录</div>' +
-                          '<span class="tag urgent">住院观察</span>' +
-                          '<span class="tag">呼吸内科</span>' +
-                          '<span class="tag">2026-08-03</span>' +
-                        '</div>' +
-                        '<div class="meta">' +
-                          '<span><b>患者：</b>张小明 &nbsp; 男 / 22 岁</span>' +
-                          '<span><b>病历号：</b>' + esc(HIT_CODE) + '</span>' +
-                          '<span><b>入院时间：</b>2026-08-03 11:40</span>' +
-                          '<span><b>开具医师：</b>沈嘉彦 &nbsp;（呼吸与危重症医学科）</span>' +
-                        '</div>' +
-                        '<div class="summary">' +
-                          '<b>主要诊断：</b>社区获得性肺炎（右下肺，非重症）。患者发热伴咳嗽、咳痰 4 天，最高体温 39.2℃，咳黄色脓痰，伴右侧胸痛；查体右下肺叩诊浊音，可闻及湿性啰音；胸部 CT 提示右肺下叶大片状高密度影，CRP、白细胞及中性粒细胞百分比明显升高。建议呼吸内科住院，经验性抗感染 + 化痰退热补液支持治疗。' +
-                        '</div>' +
-                      '</div>' +
-                      '<div class="actions">' +
-                        '<button id="btnOpenReportDetail" class="btn-detail" type="button">查看详情</button>' +
-                      '</div>' +
-                    '</div>' +
-                    '</div>';
-                bindDetailBtn();
+                renderCasesHit();
                 return;
             }
 
@@ -1068,98 +1294,7 @@
                 <button id="reportModalClose" class="modal-close" type="button" aria-label="关闭">✕</button>
             </div>
             <div class="modal-body" id="reportModalBody">
-                <div class="img-wrap">
-                    <img src="bingli1.jpg" alt="bingli1 扫描件 / 影像照片">
-                    <div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli1）</div>
-                </div>
-
-                <h1 class="mr-h1">入 院 记 录</h1>
-
-                <h2 class="mr-h2">一、一般情况</h2>
-                <div class="mr-row">
-                    <span><b>姓名：</b>张小明</span>
-                    <span><b>性别：</b>男</span>
-                    <span><b>年龄：</b>22岁</span>
-                    <span><b>民族：</b>汉族</span>
-                    <span><b>婚姻：</b>未婚</span>
-                    <span><b>职业：</b>在校大学生</span>
-                    <span><b>出生地：</b>酆江市</span>
-                    <span><b>病史陈述者：</b>患者本人</span>
-                    <span><b>入院时间：</b>2026-08-03 11:40</span>
-                    <span><b>记录时间：</b>2026-08-03 12:10</span>
-                </div>
-
-                <h2 class="mr-h2">二、主诉</h2>
-                <div class="mr-row single">
-                    <span>发热伴咳嗽、咳痰 4 天。</span>
-                </div>
-
-                <h2 class="mr-h2">三、现病史</h2>
-                <div class="mr-row single">
-                    <span>患者于 4 天前（7 月 30 日）受凉后出现发热，体温最高达 <b>39.2℃</b>，呈弛张热型，伴畏寒，无寒战。同时出现阵发性咳嗽，咳黄色脓痰，量中等，无痰中带血。伴右侧胸痛，深呼吸及咳嗽时加重，无胸闷气短。自服 &ldquo;阿莫西林&rdquo;&ldquo;复方氨酚烷胺&rdquo; 3 天，症状无明显好转，今日来我院就诊。</span>
-                </div>
-                <div class="mr-row single">
-                    <span>发病以来精神萎靡，食欲减退，夜间睡眠欠佳，大小便正常，体重无明显变化。</span>
-                </div>
-
-                <h2 class="mr-h2">四、既往史</h2>
-                <div class="mr-row single">
-                    <span>平素体健。否认高血压、糖尿病、心脏病史。否认肝炎结核等传染病史。否认手术外伤史。否认输血史。否认药物及食物过敏史。按计划接种疫苗，无遗漏。</span>
-                </div>
-
-                <h2 class="mr-h2">五、个人史、婚育史</h2>
-                <div class="mr-row single">
-                    <span>生于原籍，无疫水疫区接触史，无烟酒嗜好。未婚，无冶游史。</span>
-                </div>
-
-                <h2 class="mr-h2">六、家族史</h2>
-                <div class="mr-row single">
-                    <span>父母及兄妹体健，否认家族性遗传病史。</span>
-                </div>
-
-                <h2 class="mr-h2">七、体格检查</h2>
-                <div class="mr-row">
-                    <span><b>T：</b>38.8℃</span>
-                    <span><b>P：</b>98 次/分</span>
-                    <span><b>R：</b>22 次/分</span>
-                    <span><b>BP：</b>118 / 76 mmHg</span>
-                </div>
-                <div class="mr-row single">
-                    <span>发育正常，营养良好，急性病容，神志清，精神差。全身皮肤黏膜无黄染、出血点，浅表淋巴结未触及肿大。咽部充血，扁桃体无肿大。胸廓对称，<b>右下肺叩诊浊音</b>，听诊可闻及<b>湿性啰音及支气管呼吸音</b>。心率 98 次/分，律齐，各瓣膜区未闻及杂音。腹软，无压痛，肝脾肋下未及。双下肢无水肿。</span>
-                </div>
-
-                <h2 class="mr-h2">八、辅助检查</h2>
-                <ul class="mr-list">
-                    <li><b>血常规</b>（本院 2026-08-03）：WBC 16.2×10⁹ / L，N 88%，Hb 138 g / L。</li>
-                    <li><b>C 反应蛋白</b>（本院 2026-08-03）：CRP 85 mg / L。</li>
-                    <li><b>胸部 CT</b>（本院 2026-08-03）：右肺下叶大片状高密度影，边界模糊，可见空气支气管征，考虑社区获得性肺炎。</li>
-                </ul>
-
-                <h2 class="mr-h2">九、初步诊断</h2>
-                <div class="mr-row single">
-                    <span><b>社区获得性肺炎（右下肺，非重症）</b></span>
-                </div>
-
-                <h2 class="mr-h2">十、治疗意见</h2>
-                <ol class="mr-list">
-                    <li>收呼吸内科住院。</li>
-                    <li>完善痰培养 + 药敏、血培养、支原体抗体等检查。</li>
-                    <li>经验性抗感染治疗（头孢类 + 大环内酯类）。</li>
-                    <li>化痰、退热、补液支持治疗。</li>
-                    <li>注意观察体温及呼吸情况变化。</li>
-                </ol>
-
-                <div class="mr-sign">
-                    <div>
-                        <div><b>书写医师：</b>王芳</div>
-                        <div style="margin-top:6px;">审核：酆江市第三医院 呼吸与危重症医学科</div>
-                    </div>
-                    <div class="sign-right">
-                        <div><b>医师签名：</b></div>
-                        <div class="sign-stamp">沈嘉彦 印</div>
-                        <div style="margin-top:10px; font-size:12px; color:var(--text-light);">签发时间：2026-08-03 12:55</div>
-                    </div>
-                </div>
+                <!-- 打开时由 JS 按病例索引（CASES[index]）动态填：bingliX 照片 + 完整入院记录 + 医师签章 -->
             </div>
         </div>
     </div>

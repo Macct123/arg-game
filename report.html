@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -244,6 +244,206 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+
+        /* ===== 报告查询界面 ===== */
+        .report-wrap {
+            padding: 50px 60px 60px;
+        }
+        .report-header {
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 22px;
+            margin-bottom: 26px;
+        }
+        .report-header h3 {
+            font-size: 22px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .report-header h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px; height: 22px;
+            background: linear-gradient(180deg, var(--accent), var(--primary));
+            border-radius: 4px;
+        }
+        .report-header .desc {
+            color: var(--text-light);
+            font-size: 13px;
+            line-height: 1.9;
+            padding-left: 14px;
+        }
+        .report-search {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            align-items: stretch;
+        }
+        .report-search .input-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 0 14px;
+            transition: all 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .report-search .input-wrap:focus-within {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(41,128,185,0.12);
+        }
+        .report-search .input-wrap svg {
+            width: 20px; height: 20px;
+            flex-shrink: 0;
+            stroke: var(--text-light);
+            fill: none; stroke-width: 1.8;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .report-search .input-wrap input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            height: 52px;
+            font-size: 16px;
+            letter-spacing: 2px;
+            color: var(--primary-dark);
+            font-family: "Consolas","Courier New",monospace;
+        }
+        .report-search .input-wrap input::placeholder {
+            color: #bcc2c6;
+            letter-spacing: 1px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .report-search button.search-btn {
+            min-width: 140px;
+            padding: 0 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(26,82,118,0.22);
+            transition: all 0.2s ease;
+        }
+        .report-search button.search-btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(26,82,118,0.3);
+        }
+        .report-search button.search-btn:active { transform: translateY(0); }
+        .report-tips {
+            display: flex; flex-wrap: wrap; gap: 16px;
+            color: var(--text-light);
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 22px;
+        }
+        .report-tips .tip {
+            display: flex; align-items: center; gap: 6px;
+        }
+        .report-tips .tip i {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: rgba(26,82,118,0.08);
+            color: var(--primary);
+            font-style: normal;
+            font-weight: 700;
+            font-size: 11px;
+            text-align: center;
+            line-height: 16px;
+        }
+        .report-result {
+            margin-top: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .report-result.hidden { display: none; }
+        /* 查询结果：命中（病历号正确，内容暂时为空占位） */
+        .result-hit {
+            background: linear-gradient(135deg, #f6fbf8, #eef7fb);
+            border: 1px solid rgba(22,160,133,0.35);
+            padding: 26px 28px;
+            border-radius: 10px;
+        }
+        .result-hit .hit-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #117864;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 12px;
+        }
+        .result-hit .hit-title .badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+            color: #fff; font-size: 14px; font-weight: 700;
+        }
+        .result-hit .hit-code {
+            display: inline-block;
+            margin: 4px 0 14px;
+            padding: 8px 16px;
+            background: rgba(26,82,118,0.08);
+            color: var(--primary-dark);
+            font-family: "Consolas","Courier New", monospace;
+            letter-spacing: 2px;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px dashed rgba(26,82,118,0.3);
+        }
+        .result-hit .hit-empty {
+            margin-top: 8px;
+            padding: 22px 24px;
+            background: rgba(255,255,255,0.7);
+            border: 1px dashed rgba(0,0,0,0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            text-align: center;
+            font-size: 13px;
+            line-height: 2;
+        }
+        /* 查询结果：未命中 */
+        .result-miss {
+            background: linear-gradient(135deg, #fef5f3, #fbeeee);
+            border: 1px solid rgba(192,57,43,0.25);
+            padding: 24px 26px;
+            border-radius: 10px;
+            color: #8a3b32;
+            line-height: 2;
+            font-size: 13px;
+        }
+        .result-miss .miss-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .result-miss .miss-title .badge {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: #fff;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+        }
+        @media (max-width: 640px) {
+            .report-wrap { padding: 28px 20px 36px; }
+            .report-search { flex-direction: column; }
+            .report-search button.search-btn { min-width: 100%; height: 48px; }
+        }
     </style>
 </head>
 <body>
@@ -312,7 +512,46 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <div class="content-container" style="padding:40px;"></div>
+            <div class="content-container">
+                <div class="report-wrap">
+                    <div class="report-header">
+                        <h3>检查 / 检验 报告查询</h3>
+                        <p class="desc">
+                            请输入您的「病历生成码」或「检查报告单号」以查询电子报告。若为纸质报告，可持就诊卡至门诊楼一层自助打印机打印。
+                            <br>
+                            报告一般在检查完成后 24 小时内发布；病理、基因检测等专项报告时间以检验科告知为准。
+                        </p>
+                    </div>
+
+                    <div class="report-search">
+                        <label class="input-wrap" for="reportCodeInput" style="display:flex;">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="9" y1="13" x2="15" y2="13"/>
+                                <line x1="9" y1="17" x2="15" y2="17"/>
+                            </svg>
+                            <input
+                                id="reportCodeInput"
+                                type="text"
+                                placeholder="请输入病历生成码，如：117-726-623"
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                        </label>
+                        <button id="reportSearchBtn" class="search-btn" type="button">查　询</button>
+                    </div>
+
+                    <div class="report-tips">
+                        <div class="tip"><i>1</i><span>病历生成码由医生告知，格式示例：<b>117-726-623</b></span></div>
+                        <div class="tip"><i>2</i><span>检查报告单号位于纸质报告右上角，一般为 10~14 位字母数字组合</span></div>
+                        <div class="tip"><i>3</i><span>如无法查询，可携带就诊卡到检验科窗口 3–6 号人工咨询</span></div>
+                    </div>
+
+                    <!-- 查询结果容器（默认隐藏） -->
+                    <div id="reportResult" class="report-result hidden"></div>
+                </div>
+            </div>
         </div>
     </div>
     <footer class="site-footer">
@@ -416,6 +655,69 @@
             }
         });
     }
+
+    /* ===== 报告查询功能（严格全等命中：117-726-623） ===== */
+    (function initReportSearch() {
+        const HIT_CODE = '117-726-623'; // 严格全等匹配，不做关键词/模糊匹配
+        const input = document.getElementById('reportCodeInput');
+        const btn = document.getElementById('reportSearchBtn');
+        const result = document.getElementById('reportResult');
+        if (!input || !btn || !result) return;
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+            }[c]));
+        }
+
+        function doSearch() {
+            const raw = (input.value || '').trim();
+            if (!raw) {
+                result.classList.remove('hidden');
+                result.innerHTML =
+                    '<div class="result-miss">' +
+                    '<div class="miss-title"><span class="badge">!</span>请输入病历生成码或检查报告单号</div>' +
+                    '查询内容不能为空。请输入您的病历生成码（如 <b>117-726-623</b>）或检查报告单号后重试。' +
+                    '</div>';
+                try { input.focus(); } catch(_) {}
+                return;
+            }
+
+            // 严格全等匹配：命中 HIT_CODE
+            if (raw === HIT_CODE) {
+                result.classList.remove('hidden');
+                // 命中：结果内容暂时为空，只占位展示
+                result.innerHTML =
+                    '<div class="result-hit">' +
+                    '<div class="hit-title"><span class="badge">✓</span>查询成功：已匹配该病历号</div>' +
+                    '<div>以下是您的电子报告详情：</div>' +
+                    '<div class="hit-code">病历生成码：' + esc(HIT_CODE) + '</div>' +
+                    '<div class="hit-empty">' +
+                    '<b>（结果区域暂无内容）</b><br>' +
+                    '命中该病历号，但报告内容尚未生成。稍后可再次查询刷新结果。' +
+                    '</div>' +
+                    '</div>';
+                return;
+            }
+
+            // 未命中：未找到
+            result.classList.remove('hidden');
+            result.innerHTML =
+                '<div class="result-miss">' +
+                '<div class="miss-title"><span class="badge">!</span>未查询到对应的报告</div>' +
+                '您输入的病历号 / 检查单号 <b>' + esc(raw) + '</b> 未匹配到任何记录。<br>' +
+                '请核对号码并完整输入（如「117-726-623」连横线都需保持一致），或持就诊卡至门诊楼一层检验科窗口 3–6 号咨询。' +
+                '</div>';
+        }
+
+        btn.addEventListener('click', doSearch);
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                doSearch();
+            }
+        });
+    })();
     </script>
 </body>
 </html>

@@ -534,7 +534,7 @@
                             <input
                                 id="reportCodeInput"
                                 type="text"
-                                placeholder="请输入病历生成码，如：117-726-623"
+                                placeholder="请输入病历生成码，格式如：xxx-xxx-xxx"
                                 autocomplete="off"
                                 spellcheck="false"
                             >
@@ -543,7 +543,7 @@
                     </div>
 
                     <div class="report-tips">
-                        <div class="tip"><i>1</i><span>病历生成码由医生告知，格式示例：<b>117-726-623</b></span></div>
+                        <div class="tip"><i>1</i><span>病历生成码由医生告知，格式示例：<b>xxx-xxx-xxx</b></span></div>
                         <div class="tip"><i>2</i><span>检查报告单号位于纸质报告右上角，一般为 10~14 位字母数字组合</span></div>
                         <div class="tip"><i>3</i><span>如无法查询，可携带就诊卡到检验科窗口 3–6 号人工咨询</span></div>
                     </div>
@@ -677,7 +677,7 @@
                 result.innerHTML =
                     '<div class="result-miss">' +
                     '<div class="miss-title"><span class="badge">!</span>请输入病历生成码或检查报告单号</div>' +
-                    '查询内容不能为空。请输入您的病历生成码（如 <b>117-726-623</b>）或检查报告单号后重试。' +
+                    '查询内容不能为空。请输入您的病历生成码（格式如 <b>xxx-xxx-xxx</b>）或检查报告单号后重试。' +
                     '</div>';
                 try { input.focus(); } catch(_) {}
                 return;
@@ -706,7 +706,7 @@
                 '<div class="result-miss">' +
                 '<div class="miss-title"><span class="badge">!</span>未查询到对应的报告</div>' +
                 '您输入的病历号 / 检查单号 <b>' + esc(raw) + '</b> 未匹配到任何记录。<br>' +
-                '请核对号码并完整输入（如「117-726-623」连横线都需保持一致），或持就诊卡至门诊楼一层检验科窗口 3–6 号咨询。' +
+                '请核对号码并完整输入（如「xxx-xxx-xxx」，连横线的数量与位置都需保持一致），或持就诊卡至门诊楼一层检验科窗口 3–6 号咨询。' +
                 '</div>';
         }
 

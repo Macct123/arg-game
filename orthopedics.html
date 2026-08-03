@@ -333,9 +333,17 @@
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 42px; font-weight: 700;
             overflow: hidden;
+            position: relative;
         }
         .doctor-card.is-chief .doctor-avatar {
             background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+        .doctor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: inherit;
         }
         .doctor-info { min-width: 0; }
         .doctor-name {
@@ -603,7 +611,7 @@
                         <div class="doctors-grid">
                             <!-- 主任（可点击查看详情） -->
                             <a class="doctor-card is-chief" href="lu-jingyao.html" style="display:grid;color:inherit;text-decoration:none;">
-                                <div class="doctor-avatar">陆</div>
+                                <div class="doctor-avatar"><img src="主任.jpg" alt="陆敬尧主任照片"></div>
                                 <div class="doctor-info">
                                     <div class="doctor-name">
                                         陆敬尧
@@ -623,7 +631,7 @@
 
                             <!-- 其他医生 1（仅简版展示，不跳转） -->
                             <div class="doctor-card">
-                                <div class="doctor-avatar">陈</div>
+                                <div class="doctor-avatar"><img src="微信图片_20260802212751_1465_14.jpg" alt="陈秉义医生照片"></div>
                                 <div class="doctor-info">
                                     <div class="doctor-name">陈秉义</div>
                                     <div class="doctor-title">关节外科亚专业组长 | 副主任医师 | 副教授 | 硕士生导师</div>
@@ -638,7 +646,7 @@
 
                             <!-- 其他医生 2（仅简版展示，不跳转） -->
                             <div class="doctor-card">
-                                <div class="doctor-avatar">林</div>
+                                <div class="doctor-avatar"><img src="微信图片_20260802212752_1466_14.jpg" alt="林思远医生照片"></div>
                                 <div class="doctor-info">
                                     <div class="doctor-name">林思远</div>
                                     <div class="doctor-title">脊柱外科亚专业组长 | 主任医师 | 教授 | 硕士生导师</div>
@@ -653,7 +661,7 @@
 
                             <!-- 其他医生 3（仅简版展示，不跳转） -->
                             <div class="doctor-card">
-                                <div class="doctor-avatar">韩</div>
+                                <div class="doctor-avatar"><img src="微信图片_20260802212755_1468_14.jpg" alt="韩清川医生照片"></div>
                                 <div class="doctor-info">
                                     <div class="doctor-name">韩清川</div>
                                     <div class="doctor-title">手足外科亚专业组长 | 副主任医师 | 医学博士</div>
@@ -666,7 +674,7 @@
                                 </div>
                             </div>
 
-                            <!-- 其他医生 4（仅简版展示，不跳转） -->
+                            <!-- 其他医生 4（仅简版展示，不跳转）—— 暂缺照片，保留默认首字占位 -->
                             <div class="doctor-card">
                                 <div class="doctor-avatar">赵</div>
                                 <div class="doctor-info">

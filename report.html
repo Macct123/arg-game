@@ -440,11 +440,11 @@
             font-size: 14px; font-weight: 700;
         }
 
-        /* ===== 命中的病例卡片（列表项） ===== */
+        /* ===== 命中的病例卡片（列表项，表面简略，不含照片） ===== */
         .report-card {
             display: grid;
-            grid-template-columns: 160px 1fr auto;
-            gap: 24px;
+            grid-template-columns: 1fr auto;
+            gap: 18px;
             align-items: stretch;
             background: #fff;
             border: 1px solid rgba(0,0,0,0.07);
@@ -459,6 +459,7 @@
             border-color: rgba(41,128,185,0.3);
         }
         .report-card .thumb {
+            display: none; /* 表面不外露照片，详情 Modal 里再展示 */
             background: #eef2f5;
             position: relative;
             overflow: hidden;
@@ -471,7 +472,7 @@
         }
         .report-card:hover .thumb img { transform: scale(1.06); }
         .report-card .info {
-            padding: 20px 0;
+            padding: 20px 24px;
             min-width: 0;
         }
         .report-card .info .top {
@@ -936,14 +937,14 @@
     }
 
     /* ===== 报告查询功能（严格全等命中：117-726-623） ===== */
-    (function initReportSearch() {
+    function initReportSearch() {
         const HIT_CODE = '117-726-623'; // 严格全等匹配，不做关键词/模糊匹配
         const input = document.getElementById('reportCodeInput');
         const btn = document.getElementById('reportSearchBtn');
         const result = document.getElementById('reportResult');
         if (!input || !btn || !result) return;
 
-        // —— 详情 Modal 控件 ——
+        // —— 详情 Modal 控件（DOM 解析已完成，不再为 null） ——
         const modal = document.getElementById('reportModal');
         const modalClose = document.getElementById('reportModalClose');
         const modalTitle = document.getElementById('modalTitle');
@@ -957,15 +958,14 @@
                 card: {
                     title: '社区获得性肺炎 · 入院记录',
                     tags: [
-                        { text: '住院观察', urgent: true },
-                        { text: '呼吸内科' },
+                        { text: '呼吸内科', },
                         { text: '2026-08-03' }
                     ],
                     patient: '张小明 &nbsp; 男 / 22 岁',
                     admitTime: '2026-08-03 11:40',
                     doctor: '沈嘉彦 &nbsp;（呼吸与危重症医学科）',
                     summary:
-                        '<b>主要诊断：</b>社区获得性肺炎（右下肺，非重症）。患者发热伴咳嗽、咳痰 4 天，最高体温 39.2℃，咳黄色脓痰，伴右侧胸痛；查体右下肺叩诊浊音，可闻及湿性啰音；胸部 CT 提示右肺下叶大片状高密度影，CRP、白细胞及中性粒细胞百分比明显升高。建议呼吸内科住院，经验性抗感染 + 化痰退热补液支持治疗。',
+                        '<b>主要诊断：</b>社区获得性肺炎（右下肺）。建议住院行经验性抗感染及对症支持治疗。',
                     thumb: 'bingli1.jpg',
                     thumbAlt: '张小明 本次就诊影像/扫描件'
                 },
@@ -1064,7 +1064,7 @@
                     admitTime: '2026-08-03 06:50',
                     doctor: '陆思远 &nbsp;（心血管内科 · 冠心病监护室）',
                     summary:
-                        '<b>主要诊断：</b>冠状动脉粥样硬化性心脏病 · 急性广泛前壁心肌梗死（Killip Ⅰ级）· 高血压病 3 级（极高危组）。患者今晨活动时突发心前区压榨样剧痛 2 小时，向左肩背部放射，大汗、濒死感，含服硝酸甘油 2 片未缓解；既往高血压 10 年，父亲 60 岁心梗去世。心电图 V1–V4 ST 段弓背向上抬高 0.3–0.5 mV，T 波倒置；血压偏低，痛苦面容，心音低钝。急诊建议 CCU 监护、绝对卧床、急诊 PCI 或溶栓、综合抗栓治疗，已告病危。',
+                        '<b>主要诊断：</b>急性广泛前壁心肌梗死（Killip Ⅰ级），合并高血压病 3 级（极高危）。建议 CCU 监护并急诊血运重建。',
                     thumb: 'bingli2.jpg',
                     thumbAlt: '赵国强 本次就诊影像/扫描件'
                 },
@@ -1151,6 +1151,111 @@
                         '</div>'
                     );
                 })()
+            },
+
+            // ——————— 第 3 条：陈静 · 急性胰腺炎（重症倾向，bingli3）———————
+            {
+                card: {
+                    title: '急性胰腺炎（重症倾向）· 入院记录',
+                    tags: [
+                        { text: '告病重', urgent: true },
+                        { text: '消化内科' },
+                        { text: '2026-08-03' }
+                    ],
+                    patient: '陈静 &nbsp; 女 / 45 岁',
+                    admitTime: '2026-08-03 01:20',
+                    doctor: '秦雨辰 &nbsp;（消化内科 · 重症监护团队）',
+                    summary:
+                        '<b>主要诊断：</b>急性胰腺炎（重症倾向，高脂血症性）合并胰周渗出。建议禁食+胃肠减压及综合支持治疗。',
+                    thumb: 'bingli3.jpg',
+                    thumbAlt: '陈静 本次就诊影像/扫描件'
+                },
+                modalHeader: '急性胰腺炎（重症倾向）· 入院记录详情',
+                detailHtml: (function(){
+                    return (
+                        '<div class="img-wrap">' +
+                        '<img src="bingli3.jpg" alt="陈静 影像/扫描件 bingli3">' +
+                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli3）</div>' +
+                        '</div>' +
+                        '<h1 class="mr-h1">入 院 记 录</h1>' +
+
+                        '<h2 class="mr-h2">一、一般情况</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>姓名：</b>陈静</span>' +
+                          '<span><b>性别：</b>女</span>' +
+                          '<span><b>年龄：</b>45岁</span>' +
+                          '<span><b>民族：</b>汉族</span>' +
+                          '<span><b>婚姻：</b>已婚</span>' +
+                          '<span><b>职业：</b>公司经理</span>' +
+                          '<span><b>出生地：</b>广东省广州市</span>' +
+                          '<span><b>病史陈述者：</b>患者本人</span>' +
+                          '<span><b>入院时间：</b>2026-08-03 01:20</span>' +
+                          '<span><b>记录时间：</b>2026-08-03 02:00</span>' +
+                        '</div>' +
+
+                        '<h2 class="mr-h2">二、主诉</h2>' +
+                        '<div class="mr-row single"><span>持续性上腹部剧痛 3 小时。</span></div>' +
+
+                        '<h2 class="mr-h2">三、现病史</h2>' +
+                        '<div class="mr-row single"><span>患者于 3 小时前（8 月 2 日 22:00）晚餐（<b>进食大量油腻食物，饮白酒约半斤</b>）后约 1 小时，突发<b>上腹部持续性刀割样剧痛</b>，<b>向腰背部呈带状放射</b>，<b>弯腰抱膝位略有缓解</b>。伴频繁恶心、呕吐胃内容物 3 次，<b>呕吐后疼痛不缓解</b>。无发热、寒战，无黄疸，无腹泻黑便。发病以来精神极度紧张，痛苦面容，未进食水，二便未解。</span></div>' +
+
+                        '<h2 class="mr-h2">四、既往史</h2>' +
+                        '<div class="mr-row single"><span><b>高脂血症病史 3 年</b>，未规律服药。否认高血压、糖尿病史。否认肝炎结核等传染病史。否认手术外伤史。否认输血史。否认药物过敏史。<b>吸烟史 20 年</b>，每日约 10 支；<b>饮酒史 20 年</b>，每周约 2–3 次，每次约半斤白酒。</span></div>' +
+
+                        '<h2 class="mr-h2">五、个人史、婚育史</h2>' +
+                        '<div class="mr-row single"><span>生于原籍，无疫水疫区接触史。已婚，育有 1 子，配偶及子体健。月经史：初潮 13 岁，周期 28–30 天，经期 4–6 天，末次月经 2026-07-20。</span></div>' +
+
+                        '<h2 class="mr-h2">六、家族史</h2>' +
+                        '<div class="mr-row single"><span>父亲有高脂血症史，否认其他家族遗传病史。</span></div>' +
+
+                        '<h2 class="mr-h2">七、体格检查</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>T：</b>37.8℃</span>' +
+                          '<span><b>P：</b>108 次/分</span>' +
+                          '<span><b>R：</b>22 次/分</span>' +
+                          '<span><b>BP：</b>135 / 85 mmHg</span>' +
+                        '</div>' +
+                        '<div class="mr-row single"><span>神志清，<b>急性痛苦面容，被动弯腰抱膝位</b>。全身皮肤巩膜无黄染。心肺听诊无异常。腹部略膨隆，<b>上腹部腹肌紧张，有明显压痛及反跳痛，以中上腹及左上腹为著</b>，肝脾肋下未及，Murphy 征阴性，移动性浊音阴性，<b>肠鸣音减弱，约 2 次/分</b>。双下肢无水肿。</span></div>' +
+
+                        '<h2 class="mr-h2">八、辅助检查</h2>' +
+                        '<ul class="mr-list">' +
+                          '<li><b>血常规</b>（本院 2026-08-03）：WBC 14.5×10⁹ / L，N 88%，Hb 142 g / L。</li>' +
+                          '<li><b>血淀粉酶</b>（本院 2026-08-03）：856 U / L（正常值 35–135 U / L）。</li>' +
+                          '<li><b>血脂肪酶</b>（本院 2026-08-03）：1240 U / L（正常值 20–180 U / L）。</li>' +
+                          '<li><b>腹部 CT 平扫 + 增强</b>（本院 2026-08-03）：<b>胰腺弥漫性增大，边缘模糊，胰周大量渗出，肾前筋膜增厚</b>，考虑急性胰腺炎。</li>' +
+                        '</ul>' +
+
+                        '<h2 class="mr-h2">九、初步诊断</h2>' +
+                        '<div class="mr-row single"><span>' +
+                          '<b>急性胰腺炎（重症倾向）</b><br>' +
+                          '　<b>高脂血症性</b><br>' +
+                          '　<b>局部并发症：胰周渗出</b>' +
+                        '</span></div>' +
+
+                        '<h2 class="mr-h2">十、治疗意见</h2>' +
+                        '<ol class="mr-list">' +
+                          '<li>收消化内科住院。</li>' +
+                          '<li><b>禁食、禁水，持续胃肠减压</b>。</li>' +
+                          '<li>心电、血压、血氧饱和度监护，监测生命体征。</li>' +
+                          '<li>积极液体复苏，维持水电解质平衡。</li>' +
+                          '<li>抑制胰酶分泌（生长抑素）、抑酸、抗感染、镇痛。</li>' +
+                          '<li>完善血脂、肝功能、凝血功能、血气分析等检查。</li>' +
+                          '<li><b>告病重</b>，签署知情同意书。</li>' +
+                        '</ol>' +
+
+                        '<div class="mr-sign">' +
+                          '<div>' +
+                            '<div><b>书写医师：</b>周丽</div>' +
+                            '<div style="margin-top:6px;">审核：酆江市第三医院 消化内科 · 重症监护团队</div>' +
+                          '</div>' +
+                          '<div class="sign-right">' +
+                            '<div><b>医师签名：</b></div>' +
+                            '<div class="sign-stamp">秦雨辰 印</div>' +
+                            '<div style="margin-top:10px; font-size:12px; color:var(--text-light);">签发时间：2026-08-03 02:48</div>' +
+                          '</div>' +
+                        '</div>'
+                    );
+                })()
             }
         ];
 
@@ -1158,7 +1263,6 @@
             if (!modal || !modalBody) return;
             const c = CASES[caseIndex];
             if (!c) return;
-            // 填标题 + 详情正文
             if (modalTitle) {
                 modalTitle.innerHTML =
                     '<span>' + (c.modalHeader || '入院记录 · 电子病历详情') + '</span>' +
@@ -1176,13 +1280,11 @@
             if (modalBody) modalBody.innerHTML = '';
         }
         if (modalClose) modalClose.addEventListener('click', closeModal);
-        // 点击遮罩空白处（不是 modal-box 内部）关闭
         if (modal) {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) closeModal();
             });
         }
-        // ESC 关闭
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
                 e.preventDefault();
@@ -1197,6 +1299,7 @@
         }
 
         function renderCasesHit() {
+            // 卡片不再输出 thumb（表面不展示照片），仅输出 info + actions
             const cardsHtml = CASES.map(function(c, i){
                 const cs = c.card;
                 const tags = (cs.tags || []).map(function(t){
@@ -1204,9 +1307,6 @@
                 }).join('');
                 return (
                     '<div class="report-card" style="margin-top:' + (i === 0 ? '0' : '18px') + ';">' +
-                      '<div class="thumb">' +
-                        '<img src="' + esc(cs.thumb) + '" alt="' + esc(cs.thumbAlt) + '">' +
-                      '</div>' +
                       '<div class="info">' +
                         '<div class="top">' +
                           '<div class="title">' + esc(cs.title) + '</div>' + tags +
@@ -1235,7 +1335,6 @@
                 '</div>' +
                 cardsHtml +
                 '</div>';
-            // 绑定每张卡片按钮
             const btns = result.querySelectorAll('.btn-open-case');
             btns.forEach(function(b){
                 b.addEventListener('click', function(){
@@ -1258,13 +1357,11 @@
                 return;
             }
 
-            // 严格全等匹配：命中 HIT_CODE → 渲染多条病例卡
             if (raw === HIT_CODE) {
                 renderCasesHit();
                 return;
             }
 
-            // 未命中：未找到
             result.classList.remove('hidden');
             result.innerHTML =
                 '<div class="result-miss">' +
@@ -1281,7 +1378,14 @@
                 doSearch();
             }
         });
-    })();
+    }
+
+    // ———— 把报告查询的初始化统一放到 DOM 解析完成后执行，确保 Modal HTML 已存在（修复详情点不开的根因） ————
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(initReportSearch, 0);
+    } else {
+        document.addEventListener('DOMContentLoaded', initReportSearch, false);
+    }
     </script>
     <!-- ===== 病例详情 Modal（默认隐藏，命中 117-726-623 后点"查看详情"打开） ===== -->
     <div id="reportModal" class="modal-mask" role="dialog" aria-modal="true" aria-labelledby="modalTitle">

@@ -951,14 +951,16 @@
                 if (t === '沈钰渊 139 68310 69732') {
                     doctorStage = 'ask';
                     return {
-                        speaker: 'doctor-lu',
-                        text: '请描述您的病情，我来帮您先诊断一下'
+                        actions: [
+                            { type: 'message', speaker: 'doctor-lu', text: '请描述您的病情，我来帮您先诊断一下' }
+                        ]
                     };
                 }
                 // 未按指定信息回复 → 主任继续催问
                 return {
-                    speaker: 'doctor-lu',
-                    text: '麻烦您按【姓名 + 联系电话】的格式发给我，我这边登记一下再开始了解您的病情。'
+                    actions: [
+                        { type: 'message', speaker: 'doctor-lu', text: '麻烦您按【姓名 + 联系电话】的格式发给我，我这边登记一下再开始了解您的病情。' }
+                    ]
                 };
             }
 
@@ -968,31 +970,42 @@
                 if (t === askText) {
                     doctorStage = 'done';
                     return {
-                        type: 'director-done-return-bot',
-                        doctorText:
-                            '按照你这个描述，情况不太乐观。你这个病啊，比较严重，而且不太好治。<br>' +
-                            '但你也别慌，我跟你说清楚——不是说没救了，是说这条路会比较长，也比较折腾。你得有心理准备，别想着三五天就能好。<br>' +
-                            '我先给你一个病历生成码，在报告查询那生成病历，来医院的时候记得带上<br>' +
-                            '<span class="code-em">117-726-623</span>',
-                        useHtml: true,
-                        dividerText: '陆敬尧 主任已下线，当前转回客服接待',
-                        botText:
-                            '您好，我是酆江市第三医院在线客服，陆敬尧主任已结束本次在线接诊。\n' +
-                            '您的病历生成码：117-726-623，可在【报告查询】页面凭该码查询电子报告。\n' +
-                            '如有其他咨询、预约、挂号、报告查询、医保结算等问题，可直接留言，我将为您继续服务。'
+                        actions: [
+                            {
+                                type: 'message',
+                                speaker: 'doctor-lu',
+                                text: '按照你这个描述，情况不太乐观。你这个病啊，比较严重，而且不太好治。<br>' +
+                                      '但你也别慌，我跟你说清楚——不是说没救了，是说这条路会比较长，也比较折腾。你得有心理准备，别想着三五天就能好。<br>' +
+                                      '我先给你一个病历生成码，在报告查询那生成病历，来医院的时候记得带上<br>' +
+                                      '<span class="code-em">117-726-623</span>',
+                                useHtml: true
+                            },
+                            { type: 'divider', text: '陆敬尧 主任已下线，当前转回客服接待' },
+                            { type: 'switchSpeaker', speaker: 'bot' },
+                            { type: 'setStage', stage: 'intro' },
+                            {
+                                type: 'message',
+                                speaker: 'bot',
+                                text: '您好，我是酆江市第三医院在线客服，陆敬尧主任已结束本次在线接诊。\n' +
+                                      '您的病历生成码：117-726-623，可在【报告查询】页面凭该码查询电子报告。\n' +
+                                      '如有其他咨询、预约、挂号、报告查询、医保结算等问题，可直接留言，我将为您继续服务。'
+                            }
+                        ]
                     };
                 }
                 // 未命中关键症状 → 主任继续追问
                 return {
-                    speaker: 'doctor-lu',
-                    text: '请您详细描述一下不适的部位、持续时间、疼痛/麻木的程度，以及有没有受过外伤或最近的诱因，我这边才能更准确地判断。'
+                    actions: [
+                        { type: 'message', speaker: 'doctor-lu', text: '请您详细描述一下不适的部位、持续时间、疼痛/麻木的程度，以及有没有受过外伤或最近的诱因，我这边才能更准确地判断。' }
+                    ]
                 };
             }
 
             // 阶段3：流程已经走完，回复通用
             return {
-                speaker: 'doctor-lu',
-                text: '您的病情我这边已经登记，病历生成码：117-726-623，请尽快到院进一步检查与治疗。如有新的症状或疑问，可继续向我说明。'
+                actions: [
+                    { type: 'message', speaker: 'doctor-lu', text: '您的病情我这边已经登记，病历生成码：117-726-623，请尽快到院进一步检查与治疗。如有新的症状或疑问，可继续向我说明。' }
+                ]
             };
         }
 
@@ -1005,45 +1018,101 @@
         if (transMatch) {
             const docName = transMatch[1];
             if (docName === '陆敬尧') {
-                // 将"转接结果"作为一个多段动作：先输出分割线，再切换对话方，最后主任发问候
-                // 通过返回一个特殊对象（带 divider + transition + doctorMsg）由调用方处理
                 return {
-                    type: 'transfer-lu',
-                    dividerText: '现在对话的是 陆敬尧 主任',
-                    doctorText: '您好，这里是酆江市第三医院，我是骨科主任医师陆敬尧医生。请问现在方便通话吗？想先跟您确认一下，请告诉我您的姓名及电话。'
+                    actions: [
+                        { type: 'divider', text: '现在对话的是 陆敬尧 主任' },
+                        { type: 'switchSpeaker', speaker: 'doctor-lu' },
+                        { type: 'setStage', stage: 'intro' },
+                        {
+                            type: 'message',
+                            speaker: 'doctor-lu',
+                            text: '您好，这里是酆江市第三医院，我是骨科主任医师陆敬尧医生。请问现在方便通话吗？想先跟您确认一下，请告诉我您的姓名及电话。'
+                        }
+                    ]
                 };
             }
             // ② 转接但姓名匹配失败 → 只提示格式示例（不列名单）
-            return (
-                `❌ 未找到医生【${docName}】的登记信息。\n\n` +
-                `请核对姓名后按格式重新输入，格式示例：转接+医生姓名`
-            );
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: `❌ 未找到医生【${docName}】的登记信息。\n\n请核对姓名后按格式重新输入，格式示例：转接+医生姓名`
+                    }
+                ]
+            };
         }
 
         if (/预约|挂号/.test(t)) {
-            return '您好！您可以通过以下三种方式预约挂号：\n1. 医院官方 APP「酆江三院」→ 预约挂号（推荐，支持选时段）\n2. 拨打预约热线 333-3625 3828（08:00–20:00）\n3. 门诊楼一层大厅自助机 / 人工挂号窗口现场办理\n\n如需帮助，请告诉我您想预约的科室和日期，我可以为您指引具体流程。';
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: '您好！您可以通过以下三种方式预约挂号：\n1. 医院官方 APP「酆江三院」→ 预约挂号（推荐，支持选时段）\n2. 拨打预约热线 333-3625 3828（08:00–20:00）\n3. 门诊楼一层大厅自助机 / 人工挂号窗口现场办理\n\n如需帮助，请告诉我您想预约的科室和日期，我可以为您指引具体流程。'
+                    }
+                ]
+            };
         }
         if (/时间|几点|上下班|下班|工作/.test(t)) {
-            return '我院门诊工作时间为每日 08:00 – 17:30（午间 12:00–13:30 保留值班窗口）；\n急诊服务 24 小时不间断；\n节假日与周末正常开诊，部分专家门诊可能调整，建议提前查询排班表。';
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: '我院门诊工作时间为每日 08:00 – 17:30（午间 12:00–13:30 保留值班窗口）；\n急诊服务 24 小时不间断；\n节假日与周末正常开诊，部分专家门诊可能调整，建议提前查询排班表。'
+                    }
+                ]
+            };
         }
         if (/地址|位置|交通|公交|地铁|开车|停车/.test(t)) {
-            return '我院地址：酆江市琼湾路76号。\n公共交通：\n · 公交 102 路 / 307 路 →「三院站」下车即达；\n · 地铁 4 号线「琼湾路站」B 出口步行约 8 分钟。\n自驾：门诊楼地下及东侧停车场共 420 个车位，30 分钟内免费。';
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: '我院地址：酆江市琼湾路76号。\n公共交通：\n · 公交 102 路 / 307 路 →「三院站」下车即达；\n · 地铁 4 号线「琼湾路站」B 出口步行约 8 分钟。\n自驾：门诊楼地下及东侧停车场共 420 个车位，30 分钟内免费。'
+                    }
+                ]
+            };
         }
         if (/报告|检查|化验|结果/.test(t)) {
-            return '检查报告获取方式：\n1. 线上：医院官方 APP →「我的报告」（一般项目 24 小时内可查）\n2. 线下：门诊楼一层报告自助打印机（刷就诊卡 / 身份证）\n3. 如需纸质盖章版，请到对应检验科窗口办理\n\n如超过常规时间仍未出，可留下您的姓名 + 检查项目，我为您跟进。';
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: '检查报告获取方式：\n1. 线上：医院官方 APP →「我的报告」（一般项目 24 小时内可查）\n2. 线下：门诊楼一层报告自助打印机（刷就诊卡 / 身份证）\n3. 如需纸质盖章版，请到对应检验科窗口办理\n\n如超过常规时间仍未出，可留下您的姓名 + 检查项目，我为您跟进。'
+                    }
+                ]
+            };
         }
         if (/医保|报销|自费|结算/.test(t)) {
-            return '医保结算相关说明：\n · 本院为酆江市医保定点医疗机构，支持职工医保、居民医保直接结算；\n · 异地参保人员需先在参保地办理异地就医备案，即可持社保卡实时结算；\n · 自费患者可在收费窗口办理「门诊大病」等专项登记以享受对应减免。\n具体金额因项目而异，建议带上就诊卡或社保卡到一楼收费窗口 3–6 号详细咨询。';
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'bot',
+                        text: '医保结算相关说明：\n · 本院为酆江市医保定点医疗机构，支持职工医保、居民医保直接结算；\n · 异地参保人员需先在参保地办理异地就医备案，即可持社保卡实时结算；\n · 自费患者可在收费窗口办理「门诊大病」等专项登记以享受对应减免。\n具体金额因项目而异，建议带上就诊卡或社保卡到一楼收费窗口 3–6 号详细咨询。'
+                    }
+                ]
+            };
         }
         // 默认兜底
-        return (
-            '您好！我是酆江市第三医院在线客服，已收到您的咨询。稍后会有工作人员为您跟进处理，' +
-            '如您方便，可以留下联系方式（手机号/就诊卡号）和具体问题，我们将在 08:00–21:00 内回复您。\n\n' +
-            '💡 快速操作：\n' +
-            ' · 回复【转接+医生姓名】可转接对应医生开启直接对话\n' +
-            ' · 回复【预约挂号】【工作时间】【地址交通】【检查报告】【医保结算】等关键词可直接查询\n\n' +
-            '紧急情况请直接拨打我院急诊电话 333-3625 3999 或 120。'
-        );
+        return {
+            actions: [
+                {
+                    type: 'message',
+                    speaker: 'bot',
+                    text: '您好！我是酆江市第三医院在线客服，已收到您的咨询。稍后会有工作人员为您跟进处理，' +
+                          '如您方便，可以留下联系方式（手机号/就诊卡号）和具体问题，我们将在 08:00–21:00 内回复您。\n\n' +
+                          '💡 快速操作：\n' +
+                          ' · 回复【转接+医生姓名】可转接对应医生开启直接对话\n' +
+                          ' · 回复【预约挂号】【工作时间】【地址交通】【检查报告】【医保结算】等关键词可直接查询\n\n' +
+                          '紧急情况请直接拨打我院急诊电话 333-3625 3999 或 120。'
+                }
+            ]
+        };
     }
 
     const history = loadChatHistory();
@@ -1061,6 +1130,98 @@
         if (lastDoctorMsg) currentSpeaker = 'doctor-lu';
     }
 
+    // ===== 串行调度 bot 回复序列：每条都有独立「思考/打字中」动画 + 随机延迟 =====
+    function randomBetween(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    // 根据消息文本长度估算思考/打字时长（毫秒），让反应更真实
+    function estimateTypingDelay(action) {
+        if (action.type !== 'message') return 0;
+        const txt = action.text || '';
+        const approxLen = (action.useHtml
+            ? txt.replace(/<[^>]+>/g, '').length
+            : txt.length
+        );
+        if (approxLen <= 18)  return randomBetween(700, 1200);
+        if (approxLen <= 55)  return randomBetween(1200, 2000);
+        if (approxLen <= 140) return randomBetween(1800, 2800);
+        return randomBetween(2500, 3800);
+    }
+    // 两条连续 bot 消息之间的「接话停顿」
+    function interDelay(action) {
+        if (action.type === 'divider')     return randomBetween(650, 1100);
+        if (action.type === 'message')     return randomBetween(500, 900);
+        // switchSpeaker / setStage 不占视觉时间，但给一点微停顿更自然
+        return randomBetween(150, 350);
+    }
+    // 执行序列：按序串行显示每一条 bot 动作，每条消息先显示打字中 → 延迟 → 再替换为真实消息
+    function runBotActions(actions, onDone) {
+        const btn = document.getElementById('chatSendBtn');
+        if (!Array.isArray(actions) || actions.length === 0) {
+            if (btn) btn.disabled = false;
+            if (typeof onDone === 'function') onDone();
+            return;
+        }
+        let i = 0;
+        function next() {
+            if (i >= actions.length) {
+                if (btn) btn.disabled = false;
+                if (typeof onDone === 'function') onDone();
+                return;
+            }
+            const a = actions[i++];
+            const timeBefore = interDelay(a);
+            setTimeout(() => {
+                if (a.type === 'switchSpeaker') {
+                    currentSpeaker = a.speaker;
+                    next();
+                    return;
+                }
+                if (a.type === 'setStage') {
+                    doctorStage = a.stage || 'intro';
+                    next();
+                    return;
+                }
+                if (a.type === 'divider') {
+                    appendDivider(a.text);
+                    next();
+                    return;
+                }
+                if (a.type === 'message') {
+                    // ① 先按该条消息的 speaker 显示「打字中」
+                    const typing = appendMessage('bot', '', {
+                        isTyping: true,
+                        speaker: a.speaker || currentSpeaker
+                    });
+                    const delay = estimateTypingDelay(a);
+                    setTimeout(() => {
+                        // ② 到点移除打字中，显示真实消息
+                        if (typing && typing.wrap && typing.wrap.parentNode) typing.wrap.remove();
+                        const now = nowStr();
+                        const msgOpts = {
+                            time: now,
+                            speaker: a.speaker || currentSpeaker
+                        };
+                        if (a.useHtml) msgOpts.useHtml = true;
+                        appendMessage('bot', a.text, msgOpts);
+                        history.push({
+                            role: 'bot',
+                            text: a.text,
+                            time: now,
+                            speaker: a.speaker || currentSpeaker,
+                            useHtml: !!a.useHtml
+                        });
+                        saveChatHistory(history);
+                        next();
+                    }, delay);
+                    return;
+                }
+                next();
+            }, timeBefore);
+        }
+        next();
+    }
+
     function sendMessage() {
         const input = document.getElementById('chatInput');
         const btn = document.getElementById('chatSendBtn');
@@ -1074,109 +1235,16 @@
         input.value = '';
         btn.disabled = true;
 
-        // 显示"输入中"提示，头像按当前对话方（客服/主任）
-        const typing = appendMessage('bot', '', {
-            isTyping: true,
-            speaker: currentSpeaker
+        // 先拿回复计划（actions 数组），再交给调度器逐条显示（每条都有独立反应时间）
+        const plan = botReplyFor(text);
+        const actions = (plan && Array.isArray(plan.actions)) ? plan.actions : [
+            // 兼容老格式：普通字符串返回（兜底为一条客服消息）
+            { type: 'message', speaker: 'bot', text: typeof plan === 'string' ? String(plan) : '' }
+        ];
+
+        runBotActions(actions, () => {
+            setTimeout(() => { try { input.focus(); } catch(_) {} }, 80);
         });
-
-        setTimeout(() => {
-            if (typing && typing.wrap && typing.wrap.parentNode) typing.wrap.remove();
-            const reply = botReplyFor(text);
-            const rTime = nowStr();
-
-            // 处理新的转接陆主任流程（返回 {type:transfer-lu, dividerText, doctorText}）
-            if (reply && typeof reply === 'object' && reply.type === 'transfer-lu') {
-                // ① 插入中间横线+文字（"现在对话的是陆敬尧主任"）
-                appendDivider(reply.dividerText);
-                // ② 切换对话方为主任
-                currentSpeaker = 'doctor-lu';
-                doctorStage = 'intro';
-                // ③ 主任发问候
-                appendMessage('bot', reply.doctorText, { time: rTime, speaker: 'doctor-lu' });
-                history.push({
-                    role: 'bot',
-                    text: reply.doctorText,
-                    time: rTime,
-                    speaker: 'doctor-lu'
-                });
-                saveChatHistory(history);
-                btn.disabled = false;
-                setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
-                return;
-            }
-
-            // 处理主任诊断结束 → 自动下线并转回客服（发完病历号后）
-            if (reply && typeof reply === 'object' && reply.type === 'director-done-return-bot') {
-                const useHtml = !!reply.useHtml;
-                // ① 主任先发带病历号的回复
-                appendMessage('bot', reply.doctorText, {
-                    time: rTime,
-                    speaker: 'doctor-lu',
-                    useHtml
-                });
-                history.push({
-                    role: 'bot',
-                    text: reply.doctorText,
-                    time: rTime,
-                    speaker: 'doctor-lu',
-                    useHtml
-                });
-                saveChatHistory(history);
-
-                // ② 插入中间横线+文字（主任下线，转回客服）
-                appendDivider(reply.dividerText);
-
-                // ③ 切换回客服对话方
-                currentSpeaker = 'bot';
-                doctorStage = 'intro';
-
-                // ④ 客服发一句转回问候
-                const nextTime = nowStr();
-                appendMessage('bot', reply.botText, {
-                    time: nextTime,
-                    speaker: 'bot'
-                });
-                history.push({
-                    role: 'bot',
-                    text: reply.botText,
-                    time: nextTime,
-                    speaker: 'bot'
-                });
-                saveChatHistory(history);
-                btn.disabled = false;
-                setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
-                return;
-            }
-
-            // 处理主任阶段命中（返回 {speaker, text, useHtml?}）
-            if (reply && typeof reply === 'object' && reply.speaker === 'doctor-lu') {
-                const useHtml = !!reply.useHtml;
-                appendMessage('bot', reply.text, {
-                    time: rTime,
-                    speaker: 'doctor-lu',
-                    useHtml
-                });
-                history.push({
-                    role: 'bot',
-                    text: reply.text,
-                    time: rTime,
-                    speaker: 'doctor-lu',
-                    useHtml
-                });
-                saveChatHistory(history);
-                btn.disabled = false;
-                setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
-                return;
-            }
-
-            // 默认：客服纯文本
-            appendMessage('bot', reply, { time: rTime, speaker: currentSpeaker });
-            history.push({ role: 'bot', text: reply, time: rTime, speaker: currentSpeaker });
-            saveChatHistory(history);
-            btn.disabled = false;
-            setTimeout(() => { try { input.focus(); } catch(_){} }, 50);
-        }, 900 + Math.random() * 600);
     }
 
     function sendQuick(text) {

@@ -560,24 +560,29 @@
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .modal-box {
             width: 100%;
-            max-width: 960px;
+            max-width: 980px;
             background: #fff;
             border-radius: 14px;
             box-shadow: 0 24px 80px rgba(0,0,0,0.3);
             overflow: hidden;
             animation: popIn 0.22s ease both;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
         @keyframes popIn { from{transform: translateY(14px) scale(0.99); opacity:0} to{transform: translateY(0) scale(1); opacity:1} }
         .modal-header {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 18px 26px;
+            padding: 16px 24px;
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: #fff;
+            flex-shrink: 0;
         }
         .modal-header .modal-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 0.6px;
             display: flex; align-items: center; gap: 12px;
         }
         .modal-header .modal-title .code-chip {
@@ -585,73 +590,234 @@
             padding: 3px 12px;
             background: rgba(255,255,255,0.16);
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-family: "Consolas","Courier New", monospace;
             letter-spacing: 1.5px;
         }
         .modal-header .modal-close {
-            width: 34px; height: 34px;
+            width: 32px; height: 32px;
             border: none;
             background: rgba(255,255,255,0.14);
             color: #fff;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
         .modal-header .modal-close:hover { background: rgba(255,255,255,0.26); transform: rotate(90deg); }
+
+        /* ===== 顶部影像 Hero 区：固定在 Modal 最上方，首屏完全可见，不需要滑动 ===== */
+        .modal-hero {
+            position: relative;
+            width: 100%;
+            height: 38vh;
+            min-height: 280px;
+            max-height: 460px;
+            background: #000;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .modal-hero .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0;
+            transform: scale(1.12);
+            transition: opacity 0.16s ease, transform 0.32s ease;
+        }
+        .modal-hero .hero-img.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* 第4条刷新后的惊吓跳脸：突然闪现 + 极快放大 + 轻微抖动 */
+        .modal-hero .hero-img.jump-scare {
+            animation: jumpScare 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+        }
+        @keyframes jumpScare {
+            0%   { opacity: 0; transform: scale(0.55); filter: brightness(2.2) blur(2px); }
+            18%  { opacity: 1; transform: scale(1.22); filter: brightness(1.6) blur(0.2px); }
+            45%  { opacity: 1; transform: scale(1);    filter: brightness(1.1) blur(0); }
+            68%  { opacity: 1; transform: scale(1.03) translateX(-2px); filter: brightness(1) contrast(1.1); }
+            100% { opacity: 1; transform: scale(1);    filter: brightness(1); }
+        }
+        /* 刷新按钮失败状态（真实感） */
+        .img-failed {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: repeating-linear-gradient(
+                45deg, #f2f3f5, #f2f3f5 12px, #ebecef 12px, #ebecef 24px
+            );
+            color: #6b7b86;
+            text-align: center;
+            padding: 20px 24px;
+            gap: 14px;
+        }
+        .img-failed .failed-icon {
+            width: 72px; height: 72px;
+            color: #a1adb7;
+            background: #fff;
+            border: 1.5px solid #d6dde3;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        .img-failed .failed-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #42505b;
+            letter-spacing: 0.5px;
+        }
+        .img-failed .failed-sub {
+            font-size: 12px;
+            color: #7b8a95;
+            margin-top: -6px;
+            max-width: 520px;
+            line-height: 1.8;
+            font-family: "Consolas","Courier New", monospace;
+        }
+        .img-failed .failed-code {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 8px;
+            background: #fff;
+            border: 1px solid #dce3e8;
+            color: #5a6a75;
+            border-radius: 4px;
+            font-size: 11.5px;
+            font-family: "Consolas","Courier New", monospace;
+            letter-spacing: 1px;
+        }
+        .img-failed .btn-refresh {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 4px;
+            height: 40px; padding: 0 22px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(41,128,185,0.3);
+            transition: all 0.2s ease;
+        }
+        .img-failed .btn-refresh:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(41,128,185,0.38); }
+        .img-failed .btn-refresh:active { transform: translateY(0); }
+        .img-failed .btn-refresh.loading { pointer-events: none; opacity: 0.85; }
+        .img-failed .btn-refresh svg.spin { animation: spin 0.9s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* 影像缺失提示横幅（在影像失败时贴在 Hero 最底部一行小字） */
+        .img-missing-bar {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            padding: 6px 18px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-align: left;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 模态框全局加载遮罩（虚假加载效果） */
+        .modal-loading {
+            position: absolute; inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 20;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px;
+            color: #4a5a63;
+        }
+        .modal-loading .spinner {
+            width: 42px; height: 42px;
+            border: 3.5px solid rgba(41,128,185,0.18);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .modal-loading .loading-text {
+            font-size: 13.5px;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #3e4e58;
+        }
+        .modal-loading .loading-bar-wrap {
+            width: 240px; height: 6px;
+            background: #e6ebee;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .modal-loading .loading-bar {
+            position: absolute; top:0; left:0; bottom:0;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+        .modal-loading .loading-percent {
+            font-size: 12px;
+            font-family: "Consolas","Courier New", monospace;
+            color: #7b8a95;
+            letter-spacing: 1px;
+        }
+        /* 闪白层：刷新成功瞬间整个屏幕闪一下白压迫感 */
+        .flash-white {
+            position: fixed; inset: 0;
+            background: #fff;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .flash-white.flash {
+            animation: flashWhite 0.42s ease both;
+        }
+        @keyframes flashWhite {
+            0%   { opacity: 0; }
+            15%  { opacity: 0.95; }
+            38%  { opacity: 0.45; }
+            100% { opacity: 0; }
+        }
+
         .modal-body {
-            padding: 26px 30px 32px;
+            padding: 22px 30px 28px;
             color: #2b3a44;
             font-size: 13.5px;
             line-height: 2;
+            overflow-y: auto;
+            flex: 1;
         }
-        .modal-body .img-wrap {
-            text-align: center;
-            padding: 14px 14px 22px;
-            margin-bottom: 18px;
-            border-bottom: 1px dashed rgba(0,0,0,0.12);
-        }
-        .modal-body .img-wrap img {
-            max-width: 100%;
-            max-height: 560px;
-            border-radius: 10px;
-            box-shadow: 0 10px 32px rgba(0,0,0,0.12);
-            display: inline-block;
-        }
-        .modal-body .img-wrap .img-caption {
-            margin-top: 10px;
-            color: var(--text-light);
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
+        /* 图片从正文里移到顶部 hero，这里保留 img-wrap 只做兼容不显示 */
+        .modal-body .img-wrap { display: none; }
         .mr-h1 {
             font-size: 22px;
             font-weight: 800;
             color: var(--primary-dark);
             letter-spacing: 3px;
             text-align: center;
-            padding: 6px 0 14px;
-            margin-bottom: 16px;
+            padding: 2px 0 12px;
+            margin-bottom: 14px;
             border-bottom: 2px solid rgba(26,82,118,0.35);
         }
         .mr-h2 {
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 700;
             color: var(--primary);
-            letter-spacing: 1px;
-            margin: 18px 0 8px;
+            letter-spacing: 0.8px;
+            margin: 16px 0 8px;
             padding: 6px 12px;
             background: linear-gradient(90deg, rgba(41,128,185,0.08), transparent);
             border-left: 4px solid var(--primary);
         }
-        .mr-h2:first-of-type { margin-top: 6px; }
+        .mr-h2:first-of-type { margin-top: 2px; }
         .mr-row {
-            padding: 4px 0;
+            padding: 3px 0;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 4px 22px;
+            gap: 3px 22px;
         }
         .mr-row.single { grid-template-columns: 1fr; }
         .mr-row span {
@@ -662,11 +828,11 @@
             font-weight: 700;
             margin-right: 4px;
         }
-        .mr-list { margin: 4px 0; padding-left: 22px; }
+        .mr-list { margin: 3px 0; padding-left: 22px; }
         .mr-list li { padding: 1.5px 0; }
         .mr-sign {
-            margin-top: 24px;
-            padding-top: 16px;
+            margin-top: 22px;
+            padding-top: 14px;
             border-top: 1px dashed rgba(0,0,0,0.12);
             display: flex;
             justify-content: space-between;
@@ -680,12 +846,12 @@
             display: inline-block;
             color: #8a1b1b;
             border: 2px solid rgba(169,40,40,0.6);
-            padding: 10px 18px;
+            padding: 9px 16px;
             border-radius: 10px;
             transform: rotate(-7deg);
             font-weight: 800;
             letter-spacing: 4px;
-            font-size: 16px;
+            font-size: 15.5px;
             margin-top: 8px;
             background: rgba(250, 238, 238, 0.55);
             font-family: "STKaiti", "KaiTi", "楷体", serif;
@@ -941,6 +1107,19 @@
         const modalClose = document.getElementById('reportModalClose');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('reportModalBody');
+        const modalHero = document.getElementById('modalHero');
+        const modalLoading = document.getElementById('modalLoading');
+        const loadingBar = document.getElementById('loadingBar');
+        const loadingPercent = document.getElementById('loadingPercent');
+        const flashWhite = document.getElementById('flashWhite');
+
+        // 加载状态全局锁（防止重复触发假进度）
+        let loadingTimer = null;
+        let loadingRAF = null;
+        function clearLoadingT() {
+            if (loadingTimer) { clearTimeout(loadingTimer); loadingTimer = null; }
+            if (loadingRAF) { try { cancelAnimationFrame(loadingRAF); } catch(_) {} loadingRAF = null; }
+        }
 
         // ===== 命中该病历号时返回的多条病例（每条独立卡片 + 点击卡片按钮弹各自详情） =====
         // 每条包含：卡片展示信息（card）+ 详情正文 HTML（detailHtml，含影像图/十节入院记录/签名）
@@ -962,10 +1141,6 @@
                 modalHeader: '社区获得性肺炎 入院记录详情',
                 detailHtml: (function(){
                     return (
-                        '<div class="img-wrap">' +
-                        '<img src="bingli1.jpg" alt="张小明 影像/扫描件 bingli1">' +
-                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli1）</div>' +
-                        '</div>' +
                         '<h1 class="mr-h1">入 院 记 录</h1>' +
 
                         '<h2 class="mr-h2">一、一般情况</h2>' +
@@ -1057,10 +1232,6 @@
                 modalHeader: '急性广泛前壁心肌梗死 入院记录详情',
                 detailHtml: (function(){
                     return (
-                        '<div class="img-wrap">' +
-                        '<img src="bingli2.jpg" alt="赵国强 影像/扫描件 bingli2">' +
-                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli2）</div>' +
-                        '</div>' +
                         '<h1 class="mr-h1">入 院 记 录</h1>' +
 
                         '<h2 class="mr-h2">一、一般情况</h2>' +
@@ -1071,7 +1242,7 @@
                           '<span><b>民族：</b>汉族</span>' +
                           '<span><b>婚姻：</b>已婚</span>' +
                           '<span><b>职业：</b>退休工人</span>' +
-                          '<span><b>出生地：</b>上海市</span>' +
+                          '<span><b>出生地：</b>酆江市</span>' +
                           '<span><b>病史陈述者：</b>患者本人</span>' +
                           '<span><b>入院时间：</b>2026-08-03 06:50</span>' +
                           '<span><b>记录时间：</b>2026-08-03 07:30</span>' +
@@ -1087,7 +1258,7 @@
                         '<div class="mr-row single"><span><b>高血压病史 10 年</b>，最高 180 / 110 mmHg，平时口服 &ldquo;硝苯地平&rdquo; 控制，血压波动于 140–150 / 90–95 mmHg。否认糖尿病史。否认肝炎结核史。<b>吸烟史 30 年</b>，每天约 20 支，已戒 5 年；偶饮酒。</span></div>' +
 
                         '<h2 class="mr-h2">五、个人史、婚育史</h2>' +
-                        '<div class="mr-row single"><span>生于上海，无疫区接触史。已婚，育有 1 女，配偶及女体健。</span></div>' +
+                        '<div class="mr-row single"><span>生于酆江市，无疫区接触史。已婚，育有 1 女，配偶及女体健。</span></div>' +
 
                         '<h2 class="mr-h2">六、家族史</h2>' +
                         '<div class="mr-row single"><span>父亲 60 岁时因 &ldquo;心梗&rdquo; 去世，母亲健在，否认其他家族遗传病史。</span></div>' +
@@ -1155,10 +1326,6 @@
                 modalHeader: '急性胰腺炎（重症倾向）入院记录详情',
                 detailHtml: (function(){
                     return (
-                        '<div class="img-wrap">' +
-                        '<img src="bingli3.jpg" alt="陈静 影像/扫描件 bingli3">' +
-                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli3）</div>' +
-                        '</div>' +
                         '<h1 class="mr-h1">入 院 记 录</h1>' +
 
                         '<h2 class="mr-h2">一、一般情况</h2>' +
@@ -1169,7 +1336,7 @@
                           '<span><b>民族：</b>汉族</span>' +
                           '<span><b>婚姻：</b>已婚</span>' +
                           '<span><b>职业：</b>公司经理</span>' +
-                          '<span><b>出生地：</b>广东省广州市</span>' +
+                          '<span><b>出生地：</b>酆江市</span>' +
                           '<span><b>病史陈述者：</b>患者本人</span>' +
                           '<span><b>入院时间：</b>2026-08-03 01:20</span>' +
                           '<span><b>记录时间：</b>2026-08-03 02:00</span>' +
@@ -1256,10 +1423,6 @@
                 modalHeader: '认知功能障碍（慢性噬神经性全组织崩解症）入院记录详情',
                 detailHtml: (function(){
                     return (
-                        '<div class="img-wrap">' +
-                        '<img src="bingli4.jpg" alt="——BO3 影像/扫描件 bingli4">' +
-                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli4）</div>' +
-                        '</div>' +
                         '<h1 class="mr-h1">入 院 记 录</h1>' +
 
                         '<h2 class="mr-h2">一、一般情况</h2>' +
@@ -1270,7 +1433,7 @@
                           '<span><b>民族：</b>————</span>' +
                           '<span><b>婚姻：</b>————</span>' +
                           '<span><b>职业：</b>————</span>' +
-                          '<span><b>出生地：</b>————</span>' +
+                          '<span><b>出生地：</b>酆江市</span>' +
                           '<span><b>病史陈述者：</b>——已报废</span>' +
                           '<span><b>入院时间：</b>————</span>' +
                           '<span><b>记录时间：</b>————</span>' +
@@ -1347,6 +1510,115 @@
             }
         ];
 
+        function fakeLoadingThen(caseIndex, onDone) {
+            clearLoadingT();
+            if (!modalLoading || !loadingBar || !loadingPercent) { onDone(); return; }
+            modalLoading.style.display = 'flex';
+            const TOTAL_MS = 900 + Math.floor(Math.random() * 600); // 900~1500ms
+            const START = Date.now();
+            if (loadingBar) loadingBar.style.width = '0%';
+            if (loadingPercent) loadingPercent.textContent = '0 %';
+            function tick() {
+                const p = Math.min(1, (Date.now() - START) / TOTAL_MS);
+                const percent = Math.min(100, Math.round(p * 100));
+                if (loadingBar) loadingBar.style.width = percent + '%';
+                if (loadingPercent) loadingPercent.textContent = percent + ' %';
+                if (p >= 1) {
+                    loadingTimer = setTimeout(() => {
+                        modalLoading.style.display = 'none';
+                        onDone && onDone();
+                    }, 180);
+                } else {
+                    loadingRAF = requestAnimationFrame(tick);
+                }
+            }
+            loadingRAF = requestAnimationFrame(tick);
+        }
+        function renderHeroNormal(imgSrc, imgAlt) {
+            if (!modalHero) return;
+            modalHero.innerHTML = '';
+            const img = document.createElement('img');
+            img.className = 'hero-img';
+            img.src = imgSrc;
+            img.alt = imgAlt || '影像图';
+            img.onerror = function() {
+                img.style.background = '#000';
+                img.style.opacity = '0';
+                // 失败兜底：显示占位文本
+                modalHero.innerHTML =
+                    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
+            };
+            img.onload = function() {
+                requestAnimationFrame(() => { img.classList.add('show'); });
+            };
+            modalHero.appendChild(img);
+        }
+        // BO3 第 4 条专属：失败刷新 + 点一下刷新闪屏 + 突然出现跳脸大
+        function renderHeroRefreshable(imgSrc, imgAlt) {
+            if (!modalHero) return;
+            modalHero.innerHTML = '';
+            const wrap = document.createElement('div');
+            wrap.className = 'img-failed';
+            wrap.innerHTML =
+                '<div class="failed-icon" aria-hidden="true">' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>' +
+                    '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
+                    '<line x1="21" y1="15" x2="13.5" y2="7.5"></line>' +
+                    '<line x1="13" y1="20" x2="7" y2="14"></line>' +
+                    '<line x1="4" y1="20" x2="3" y2="19"></line>' +
+                    '<line x1="3" y1="8" x2="5" y2="8"></line>' +
+                  '</svg>' +
+                '</div>' +
+                '<div class="failed-title">影像加载失败：远程节点无响应</div>' +
+                '<div class="failed-sub">' +
+                  '远程影像归档与通信系统（PACS）&nbsp;连接超时，当前仅能加载文字结构化记录。<br>' +
+                  '若需查看原始影像/扫描件，可尝试重新建立安全链路。' +
+                '</div>' +
+                '<div><span class="failed-code">ERR_CODE:&nbsp;IMG-FETCH-504&nbsp;|&nbsp;NODE=fj3-arch-pacs-02</span></div>' +
+                '<button type="button" class="btn-refresh" id="btnHeroRefresh">' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<polyline points="23 4 23 10 17 10"></polyline>' +
+                    '<polyline points="1 20 1 14 7 14"></polyline>' +
+                    '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>' +
+                  '</svg>' +
+                  '<span>重新加载影像</span>' +
+                '</button>' +
+                '<div class="img-missing-bar">影像缺失状态：仅电子文本可读取 · 病案号 ' + HIT_CODE + ' · 若持续失败请联系信息科（内线 8037）</div>';
+            modalHero.appendChild(wrap);
+            const btn = document.getElementById('btnHeroRefresh');
+            if (btn) {
+                btn.addEventListener('click', function onHeroRefresh() {
+                    btn.classList.add('loading');
+                    const span = btn.querySelector('span');
+                    const icon = btn.querySelector('svg');
+                    if (span) span.textContent = '正在重新建立连接…';
+                    if (icon) { icon.classList.add('spin'); icon.setAttribute('class', icon.getAttribute('class').replace(/spin/, '') + ' spin'); }
+                    const delay = 600 + Math.floor(Math.random() * 350);
+                    setTimeout(() => {
+                        // 1. 触发全屏闪白一下
+                        if (flashWhite) {
+                            flashWhite.classList.remove('flash');
+                            // 强制重排
+                            void flashWhite.offsetWidth;
+                            flashWhite.classList.add('flash');
+                            setTimeout(() => flashWhite.classList.remove('flash'), 460);
+                        }
+                        // 2. hero 区域换成图片，用 jump-scare 动画突然出现
+                        modalHero.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.className = 'hero-img jump-scare';
+                        img.src = imgSrc;
+                        img.alt = imgAlt || '影像图';
+                        img.onerror = function() {
+                            modalHero.innerHTML =
+                                '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
+                        };
+                        modalHero.appendChild(img);
+                    }, delay);
+                });
+            }
+        }
         function openModal(caseIndex) {
             if (!modal || !modalBody) return;
             const c = CASES[caseIndex];
@@ -1356,16 +1628,36 @@
                     '<span>' + (c.modalHeader || '入院记录 · 电子病历详情') + '</span>' +
                     '<span class="code-chip">' + HIT_CODE + '</span>';
             }
-            modalBody.innerHTML = c.detailHtml;
+            // 先放好正文（此时被加载遮罩盖住），hero 先清空
+            if (modalBody) modalBody.innerHTML = c.detailHtml;
+            if (modalHero) modalHero.innerHTML = '';
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
-            setTimeout(() => { try { modalClose && modalClose.focus(); } catch(_) {} }, 180);
+            // 虚假加载：900~1500ms 后再真正呈现 hero + 内容
+            fakeLoadingThen(caseIndex, function() {
+                // 渲染 hero：前 3 条常规显示，第 4 条（index===3）失败刷新
+                const imgSrc = c.card && c.card.thumb ? String(c.card.thumb) : '';
+                const imgAlt = (c.card && c.card.thumbAlt) ? String(c.card.thumbAlt) : '影像/扫描件';
+                if (caseIndex === 3) {
+                    renderHeroRefreshable(imgSrc, imgAlt);
+                } else {
+                    renderHeroNormal(imgSrc, imgAlt);
+                }
+                try { modalBody && modalBody.scrollTo(0, 0); } catch(_) {}
+                try { modalClose && modalClose.focus(); } catch(_) {}
+            });
         }
         function closeModal() {
             if (!modal) return;
+            clearLoadingT();
             modal.classList.remove('show');
             document.body.style.overflow = '';
+            if (modalLoading) modalLoading.style.display = 'none';
+            if (loadingBar) loadingBar.style.width = '0%';
+            if (loadingPercent) loadingPercent.textContent = '0 %';
             if (modalBody) modalBody.innerHTML = '';
+            if (modalHero) modalHero.innerHTML = '';
+            if (flashWhite) flashWhite.classList.remove('flash');
         }
         if (modalClose) modalClose.addEventListener('click', closeModal);
         if (modal) {
@@ -1480,10 +1772,25 @@
                 </div>
                 <button id="reportModalClose" class="modal-close" type="button" aria-label="关闭">✕</button>
             </div>
+            <!-- 顶部影像 Hero：首屏完全可见，无需滑动即可看整张影像图 -->
+            <div class="modal-hero" id="modalHero">
+                <!-- 动态注入：hero-img 或 加载失败刷新按钮 或 加载骨架 -->
+            </div>
             <div class="modal-body" id="reportModalBody">
-                <!-- 打开时由 JS 按病例索引（CASES[index]）动态填：bingliX 照片 + 完整入院记录 + 医师签章 -->
+                <!-- 打开时由 JS 按病例索引（CASES[index]）动态填：完整入院记录 + 医师签章 -->
+            </div>
+            <!-- 虚假加载覆盖层：打开时闪一下，制造电子病历库检索悬念 -->
+            <div class="modal-loading" id="modalLoading" style="display:none;">
+                <div class="spinner"></div>
+                <div class="loading-text">正在从电子病历库检索原始档案…</div>
+                <div class="loading-bar-wrap">
+                    <div class="loading-bar" id="loadingBar"></div>
+                </div>
+                <div class="loading-percent" id="loadingPercent">0 %</div>
             </div>
         </div>
     </div>
+    <!-- 闪白全屏层（第4条刷新时触发一瞬间白屏压迫感） -->
+    <div class="flash-white" id="flashWhite"></div>
 </body>
 </html>

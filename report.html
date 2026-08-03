@@ -481,48 +481,40 @@
             flex-wrap: wrap;
         }
         .report-card .info .title {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             color: var(--primary-dark);
-            letter-spacing: 0.6px;
+            letter-spacing: 0.3px;
         }
         .report-card .info .tag {
-            display: inline-block;
-            padding: 3px 10px;
-            font-size: 12px;
-            color: var(--primary);
-            background: rgba(41,128,185,0.09);
-            border-radius: 20px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            display: none; /* 表面不展示任何标签，避免剧情化提示 */
         }
         .report-card .info .tag.urgent {
-            color: #b3740b;
-            background: rgba(241,196,15,0.14);
+            display: none;
         }
         .report-card .info .meta {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 6px 22px;
-            margin: 10px 0 6px;
-            color: #4a5a63;
-            font-size: 13px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 2px 18px;
+            margin: 8px 0 4px;
+            color: #566771;
+            font-size: 12.5px;
             line-height: 1.9;
         }
         .report-card .info .meta span b {
-            color: var(--primary-dark);
-            font-weight: 600;
-            margin-right: 4px;
+            color: #38576b;
+            font-weight: 500;
+            margin-right: 3px;
         }
         .report-card .info .summary {
             color: var(--text-light);
-            font-size: 12.5px;
+            font-size: 12px;
             line-height: 1.9;
-            padding: 8px 12px;
-            background: #f6f9fb;
-            border-left: 3px solid var(--primary-light);
-            border-radius: 0 6px 6px 0;
-            margin-top: 10px;
+            margin-top: 6px;
+            padding: 0;
+            background: transparent;
+            border-left: none;
+            border-radius: 0;
         }
         .report-card .actions {
             display: flex;
@@ -952,24 +944,22 @@
 
         // ===== 命中该病历号时返回的多条病例（每条独立卡片 + 点击卡片按钮弹各自详情） =====
         // 每条包含：卡片展示信息（card）+ 详情正文 HTML（detailHtml，含影像图/十节入院记录/签名）
+        // 表面卡片刻意保持朴素，无剧情化高亮，防止玩家从外面一眼看出异常
         const CASES = [
             // ——————— 第 1 条：张小明 · 社区获得性肺炎（bingli1）———————
             {
                 card: {
-                    title: '社区获得性肺炎 · 入院记录',
-                    tags: [
-                        { text: '呼吸内科', },
-                        { text: '2026-08-03' }
-                    ],
-                    patient: '张小明 &nbsp; 男 / 22 岁',
+                    title: '社区获得性肺炎 入院记录',
+                    tags: [],
+                    patient: '张小明  男 / 22 岁',
                     admitTime: '2026-08-03 11:40',
-                    doctor: '沈嘉彦 &nbsp;（呼吸与危重症医学科）',
-                    summary:
-                        '<b>主要诊断：</b>社区获得性肺炎（右下肺）。建议住院行经验性抗感染及对症支持治疗。',
+                    doctor: '沈嘉彦',
+                    dept: '呼吸内科',
+                    summary: '呼吸内科收治，社区获得性肺炎（右下肺）。',
                     thumb: 'bingli1.jpg',
                     thumbAlt: '张小明 本次就诊影像/扫描件'
                 },
-                modalHeader: '社区获得性肺炎 · 入院记录详情',
+                modalHeader: '社区获得性肺炎 入院记录详情',
                 detailHtml: (function(){
                     return (
                         '<div class="img-wrap">' +
@@ -1054,21 +1044,17 @@
             // ——————— 第 2 条：赵国强 · 急性广泛前壁心梗（bingli2）———————
             {
                 card: {
-                    title: '急性广泛前壁心肌梗死 · 入院记录',
-                    tags: [
-                        { text: 'CCU 告病危', urgent: true },
-                        { text: '心血管内科' },
-                        { text: '2026-08-03' }
-                    ],
-                    patient: '赵国强 &nbsp; 男 / 58 岁',
+                    title: '急性心肌梗死 入院记录',
+                    tags: [],
+                    patient: '赵国强  男 / 58 岁',
                     admitTime: '2026-08-03 06:50',
-                    doctor: '陆思远 &nbsp;（心血管内科 · 冠心病监护室）',
-                    summary:
-                        '<b>主要诊断：</b>急性广泛前壁心肌梗死（Killip Ⅰ级），合并高血压病 3 级（极高危）。建议 CCU 监护并急诊血运重建。',
+                    doctor: '陆思远',
+                    dept: '心血管内科',
+                    summary: '心血管内科收治，急性广泛前壁心肌梗死，合并高血压病 3 级。',
                     thumb: 'bingli2.jpg',
                     thumbAlt: '赵国强 本次就诊影像/扫描件'
                 },
-                modalHeader: '急性广泛前壁心肌梗死 · 入院记录详情',
+                modalHeader: '急性广泛前壁心肌梗死 入院记录详情',
                 detailHtml: (function(){
                     return (
                         '<div class="img-wrap">' +
@@ -1156,21 +1142,17 @@
             // ——————— 第 3 条：陈静 · 急性胰腺炎（重症倾向，bingli3）———————
             {
                 card: {
-                    title: '急性胰腺炎（重症倾向）· 入院记录',
-                    tags: [
-                        { text: '告病重', urgent: true },
-                        { text: '消化内科' },
-                        { text: '2026-08-03' }
-                    ],
-                    patient: '陈静 &nbsp; 女 / 45 岁',
+                    title: '急性胰腺炎 入院记录',
+                    tags: [],
+                    patient: '陈静  女 / 45 岁',
                     admitTime: '2026-08-03 01:20',
-                    doctor: '秦雨辰 &nbsp;（消化内科 · 重症监护团队）',
-                    summary:
-                        '<b>主要诊断：</b>急性胰腺炎（重症倾向，高脂血症性）合并胰周渗出。建议禁食+胃肠减压及综合支持治疗。',
+                    doctor: '秦雨辰',
+                    dept: '消化内科',
+                    summary: '消化内科收治，急性胰腺炎（高脂血症性，伴胰周渗出）。',
                     thumb: 'bingli3.jpg',
                     thumbAlt: '陈静 本次就诊影像/扫描件'
                 },
-                modalHeader: '急性胰腺炎（重症倾向）· 入院记录详情',
+                modalHeader: '急性胰腺炎（重症倾向）入院记录详情',
                 detailHtml: (function(){
                     return (
                         '<div class="img-wrap">' +
@@ -1256,6 +1238,112 @@
                         '</div>'
                     );
                 })()
+            },
+
+            // ——————— 第 4 条：代号——BO3 · 慢性噬神经性全组织崩解症（bingli4）———————
+            {
+                card: {
+                    title: '认知功能障碍 入院记录',
+                    tags: [],
+                    patient: '——BO3  /  未核',
+                    admitTime: '————',
+                    doctor: '韩景舟',
+                    dept: '神经内科',
+                    summary: '神经内科收治，进行性记忆减退伴全身多发皮肤溃疡。',
+                    thumb: 'bingli4.jpg',
+                    thumbAlt: '——BO3 本次就诊影像/扫描件'
+                },
+                modalHeader: '认知功能障碍（慢性噬神经性全组织崩解症）入院记录详情',
+                detailHtml: (function(){
+                    return (
+                        '<div class="img-wrap">' +
+                        '<img src="bingli4.jpg" alt="——BO3 影像/扫描件 bingli4">' +
+                        '<div class="img-caption">图 1 &nbsp; 本次就诊影像/扫描件（bingli4）</div>' +
+                        '</div>' +
+                        '<h1 class="mr-h1">入 院 记 录</h1>' +
+
+                        '<h2 class="mr-h2">一、一般情况</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>姓名：</b>——BO3</span>' +
+                          '<span><b>性别：</b>————</span>' +
+                          '<span><b>年龄：</b>————</span>' +
+                          '<span><b>民族：</b>————</span>' +
+                          '<span><b>婚姻：</b>————</span>' +
+                          '<span><b>职业：</b>————</span>' +
+                          '<span><b>出生地：</b>————</span>' +
+                          '<span><b>病史陈述者：</b>——已报废</span>' +
+                          '<span><b>入院时间：</b>————</span>' +
+                          '<span><b>记录时间：</b>————</span>' +
+                        '</div>' +
+
+                        '<h2 class="mr-h2">二、主诉</h2>' +
+                        '<div class="mr-row single"><span>进行性记忆减退 6 个月，全身多发性皮肤溃烂伴组织坏死 2 个月。</span></div>' +
+
+                        '<h2 class="mr-h2">三、现病史</h2>' +
+                        '<div class="mr-row single"><span>患者于 6 个月前（约 2001 年 2 月）无明显诱因出现近事记忆明显减退，常忘记刚刚做过的事、记不住约定，反复询问同一问题，定向力下降，外出后偶有迷路。同时伴性格改变，表现为淡漠、易怒。</span></div>' +
+                        '<div class="mr-row single"><span>近 2 个月（约 2001 年 6 月）出现全身多处皮肤不明原因溃烂，始为散在红色斑丘疹，后迅速演变为深在性溃疡，伴明显恶臭、组织坏死脱落，以双下肢及躯干为著。自觉疼痛不明显，与外观严重程度不符。曾在多家医院按 &ldquo;湿疹&rdquo;&ldquo;皮肤感染&rdquo; 治疗，效果极差。</span></div>' +
+                        '<div class="mr-row single"><span>近 1 个月记忆力进一步恶化，已无法独立完成日常活动，近期只能认出兄嫂，无法回忆入院路程。否认发热、寒战、头痛呕吐。发病以来精神萎靡，食欲尚可，二便正常，体重下降约 5 kg。</span></div>' +
+
+                        '<h2 class="mr-h2">四、既往史</h2>' +
+                        '<div class="mr-row single"><span>平素体健。否认高血压、糖尿病史。否认肝炎、结核等传染病史。否认手术外伤史。否认输血史。否认药物及食物过敏史。否认疫区接触史。否认烟酒嗜好。</span></div>' +
+
+                        '<h2 class="mr-h2">五、个人史、婚育史</h2>' +
+                        '<div class="mr-row single"><span>生于原籍，无疫水疫区接触史。未婚，无子女。</span></div>' +
+
+                        '<h2 class="mr-h2">六、家族史</h2>' +
+                        '<div class="mr-row single"><span>否认类似疾病史及家族遗传病史。</span></div>' +
+
+                        '<h2 class="mr-h2">七、体格检查</h2>' +
+                        '<div class="mr-row">' +
+                          '<span><b>T：</b>37.2℃</span>' +
+                          '<span><b>P：</b>88 次/分</span>' +
+                          '<span><b>R：</b>20 次/分</span>' +
+                          '<span><b>BP：</b>128 / 82 mmHg</span>' +
+                        '</div>' +
+                        '<div class="mr-row single"><span>神志清楚，<b>时间、地点定向力差，计算力下降（100 - 7 连续出错），近事记忆明显减退</b>，情绪焦虑。全身皮肤可见散在分布大小不等溃疡，最大约 <b>8 cm × 10 cm</b>，位于右小腿前侧，深达肌层，边缘不规则，基底可见黄白色坏死组织及脓性分泌物，恶臭明显，周围皮肤暗红。双下肢轻度凹陷性水肿。心肺听诊无异常。腹部平软，无压痛，肝脾肋下未及。浅表淋巴结未触及肿大。</span></div>' +
+                        '<div class="mr-row single"><span>神经系统：瞳孔等大等圆，对光反射灵敏，四肢肌力肌张力正常，病理征阴性，深浅感觉未见明显异常。</span></div>' +
+
+                        '<h2 class="mr-h2">八、辅助检查</h2>' +
+                        '<ul class="mr-list">' +
+                          '<li><b>血常规</b>（本院 2001-08-03）：WBC 12.8×10⁹ / L，N 78%，Hb 105 g / L。</li>' +
+                          '<li><b>C 反应蛋白</b>（本院 2001-08-03）：CRP 96 mg / L。</li>' +
+                          '<li><b>皮肤溃疡分泌物培养</b>（本院 2001-08-03）：混合菌群生长，未见特殊病原体。</li>' +
+                          '<li><b>皮肤活检</b>（本院 2001-08-03）：表皮及真皮组织广泛坏死，血管周围炎性细胞浸润，可见大量<b>噬神经现象</b>，特殊染色阴性。</li>' +
+                          '<li><b>头颅 MRI</b>（本院 2001-08-03）：双侧海马、颞叶内侧对称性 T2 高信号，伴脑萎缩改变；PET-CT 示局部葡萄糖代谢明显减低。</li>' +
+                          '<li><b>脑脊液检查</b>（本院 2001-08-03）：蛋白轻度升高 0.65 g / L，细胞数正常，<b>14-3-3 蛋白阳性</b>。</li>' +
+                        '</ul>' +
+
+                        '<h2 class="mr-h2">九、初步诊断</h2>' +
+                        '<div class="mr-row single"><span>' +
+                          '<b>慢性噬神经性全组织崩解症（虚构）</b><br>' +
+                          '　<b>中枢型 —— 重度认知功能障碍</b><br>' +
+                          '　<b>外周型 —— 多发性组织坏死性溃疡</b>' +
+                        '</span></div>' +
+
+                        '<h2 class="mr-h2">十、治疗意见</h2>' +
+                        '<ol class="mr-list">' +
+                          '<li>收神经内科住院，按罕见病上报备案。</li>' +
+                          '<li>绝对卧床，皮肤溃疡请烧伤整形科会诊，加强换药及清创。</li>' +
+                          '<li>营养神经、改善循环、抗氧化治疗。</li>' +
+                          '<li>补充白蛋白，静脉营养支持。</li>' +
+                          '<li>完善全外显子测序及自身免疫性脑炎抗体检测。</li>' +
+                          '<li>心理疏导，家属陪护防意外。</li>' +
+                          '<li>告知家属病情罕见、预后极差，签署相关知情文件。</li>' +
+                        '</ol>' +
+
+                        '<div class="mr-sign">' +
+                          '<div>' +
+                            '<div><b>书写医师：</b>林峰</div>' +
+                            '<div style="margin-top:6px;">审核：酆江市第三医院 神经内科 · 罕见病诊疗组</div>' +
+                          '</div>' +
+                          '<div class="sign-right">' +
+                            '<div><b>医师签名：</b></div>' +
+                            '<div class="sign-stamp">韩景舟 印</div>' +
+                            '<div style="margin-top:10px; font-size:12px; color:var(--text-light);">签发时间：2001-08-03 ————</div>' +
+                          '</div>' +
+                        '</div>'
+                    );
+                })()
             }
         ];
 
@@ -1299,23 +1387,18 @@
         }
 
         function renderCasesHit() {
-            // 卡片不再输出 thumb（表面不展示照片），仅输出 info + actions
+            // 卡片表面保持朴素：不输出任何标签、不展示缩略图，仅展示基础信息+一行简版诊断
             const cardsHtml = CASES.map(function(c, i){
                 const cs = c.card;
-                const tags = (cs.tags || []).map(function(t){
-                    return '<span class="tag' + (t.urgent ? ' urgent' : '') + '">' + esc(t.text) + '</span>';
-                }).join('');
                 return (
-                    '<div class="report-card" style="margin-top:' + (i === 0 ? '0' : '18px') + ';">' +
+                    '<div class="report-card" style="margin-top:' + (i === 0 ? '0' : '14px') + ';">' +
                       '<div class="info">' +
                         '<div class="top">' +
-                          '<div class="title">' + esc(cs.title) + '</div>' + tags +
+                          '<div class="title">' + esc(cs.title) + '</div>' +
                         '</div>' +
                         '<div class="meta">' +
-                          '<span><b>患者：</b>' + cs.patient + '</span>' +
-                          '<span><b>病历号：</b>' + esc(HIT_CODE) + '</span>' +
-                          '<span><b>入院时间：</b>' + esc(cs.admitTime) + '</span>' +
-                          '<span><b>开具医师：</b>' + cs.doctor + '</span>' +
+                          '<span><b>患者：</b>' + esc(cs.patient) + ' &nbsp;（' + esc(cs.dept || '') + '）</span>' +
+                          '<span><b>病历号：</b>' + esc(HIT_CODE) + ' &nbsp;·&nbsp; 入院 ' + esc(cs.admitTime) + '</span>' +
                         '</div>' +
                         '<div class="summary">' + cs.summary + '</div>' +
                       '</div>' +
@@ -1329,9 +1412,9 @@
             result.classList.remove('hidden');
             result.innerHTML =
                 '<div class="result-hit">' +
-                '<div class="hit-title"><span class="badge">✓</span>查询成功：已匹配该病历号，共 <b>' + CASES.length + '</b> 条电子报告</div>' +
-                '<div style="margin-top:2px; margin-bottom:6px; color:#4a5a63; font-size:13px; line-height:2;">' +
-                '以下为该病历号下的入院记录列表，点击每条右侧【查看详情】可查看完整病例（含影像/扫描件原文 + 完整结构化入院记录 + 医师签章）。' +
+                '<div class="hit-title" style="padding-bottom:0; border:none;"><span class="badge">✓</span>查询成功：已匹配该病历号，共 ' + CASES.length + ' 条入院记录</div>' +
+                '<div style="margin-top:6px; margin-bottom:6px; color:#566771; font-size:12.5px; line-height:2;">' +
+                '以下为该病历号下的入院记录，点击右侧【查看详情】可查看完整内容。' +
                 '</div>' +
                 cardsHtml +
                 '</div>';

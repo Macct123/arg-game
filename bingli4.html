@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入院记录 · ——BO3 · 慢性噬神经性全组织崩解症（虚构） — 酆江市第三医院</title>
+<meta name="description" content="酆江市第三医院 电子病历（入院记录）详情：慢性噬神经性全组织崩解症（虚构）｜中枢型重度认知功能障碍 · 外周型多发组织坏死性溃疡 · ——BO3。病案号 117-726-623。">
+<style>
+    :root {
+        --primary: #1f6f8b;
+        --primary-dark: #163f5e;
+        --accent: #2bb673;
+        --text: #2b3a44;
+        --sub: #5a6872;
+        --border: #e3e9ee;
+        --bg: #f6f9fc;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+        --shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: "Microsoft YaHei","PingFang SC","Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 15px; line-height: 1.7; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* 顶部栏 */
+    .top-bar { background: #0f1e2b; color: rgba(255,255,255,0.78); font-size: 12.5px; line-height: 40px; }
+    .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px 20px; }
+    .top-bar a { color: rgba(255,255,255,0.78); transition: color .2s; }
+    .top-bar a:hover { color: #fff; }
+    .top-bar-right .divider { color: rgba(255,255,255,0.18); margin: 0 10px; }
+    .lang-switch { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.14); padding: 3px 10px; border-radius: 12px; font-size: 12px; cursor: pointer; margin-left: 6px; transition: all .2s; }
+    .lang-switch.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* 头部 */
+    .header { background: #fff; border-bottom: 4px solid var(--primary); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 50; }
+    .header-main { padding: 22px 20px 16px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .brand-logo { width: 66px; height: 66px; border-radius: 50%; background: #fff; border: 2px solid #dde7ec; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .brand-logo img { width: 90%; height: 90%; object-fit: contain; }
+    .brand-text h1 { font-size: 22px; color: var(--primary-dark); letter-spacing: 1.2px; }
+    .brand-text p { font-size: 12.5px; color: var(--sub); margin-top: 4px; letter-spacing: 0.4px; }
+    .header-search { display: flex; align-items: center; background: #f5f8fb; border: 1px solid var(--border); border-radius: 24px; padding: 4px 6px 4px 18px; min-width: 340px; transition: all .2s; }
+    .header-search:focus-within { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(31,111,139,0.12); }
+    .header-search input { flex: 1; background: transparent; border: none; outline: none; font-size: 14px; padding: 7px 6px; color: var(--text); }
+    .header-search button { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .header-search button:hover { background: var(--primary-dark); }
+    .header-search svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* 导航 */
+    .main-nav { background: linear-gradient(90deg, var(--primary-dark), var(--primary)); }
+    .main-nav ul { list-style: none; display: flex; flex-wrap: wrap; }
+    .main-nav a { display: block; padding: 13px 22px; color: #fff; font-size: 15px; font-weight: 500; letter-spacing: 0.4px; transition: background .2s; position: relative; }
+    .main-nav a:hover, .main-nav a.active { background: rgba(0,0,0,0.18); }
+
+    /* 面包屑 */
+    .crumbs { background: #fff; border-bottom: 1px solid var(--border); }
+    .crumbs .container { padding: 12px 20px; font-size: 13px; color: var(--sub); }
+    .crumbs a { color: var(--primary); }
+    .crumbs .sep { margin: 0 8px; color: #b8c1c8; }
+
+    /* 正文两栏 */
+    .page-wrap { padding: 28px 0 56px; }
+    .page-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+
+    /* 侧栏 */
+    .side { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; position: sticky; top: 156px; box-shadow: var(--shadow-sm); }
+    .side h4 { font-size: 15px; color: var(--primary-dark); padding: 0 6px 10px; border-bottom: 2px solid rgba(31,111,139,0.2); margin-bottom: 10px; letter-spacing: 0.5px; }
+    .side .code-badge { display: inline-block; padding: 4px 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border-radius: 20px; font-size: 12px; letter-spacing: 2px; font-family: Consolas, "Courier New", monospace; margin-bottom: 14px; }
+    .side ul { list-style: none; }
+    .side li a { display: block; padding: 10px 12px; border-radius: 6px; font-size: 14px; color: var(--text); transition: all .18s; border-left: 3px solid transparent; }
+    .side li a:hover { background: rgba(31,111,139,0.06); color: var(--primary); border-left-color: var(--primary); padding-left: 14px; }
+    .side .meta { margin-top: 18px; padding: 14px 12px; background: #f4f8fb; border-radius: 8px; font-size: 12.5px; color: var(--sub); line-height: 2; }
+    .side .meta div b { color: var(--primary-dark); display: inline-block; width: 64px; }
+    .back-btn { display: block; margin-top: 16px; padding: 10px 12px; text-align: center; border: 1px solid var(--primary); color: var(--primary); border-radius: 8px; font-size: 13.5px; transition: all .2s; }
+    .back-btn:hover { background: var(--primary); color: #fff; }
+
+    /* 主内容 */
+    .main { background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .hero-image {
+        position: relative; width: 100%;
+        background: radial-gradient(ellipse at center, #1a2127 0%, #05070a 80%);
+        padding: 44px 36px;
+        display: flex; align-items: center; justify-content: center;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .hero-image img {
+        width: 100%; max-height: 540px; object-fit: contain; display: block;
+        border-radius: 4px; box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+    }
+    .hero-caption { position: absolute; left: 36px; bottom: 12px; font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; }
+
+    /* 病历正文通用样式（与 report.html Modal 里的 mr-* 保持一致）*/
+    .doc-body { padding: 32px 44px 40px; color: var(--text); font-size: 15px; line-height: 2; }
+    .doc-code-row { text-align: right; color: #8a949c; font-size: 13px; letter-spacing: 0.6px; margin-bottom: 8px; }
+    .doc-title { font-size: 25px; font-weight: 800; color: var(--primary-dark); letter-spacing: 3px; text-align: center; padding: 6px 0 16px; margin-bottom: 20px; border-bottom: 2px solid rgba(26,82,118,0.32); }
+    .doc-subtitle { text-align: center; font-size: 15px; color: var(--sub); letter-spacing: 1px; margin-bottom: 26px; padding: 8px 0; border-top: 1px dashed rgba(0,0,0,0.1); border-bottom: 1px dashed rgba(0,0,0,0.1); }
+
+    .mr-h2 { font-size: 16.5px; font-weight: 700; color: var(--primary); letter-spacing: 0.8px; margin: 22px 0 12px; padding: 8px 14px; background: linear-gradient(90deg, rgba(41,128,185,0.09), transparent); border-left: 4px solid var(--primary); }
+    .mr-h2:first-of-type { margin-top: 6px; }
+    .mr-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 22px; color: #3c4c56; font-size: 14.5px; line-height: 2.1; }
+    .mr-row.single { grid-template-columns: 1fr; }
+    .mr-row span b { color: #2a4150; }
+    .mr-list { padding-left: 1.6em; margin: 8px 0; line-height: 2.1; color: #3c4c56; }
+    .mr-list li { margin-bottom: 4px; }
+    .mr-list b { color: #2a4150; }
+
+    .mr-sign { margin-top: 30px; padding-top: 18px; border-top: 1px dashed rgba(0,0,0,0.14); display: flex; justify-content: space-between; align-items: flex-end; color: #4a5a63; flex-wrap: wrap; gap: 16px 24px; }
+    .mr-sign .sign-right { text-align: right; }
+    .sign-stamp {
+        display: inline-block; color: #8a1b1b;
+        border: 2px solid rgba(169,40,40,0.6); padding: 10px 22px; border-radius: 10px;
+        transform: rotate(-6deg); font-weight: 800; letter-spacing: 5px; font-size: 17px; margin-top: 10px;
+        background: rgba(250, 238, 238, 0.6);
+        font-family: "STKaiti","KaiTi","楷体",serif;
+    }
+
+    /* 响应式 */
+    @media (max-width: 960px) {
+        .page-layout { grid-template-columns: 1fr; }
+        .side { position: static; }
+        .header-search { min-width: 100%; order: 3; flex-basis: 100%; }
+        .header-main { padding-bottom: 14px; }
+        .doc-body { padding: 22px 20px 28px; }
+        .hero-image { padding: 24px 16px; }
+        .hero-caption { left: 16px; }
+        .mr-sign { flex-direction: column; align-items: flex-start; }
+        .mr-sign .sign-right { text-align: left; }
+        .main-nav a { padding: 12px 16px; font-size: 14px; }
+        .mr-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+        .brand-text h1 { font-size: 18px; letter-spacing: 0.5px; }
+        .brand-text p { font-size: 11.5px; }
+        .brand-logo { width: 54px; height: 54px; }
+        .doc-title { font-size: 20px; letter-spacing: 1.5px; }
+    }
+</style>
+</head>
+<body>
+    <!-- 顶栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-left">
+                <span data-i18n="topDate" id="topDate">今天是 2026年8月4日 星期一</span>
+                <span style="color:rgba(255,255,255,0.2);">|</span>
+                <a href="blank.html" data-i18n="topNotice">公告：门诊挂号时间调整通知</a>
+            </div>
+            <div class="top-bar-right">
+                <a href="blank.html" data-i18n="topSitemap">网站地图</a>
+                <span class="divider">|</span>
+                <a href="blank.html" data-i18n="topAccessibility">无障碍浏览</a>
+                <span class="divider">|</span>
+                <button class="lang-switch active" onclick="switchLang('zh')">中文</button>
+                <button class="lang-switch" onclick="switchLang('en')">English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <div class="header">
+        <div class="container header-main">
+            <a href="index.html" class="brand">
+                <div class="brand-logo"><img src="logo.png" alt="酆江市第三医院院徽"></div>
+                <div class="brand-text">
+                    <h1>酆江市第三医院</h1>
+                    <p>Fengjiang Third People&apos;s Hospital · 三级甲等综合医院</p>
+                </div>
+            </a>
+            <div class="header-search">
+                <input type="text" id="siteSearchInput" placeholder="请输入搜索关键词...">
+                <button id="siteSearchBtn" type="button" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <div class="container">
+                <ul>
+                    <li><a href="index.html" data-i18n="navHome">首页</a></li>
+                    <li><a href="about.html" data-i18n="navAbout">医院概况</a></li>
+                    <li><a href="dept.html" data-i18n="navDept">科室导航</a></li>
+                    <li><a href="doctors.html" data-i18n="navDoctor">专家介绍</a></li>
+                    <li><a href="report.html" class="active" data-i18n="navReport">报告查询</a></li>
+                    <li><a href="news.html" data-i18n="navNews">新闻动态</a></li>
+                    <li><a href="contact.html" data-i18n="navContact">联系我们</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 面包屑 -->
+    <div class="crumbs">
+        <div class="container">
+            <a href="index.html">首页</a><span class="sep">›</span>
+            <a href="report.html">报告查询</a><span class="sep">›</span>
+            <span>入院记录 · ——BO3</span>
+        </div>
+    </div>
+
+    <!-- 两栏正文 -->
+    <div class="page-wrap">
+        <div class="container page-layout">
+            <!-- 侧栏 -->
+            <aside class="side">
+                <h4>病历目录</h4>
+                <span class="code-badge">BL-04</span>
+                <ul>
+                    <li><a href="#top">▸ 病历概览</a></li>
+                    <li><a href="#hero">▸ 影像资料</a></li>
+                    <li><a href="#s1">▸ 一、一般情况</a></li>
+                    <li><a href="#s2">▸ 二、主诉</a></li>
+                    <li><a href="#s3">▸ 三、现病史</a></li>
+                    <li><a href="#s4">▸ 四、既往史</a></li>
+                    <li><a href="#s5">▸ 五、个人史、婚育史</a></li>
+                    <li><a href="#s6">▸ 六、家族史</a></li>
+                    <li><a href="#s7">▸ 七、体格检查</a></li>
+                    <li><a href="#s8">▸ 八、辅助检查</a></li>
+                    <li><a href="#s9">▸ 九、初步诊断</a></li>
+                    <li><a href="#s10">▸ 十、治疗意见</a></li>
+                    <li><a href="#sign">▸ 医师签章</a></li>
+                </ul>
+                <div class="meta">
+                    <div><b>患者</b>——BO3（未核）</div>
+                    <div><b>科室</b>神经内科</div>
+                    <div><b>病历号</b>117-726-623</div>
+                    <div><b>入院</b>————</div>
+                    <div><b>记录</b>————</div>
+                    <div><b>公开属性</b>罕见病归档 · 部分脱敏</div>
+                </div>
+                <a class="back-btn" href="report.html">‹ 返回报告查询</a>
+            </aside>
+
+            <!-- 主栏 -->
+            <main class="main" id="top">
+                <div class="hero-image" id="hero">
+                    <img src="bingli4.jpg" alt="——BO3 本次就诊影像/扫描件">
+                    <span class="hero-caption">▲ 影像资料：慢性噬神经性全组织崩解症 · 头颅 MRI（双侧海马 T2 高信号）· ——BO3</span>
+                </div>
+                <div class="doc-body">
+                    <div class="doc-code-row">病案号：117-726-623 ｜ BL-04 ｜ 神经内科 · 罕见病诊疗组（归档）</div>
+                    <h2 class="doc-title">入 院 记 录</h2>
+                    <div class="doc-subtitle">慢性噬神经性全组织崩解症（虚构）｜中枢型重度认知功能障碍 · 外周型多发组织坏死性溃疡 · ——BO3</div>
+
+                    <!-- 嵌入十段正文（段前注入锚点 id=s1~s10） -->
+                    <h2 class="mr-h2">一、一般情况</h2><div class="mr-row"><span><b>姓名：</b>——BO3</span><span><b>性别：</b>————</span><span><b>年龄：</b>————</span><span><b>民族：</b>————</span><span><b>婚姻：</b>————</span><span><b>职业：</b>————</span><span><b>出生地：</b>酆江市</span><span><b>病史陈述者：</b>——已报废</span><span><b>入院时间：</b>————</span><span><b>记录时间：</b>————</span></div><h2 class="mr-h2">二、主诉</h2><div class="mr-row single"><span>进行性记忆减退 6 个月，全身多发性皮肤溃烂伴组织坏死 2 个月。</span></div><h2 class="mr-h2">三、现病史</h2><div class="mr-row single"><span>患者于 6 个月前（约 2001 年 2 月）无明显诱因出现近事记忆明显减退，常忘记刚刚做过的事、记不住约定，反复询问同一问题，定向力下降，外出后偶有迷路。同时伴性格改变，表现为淡漠、易怒。</span></div><div class="mr-row single"><span>近 2 个月（约 2001 年 6 月）出现全身多处皮肤不明原因溃烂，始为散在红色斑丘疹，后迅速演变为深在性溃疡，伴明显恶臭、组织坏死脱落，以双下肢及躯干为著。自觉疼痛不明显，与外观严重程度不符。曾在多家医院按 &ldquo;湿疹&rdquo;&ldquo;皮肤感染&rdquo; 治疗，效果极差。</span></div><div class="mr-row single"><span>近 1 个月记忆力进一步恶化，已无法独立完成日常活动，近期只能认出兄嫂，无法回忆入院路程。否认发热、寒战、头痛呕吐。发病以来精神萎靡，食欲尚可，二便正常，体重下降约 5 kg。</span></div><h2 class="mr-h2">四、既往史</h2><div class="mr-row single"><span>平素体健。否认高血压、糖尿病史。否认肝炎、结核等传染病史。否认手术外伤史。否认输血史。否认药物及食物过敏史。否认疫区接触史。否认烟酒嗜好。</span></div><h2 class="mr-h2">五、个人史、婚育史</h2><div class="mr-row single"><span>生于原籍，无疫水疫区接触史。未婚，无子女。</span></div><h2 class="mr-h2">六、家族史</h2><div class="mr-row single"><span>否认类似疾病史及家族遗传病史。</span></div><h2 class="mr-h2">七、体格检查</h2><div class="mr-row"><span><b>T：</b>37.2℃</span><span><b>P：</b>88 次/分</span><span><b>R：</b>20 次/分</span><span><b>BP：</b>128 / 82 mmHg</span></div><div class="mr-row single"><span>神志清楚，<b>时间、地点定向力差，计算力下降（100 - 7 连续出错），近事记忆明显减退</b>，情绪焦虑。全身皮肤可见散在分布大小不等溃疡，最大约 <b>8 cm × 10 cm</b>，位于右小腿前侧，深达肌层，边缘不规则，基底可见黄白色坏死组织及脓性分泌物，恶臭明显，周围皮肤暗红。双下肢轻度凹陷性水肿。心肺听诊无异常。腹部平软，无压痛，肝脾肋下未及。浅表淋巴结未触及肿大。</span></div><div class="mr-row single"><span>神经系统：瞳孔等大等圆，对光反射灵敏，四肢肌力肌张力正常，病理征阴性，深浅感觉未见明显异常。</span></div><h2 class="mr-h2">八、辅助检查</h2><ul class="mr-list"><li><b>血常规</b>（本院 2001-08-03）：WBC 12.8×10⁹ / L，N 78%，Hb 105 g / L。</li><li><b>C 反应蛋白</b>（本院 2001-08-03）：CRP 96 mg / L。</li><li><b>皮肤溃疡分泌物培养</b>（本院 2001-08-03）：混合菌群生长，未见特殊病原体。</li><li><b>皮肤活检</b>（本院 2001-08-03）：表皮及真皮组织广泛坏死，血管周围炎性细胞浸润，可见大量<b>噬神经现象</b>，特殊染色阴性。</li><li><b>头颅 MRI</b>（本院 2001-08-03）：双侧海马、颞叶内侧对称性 T2 高信号，伴脑萎缩改变；PET-CT 示局部葡萄糖代谢明显减低。</li><li><b>脑脊液检查</b>（本院 2001-08-03）：蛋白轻度升高 0.65 g / L，细胞数正常，<b>14-3-3 蛋白阳性</b>。</li></ul><h2 class="mr-h2">九、初步诊断</h2><div class="mr-row single"><span><b>慢性噬神经性全组织崩解症（虚构）</b><br>　<b>中枢型 —— 重度认知功能障碍</b><br>　<b>外周型 —— 多发性组织坏死性溃疡</b></span></div><h2 class="mr-h2">十、治疗意见</h2><ol class="mr-list"><li>收神经内科住院，按罕见病上报备案。</li><li>绝对卧床，皮肤溃疡请烧伤整形科会诊，加强换药及清创。</li><li>营养神经、改善循环、抗氧化治疗。</li><li>补充白蛋白，静脉营养支持。</li><li>完善全外显子测序及自身免疫性脑炎抗体检测。</li><li>心理疏导，家属陪护防意外。</li><li>告知家属病情罕见、预后极差，签署相关知情文件。</li></ol>
+
+                    <div class="mr-sign" id="sign">
+                        <div>
+                            <div><b>书写医师：</b>林峰</div>
+                            <div><b>审核：</b>酆江市第三医院 神经内科 · 罕见病诊疗组</div>
+                        </div>
+                        <div class="sign-right">
+                            <div><b>医师签名：</b></div>
+                            <div class="sign-stamp">韩景舟 印</div>
+                            <div style="margin-top:10px; font-size:12px; color:var(--sub);">签发时间：2001-08-03 ————</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="site-footer" style="background:#0f1e2b;color:rgba(255,255,255,0.68);padding:36px 0 20px;">
+        <div class="container">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;">
+                <div>
+                    <h4 style="color:#fff;margin-bottom:12px;">医院总机</h4>
+                    <p>📞 咨询电话：0512-3669 8888（总机）</p>
+                    <p>🚑 急诊 24 小时：0512-3669 9120</p>
+                    <p>📮 投诉邮箱：ts@fengjiang-hospital3.gov.cn</p>
+                </div>
+                <div>
+                    <h4 style="color:#fff;margin-bottom:12px;">就医指南</h4>
+                    <p><a href="blank.html" style="color:rgba(255,255,255,0.7)">门诊就诊流程</a></p>
+                    <p><a href="blank.html" style="color:rgba(255,255,255,0.7)">住院患者须知</a></p>
+                    <p><a href="blank.html" style="color:rgba(255,255,255,0.7)">医保政策解读</a></p>
+                    <p><a href="blank.html" style="color:rgba(255,255,255,0.7)">预约挂号指南</a></p>
+                </div>
+                <div>
+                    <h4 style="color:#fff;margin-bottom:12px;">医院地址</h4>
+                    <p data-i18n="footerAddr">地址：酆江市琼湾路76号</p>
+                    <p>邮编：215600</p>
+                    <p>地铁 3 号线 · 琼湾路站 2 号出口东 200 米</p>
+                </div>
+            </div>
+            <div style="margin-top:28px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;font-size:12.5px;letter-spacing:0.3px;">
+                © 2026 酆江市第三医院 &nbsp; 版权所有 &nbsp; 苏ICP备 36699888 号 · 苏公网安备 32050000000366号
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function(){
+            const WEEK=['日','一','二','三','四','五','六'];
+            const el=document.getElementById('topDate');
+            function up(){ const d=new Date(); const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+                if(el) el.textContent='今天是 '+y+'年'+m+'月'+dd+'日 星期'+WEEK[d.getDay()]; }
+            up(); setInterval(up,60*1000);
+        })();
+        function switchLang(l){
+            document.documentElement.lang=l==='zh'?'zh-CN':'en';
+            document.querySelectorAll('.lang-switch').forEach(b=>{
+                b.classList.toggle('active',b.textContent.trim()===(l==='zh'?'中文':'English'));
+            });
+        }
+        (function(){
+            const btn=document.getElementById('siteSearchBtn');
+            const inp=document.getElementById('siteSearchInput');
+            function go(){ const q=(inp&&inp.value||'').trim();
+                window.location.href='search.html'+(q?'?q='+encodeURIComponent(q):''); }
+            btn&&btn.addEventListener('click',go);
+            inp&&inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();go();} });
+        })();
+
+        // 把正文的每个 .mr-h2（一共 10 段）加 id=s1..s10，让侧栏锚点能跳
+        (function(){
+            var hs = document.querySelectorAll('.doc-body .mr-h2');
+            for (var i=0;i<hs.length;i++) { hs[i].id = 's' + (i+1); }
+        })();
+        // 侧栏锚点平滑滚动
+        document.querySelectorAll('.side a[href^="#"]').forEach(a=>{
+            a.addEventListener('click',e=>{
+                const id=a.getAttribute('href').slice(1); if(!id) return;
+                const t=document.getElementById(id); if(!t) return;
+                e.preventDefault();
+                window.scrollTo({top: t.getBoundingClientRect().top + window.pageYOffset - 150, behavior:'smooth'});
+            });
+        });
+    </script>
+</body>
+</html>

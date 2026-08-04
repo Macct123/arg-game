@@ -1,0 +1,9 @@
+# 本地图片去水印备份（恢复原图时用）
+*_dw_backup.*
+*_backup.*
+
+# 本地临时批处理脚本（不入库）
+_batch_*.py
+_diag_*.py
+_remove_watermark.py
+_dew*.py

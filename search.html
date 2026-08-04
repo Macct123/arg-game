@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -520,15 +520,6 @@
             date: '档案日期：2001-09-18 · 公开（公开信息答复）',
             link: 'bo3.html'
         };
-        // 病历号 117-726-623 命中的 5 条入院记录（和 report.html 的 CASES 保持一致）
-        const HIT_CASES_MEDICAL = [
-            { code: 'bingli1', title: '社区获得性肺炎 入院记录', patient: '张小明  男 / 22 岁', dept: '呼吸内科', admit: '2026-08-03 11:40', summary: '呼吸内科收治，社区获得性肺炎（右下肺）。', link: 'bingli1.html' },
-            { code: 'bingli2', title: '急性心肌梗死 入院记录', patient: '赵国强  男 / 58 岁', dept: '心血管内科', admit: '2026-08-03 06:50', summary: '心血管内科收治，急性广泛前壁心肌梗死，合并高血压病 3 级。', link: 'bingli2.html' },
-            { code: 'bingli3', title: '急性胰腺炎 入院记录', patient: '陈静  女 / 45 岁', dept: '消化内科', admit: '2026-08-03 01:20', summary: '消化内科收治，急性胰腺炎（高脂血症性，伴胰周渗出）。', link: 'bingli3.html' },
-            { code: 'bingli4', title: '认知功能障碍 入院记录', patient: '——BO3  /  未核', dept: '神经内科', admit: '————', summary: '神经内科收治，进行性记忆减退伴全身多发皮肤溃疡。', link: 'bingli4.html' },
-            { code: 'bingli5', title: '入院记录（电子归档残缺件）', patient: '——BL-05  /  信息残缺', dept: '（未知）', admit: '————', summary: '电子归档残缺病历，结构化字段大部分无法解码，仅影像片段可还原。', link: 'bingli5.html' }
-        ];
-        const MEDICAL_CODE = '117-726-623';
 
         function getQueryParam(name) {
             const s = (window.location.search || '').slice(1);
@@ -541,54 +532,6 @@
                 if (k === name) return v;
             }
             return '';
-        }
-        function escHtml(s) {
-            return String(s).replace(/[&<>"']/g, c => ({
-                '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-            }[c]));
-        }
-        function renderMedicalCases(container) {
-            const frag = document.createDocumentFragment();
-            HIT_CASES_MEDICAL.forEach(function(c, i) {
-                const entry = document.createElement('a');
-                entry.className = 'hit-entry';
-                entry.href = c.link;
-                entry.innerHTML =
-                    '<div class="entry-top">' +
-                      '<div class="entry-key">' +
-                        '<span class="entry-code">' + escHtml(c.code.toUpperCase()) + '</span>' +
-                      '</div>' +
-                      '<div class="entry-meta">' +
-                        escHtml(c.dept) + ' · 入院 ' + escHtml(c.admit) +
-                      '</div>' +
-                    '</div>' +
-                    '<div class="entry-title">' + escHtml(c.title) + '</div>' +
-                    '<div style="margin-top:8px; font-size:13px; color:#5a6a75; line-height:1.9;">' +
-                      '<span><b>患者：</b>' + escHtml(c.patient) + '</span>' +
-                      '<div style="margin-top:4px;">' + escHtml(c.summary) + '</div>' +
-                    '</div>' +
-                    '<div class="entry-action">查看详情 ›</div>';
-                frag.appendChild(entry);
-            });
-            container.innerHTML = '';
-            // 先加一条总览说明条
-            const banner = document.createElement('div');
-            banner.className = 'hit-entry';
-            banner.style.cursor = 'default';
-            banner.style.borderLeftColor = 'var(--accent)';
-            banner.style.background = 'linear-gradient(135deg, rgba(43,182,115,0.04), rgba(31,111,139,0.06))';
-            banner.innerHTML =
-                '<div class="entry-top">' +
-                  '<div class="entry-key">' +
-                    '<span class="entry-code" style="background:var(--accent);">病案命中</span>' +
-                    '<span style="font-size:15px; font-weight:700; color:#1f3a4d; margin-left:4px;">病历号 ' + MEDICAL_CODE + ' · 共 5 条入院记录</span>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="margin-top:10px; font-size:13px; color:#5a6a75; line-height:1.9;">' +
-                  '以下为该病案号下匹配到的全部入院记录，点击每条卡片可查看完整电子病历（含影像资料与医师签章）。' +
-                '</div>';
-            container.appendChild(banner);
-            container.appendChild(frag);
         }
         function renderSearchResult() {
             const q = (getQueryParam('q') || '').trim();
@@ -608,17 +551,11 @@
                 renderNoResult(container, q, '未输入关键词。');
                 return;
             }
-            // 命中逻辑1：病历号 117-726-623（去空白、去连字符后等于 117726623 也命中，方便用户输入）
-            const norm = q.replace(/[\s\-]/g, '');
-            const hitMedical = (norm === '117726623') || (q.trim() === MEDICAL_CODE);
-            // 命中逻辑2：关键词严格等于 BO3（大小写不敏感，或去掉空白后等于）
-            const normBo3 = q.replace(/\s+/g, '').toUpperCase();
-            const hitBo3 = (normBo3 === 'BO3');
+            // 命中逻辑：关键词严格等于 BO3（大小写不敏感，或去掉空白后等于）
+            const norm = q.replace(/\s+/g, '').toUpperCase();
+            const hitBo3 = (norm === 'BO3');
 
-            if (hitMedical) {
-                summary.innerHTML = '找到 <b style="color:var(--primary);">' + HIT_CASES_MEDICAL.length + '</b> 条相关结果（入院记录）';
-                renderMedicalCases(container);
-            } else if (hitBo3) {
+            if (hitBo3) {
                 summary.innerHTML = '找到 <b style="color:var(--primary);">1</b> 条相关结果';
                 // 卡片：只显示词条名 + 标题；点击直接跳转到独立详情页 bo3.html
                 const entry = document.createElement('a');

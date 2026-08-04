@@ -78,19 +78,76 @@
     .main { background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-sm); overflow: hidden; }
     .hero-image {
         position: relative; width: 100%;
+        min-height: 440px;
         background: radial-gradient(ellipse at center, #1a2127 0%, #05070a 80%);
         padding: 44px 36px;
         display: flex; align-items: center; justify-content: center;
         border-bottom: 1px solid rgba(255,255,255,0.04);
+        overflow: hidden;
     }
-    .hero-image img {
+    .hero-image > img.hero-normal {
         width: 100%; max-height: 540px; object-fit: contain; display: block;
         border-radius: 4px; box-shadow: 0 16px 48px rgba(0,0,0,0.55);
     }
-    .hero-caption { position: absolute; left: 36px; bottom: 12px; font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; }
+    .hero-caption { position: absolute; left: 36px; bottom: 12px; font-size: 12px; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; z-index: 3; }
 
-    /* 病历正文通用样式（与 report.html Modal 里的 mr-* 保持一致）*/
-    .doc-body { padding: 32px 44px 40px; color: var(--text); font-size: 15px; line-height: 2; }
+    /* === 影像加载失败面板（和 report.html Modal 同款：ERR_CODE + 重新加载按钮） === */
+    .img-failed {
+        position: absolute; inset: 0; z-index: 4;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        background: repeating-linear-gradient(
+            45deg, #f2f3f5, #f2f3f5 12px, #ebecef 12px, #ebecef 24px
+        );
+        color: #6b7b86; text-align: center; padding: 20px 24px; gap: 14px;
+    }
+    .img-failed .failed-icon {
+        width: 72px; height: 72px; color: #a1adb7; background: #fff;
+        border: 1.5px solid #d6dde3; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .img-failed .failed-title { font-size: 15px; font-weight: 700; color: #42505b; letter-spacing: 0.5px; }
+    .img-failed .failed-sub { font-size: 12px; color: #7b8a95; max-width: 520px; line-height: 1.8; font-family: "Consolas","Courier New", monospace; }
+    .img-failed .failed-code {
+        display: inline-block; margin-top: 4px; padding: 2px 8px; background: #fff;
+        border: 1px solid #dce3e8; color: #5a6a75; border-radius: 4px;
+        font-size: 11.5px; font-family: "Consolas","Courier New", monospace; letter-spacing: 1px;
+    }
+    .img-failed .btn-refresh {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 4px;
+        height: 40px; padding: 0 22px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #fff; border: none; border-radius: 8px;
+        font-size: 14px; font-weight: 600; letter-spacing: 1px; cursor: pointer;
+        box-shadow: 0 6px 20px rgba(41,128,185,0.3);
+        transition: all 0.2s ease;
+    }
+    .img-failed .btn-refresh:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(41,128,185,0.38); }
+    .img-failed .btn-refresh:active { transform: translateY(0); }
+    .img-failed .btn-refresh.loading { pointer-events: none; opacity: 0.85; }
+    .img-failed .btn-refresh svg.spin { animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .img-missing-bar {
+        position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+        padding: 6px 18px; background: rgba(0,0,0,0.55);
+        color: #fff; font-size: 12px; letter-spacing: 0.5px; text-align: left;
+        backdrop-filter: blur(2px);
+    }
+
+    /* 影像稳定后：BO3 专属跳脸动画（突然闪现+极快放大+轻微抖动，制造压迫感） */
+    .jump-scare {
+        animation: jumpScare 0.74s cubic-bezier(0.18, 0.92, 0.28, 1.12) both;
+    }
+    @keyframes jumpScare {
+        0%   { opacity: 0; transform: scale(0.42); filter: brightness(2.6) blur(2.2px); }
+        16%  { opacity: 1; transform: scale(1.26); filter: brightness(1.6) blur(0.3px); }
+        42%  { opacity: 1; transform: scale(1);    filter: brightness(1.12) blur(0); }
+        66%  { opacity: 1; transform: scale(1.035) translateX(-2px); filter: brightness(1) contrast(1.12); }
+        100% { opacity: 1; transform: scale(1);    filter: brightness(1); }
+    }
+
+    /* 病历正文通用样式 */
+    .doc-body { padding: 32px 44px 40px; color: var(--text); font-size: 15px; line-height: 2; position: relative; }
     .doc-code-row { text-align: right; color: #8a949c; font-size: 13px; letter-spacing: 0.6px; margin-bottom: 8px; }
     .doc-title { font-size: 25px; font-weight: 800; color: var(--primary-dark); letter-spacing: 3px; text-align: center; padding: 6px 0 16px; margin-bottom: 20px; border-bottom: 2px solid rgba(26,82,118,0.32); }
     .doc-subtitle { text-align: center; font-size: 15px; color: var(--sub); letter-spacing: 1px; margin-bottom: 26px; padding: 8px 0; border-top: 1px dashed rgba(0,0,0,0.1); border-bottom: 1px dashed rgba(0,0,0,0.1); }
@@ -114,6 +171,104 @@
         font-family: "STKaiti","KaiTi","楷体",serif;
     }
 
+    /* =================== 全局恐怖增强特效（无音频） =================== */
+
+    /* 1. 全屏闪白层（点击刷新按钮瞬间整个屏幕猛闪一下白，制造压迫感） */
+    .flash-white {
+        position: fixed; inset: 0; z-index: 99999; pointer-events: none; background: #fff; opacity: 0;
+    }
+    .flash-white.flash { animation: flashWhite 0.42s ease both; }
+    @keyframes flashWhite {
+        0%   { opacity: 0; }
+        15%  { opacity: 0.95; }
+        38%  { opacity: 0.45; }
+        100% { opacity: 0; }
+    }
+
+    /* 2. 全屏鬼影噪点层（整页偶尔叠一层极淡的黑白雪花，1-2帧就消失，像信号不好） */
+    .noise-overlay {
+        position: fixed; inset: 0; z-index: 99997; pointer-events: none; opacity: 0;
+        mix-blend-mode: overlay;
+    }
+    .noise-overlay.show { animation: noiseBlink 0.18s steps(2,end) both; }
+    @keyframes noiseBlink {
+        0%   { opacity: 0; }
+        50%  { opacity: 0.22; }
+        100% { opacity: 0; }
+    }
+
+    /* 3. 整页极轻微的呼吸式震动（一直有，非常非常弱，不影响阅读，但潜意识压迫） */
+    body.tremble {
+        animation: pageTremble 0.22s steps(2,end) 1;
+    }
+    @keyframes pageTremble {
+        0%   { transform: translate(0, 0); }
+        25%  { transform: translate(-1px, 1px); }
+        50%  { transform: translate(1px, -1px); }
+        75%  { transform: translate(-1px, 0); }
+        100% { transform: translate(0, 0); }
+    }
+
+    /* 4. 横向扫描线（偶尔在页面上划过去一条半透明亮线，像老式CRT显示器） */
+    .scan-line {
+        position: fixed; left: 0; right: 0; height: 2px; z-index: 99998; pointer-events: none;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent);
+        top: -2px; opacity: 0;
+    }
+    .scan-line.run { animation: scanSweep 0.9s ease-out both; }
+    @keyframes scanSweep {
+        0%   { top: -2px; opacity: 0; }
+        12%  { opacity: 1; }
+        88%  { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+    }
+
+    /* 5. hero区稳定显示后，偶尔叠一个鬼影图（同图错位半透明闪一下就消失，像残像） */
+    .ghost-layer {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        padding: 44px 36px; display: flex; align-items: center; justify-content: center;
+        opacity: 0;
+    }
+    .ghost-layer img {
+        width: 100%; max-height: 540px; object-fit: contain; display: block;
+        filter: contrast(1.4) hue-rotate(-8deg) saturate(1.2);
+        mix-blend-mode: screen;
+        border-radius: 4px;
+    }
+    .ghost-layer.show { animation: ghostFlicker 0.32s ease both; }
+    @keyframes ghostFlicker {
+        0%   { opacity: 0; transform: translate(0,0) scale(1); filter: hue-rotate(0); }
+        35%  { opacity: 0.38; transform: translate(6px,-4px) scale(1.02); filter: hue-rotate(-20deg); }
+        70%  { opacity: 0.12; transform: translate(-5px,3px) scale(1); filter: hue-rotate(12deg); }
+        100% { opacity: 0; transform: translate(0,0) scale(1); filter: hue-rotate(0); }
+    }
+
+    /* 6. 正文文字偶尔局部乱码（.glitch 类）：1帧横向错位+色偏，然后恢复 */
+    .glitch {
+        position: relative;
+    }
+    .glitch.active::before,
+    .glitch.active::after {
+        content: attr(data-text);
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    }
+    .glitch.active::before {
+        color: #ff0055; transform: translate(-1px, 0); clip-path: inset(20% 0 60% 0); opacity: 0.7;
+        animation: glitchTop 0.12s linear both;
+    }
+    .glitch.active::after {
+        color: #00e5ff; transform: translate(1px, 0); clip-path: inset(55% 0 15% 0); opacity: 0.7;
+        animation: glitchBot 0.12s linear both;
+    }
+    @keyframes glitchTop {
+        0%,100% { transform: translate(-1px, 0); }
+        50%     { transform: translate(-3px, 1px); }
+    }
+    @keyframes glitchBot {
+        0%,100% { transform: translate(1px, 0); }
+        50%     { transform: translate(3px, -1px); }
+    }
+
     /* 响应式 */
     @media (max-width: 960px) {
         .page-layout { grid-template-columns: 1fr; }
@@ -121,7 +276,7 @@
         .header-search { min-width: 100%; order: 3; flex-basis: 100%; }
         .header-main { padding-bottom: 14px; }
         .doc-body { padding: 22px 20px 28px; }
-        .hero-image { padding: 24px 16px; }
+        .hero-image { padding: 24px 16px; min-height: 320px; }
         .hero-caption { left: 16px; }
         .mr-sign { flex-direction: column; align-items: flex-start; }
         .mr-sign .sign-right { text-align: left; }
@@ -230,11 +385,42 @@
 
             <!-- 主栏 -->
             <main class="main" id="top">
+                <!-- ================= 影像区：初始显示失败面板（和 report.html Modal 同款） ================= -->
                 <div class="hero-image" id="hero">
-                    <img src="bingli4.jpg" alt="——BO3 本次就诊影像/扫描件">
+                    <!-- 失败面板（PACS连接超时 + 重新加载按钮） -->
+                    <div class="img-failed" id="heroFailed">
+                        <div class="failed-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <line x1="21" y1="15" x2="13.5" y2="7.5"></line>
+                                <line x1="13" y1="20" x2="7" y2="14"></line>
+                                <line x1="4" y1="20" x2="3" y2="19"></line>
+                                <line x1="3" y1="8" x2="5" y2="8"></line>
+                            </svg>
+                        </div>
+                        <div class="failed-title">影像加载失败：远程节点无响应</div>
+                        <div class="failed-sub">
+                            远程影像归档与通信系统（PACS）&nbsp;连接超时，当前仅能加载文字结构化记录。<br>
+                            若需查看原始影像/扫描件，可尝试重新建立安全链路。
+                        </div>
+                        <div><span class="failed-code">ERR_CODE:&nbsp;IMG-FETCH-504&nbsp;|&nbsp;NODE=fj3-arch-pacs-02</span></div>
+                        <button type="button" class="btn-refresh" id="btnHeroRefresh">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                            <span>重新加载影像</span>
+                        </button>
+                        <div class="img-missing-bar">影像缺失状态：仅电子文本可读取 · 病案号 117-726-623 · 若持续失败请联系信息科（内线 8037）</div>
+                    </div>
+                    <!-- 鬼影层（稳定后偶尔闪现） -->
+                    <div class="ghost-layer" id="ghostLayer"><img src="bingli4.jpg" alt=""></div>
                     <span class="hero-caption">▲ 影像资料：慢性噬神经性全组织崩解症 · 头颅 MRI（双侧海马 T2 高信号）· ——BO3</span>
                 </div>
-                <div class="doc-body">
+
+                <div class="doc-body" id="docBody">
                     <div class="doc-code-row">病案号：117-726-623 ｜ BL-04 ｜ 神经内科 · 罕见病诊疗组（归档）</div>
                     <h2 class="doc-title">入 院 记 录</h2>
                     <div class="doc-subtitle">慢性噬神经性全组织崩解症（虚构）｜中枢型重度认知功能障碍 · 外周型多发组织坏死性溃疡 · ——BO3</div>
@@ -288,43 +474,443 @@
         </div>
     </footer>
 
+    <!-- ============== 全局恐怖元素 DOM ============== -->
+    <div class="flash-white" id="flashWhite"></div>
+    <canvas class="noise-overlay" id="noiseOverlay"></canvas>
+    <div class="scan-line" id="scanLine"></div>
+
     <script>
-        (function(){
-            const WEEK=['日','一','二','三','四','五','六'];
-            const el=document.getElementById('topDate');
-            function up(){ const d=new Date(); const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
-                if(el) el.textContent='今天是 '+y+'年'+m+'月'+dd+'日 星期'+WEEK[d.getDay()]; }
-            up(); setInterval(up,60*1000);
-        })();
-        function switchLang(l){
-            document.documentElement.lang=l==='zh'?'zh-CN':'en';
-            document.querySelectorAll('.lang-switch').forEach(b=>{
-                b.classList.toggle('active',b.textContent.trim()===(l==='zh'?'中文':'English'));
+    (function(){
+        const WEEK=['日','一','二','三','四','五','六'];
+        const el=document.getElementById('topDate');
+        function up(){ const d=new Date(); const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+            if(el) el.textContent='今天是 '+y+'年'+m+'月'+dd+'日 星期'+WEEK[d.getDay()]; }
+        up(); setInterval(up,60*1000);
+    })();
+    function switchLang(l){
+        document.documentElement.lang=l==='zh'?'zh-CN':'en';
+        document.querySelectorAll('.lang-switch').forEach(b=>{
+            b.classList.toggle('active',b.textContent.trim()===(l==='zh'?'中文':'English'));
+        });
+    }
+    (function(){
+        const btn=document.getElementById('siteSearchBtn');
+        const inp=document.getElementById('siteSearchInput');
+        function go(){ const q=(inp&&inp.value||'').trim();
+            window.location.href='search.html'+(q?'?q='+encodeURIComponent(q):''); }
+        btn&&btn.addEventListener('click',go);
+        inp&&inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();go();} });
+    })();
+
+    // 锚点
+    (function(){
+        var hs = document.querySelectorAll('.doc-body .mr-h2');
+        for (var i=0;i<hs.length;i++) { hs[i].id = 's' + (i+1); }
+    })();
+    document.querySelectorAll('.side a[href^="#"]').forEach(a=>{
+        a.addEventListener('click',e=>{
+            const id=a.getAttribute('href').slice(1); if(!id) return;
+            const t=document.getElementById(id); if(!t) return;
+            e.preventDefault();
+            window.scrollTo({top: t.getBoundingClientRect().top + window.pageYOffset - 150, behavior:'smooth'});
+        });
+    });
+
+    /* ================================================================
+     *  BO3 专属恐怖交互（和之前 report.html Modal 中的一致 + 增强）
+     * ================================================================ */
+    (function(){
+        const IMG_SRC = 'bingli4.jpg';
+        const IMG_ALT = '——BO3 本次就诊影像/扫描件';
+        const hero = document.getElementById('hero');
+        const failedPanel = document.getElementById('heroFailed');
+        const btnRefresh = document.getElementById('btnHeroRefresh');
+        const ghostLayer = document.getElementById('ghostLayer');
+        const flashWhite = document.getElementById('flashWhite');
+        const noiseOverlay = document.getElementById('noiseOverlay');
+        const scanLine = document.getElementById('scanLine');
+        const docBody = document.getElementById('docBody');
+
+        let playedOnce = false;   // 刷新效果只允许触发一次（避免无限刷）
+
+        // ------------- 工具：全屏随机噪点 canvas -------------
+        function drawNoiseFrameOnce() {
+            if (!noiseOverlay) return;
+            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            const w = Math.max(1, Math.floor(window.innerWidth));
+            const h = Math.max(1, Math.floor(window.innerHeight));
+            noiseOverlay.width = w * dpr;
+            noiseOverlay.height = h * dpr;
+            noiseOverlay.style.width = w + 'px';
+            noiseOverlay.style.height = h + 'px';
+            const ctx = noiseOverlay.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const imgData = ctx.createImageData(w, h);
+            const d = imgData.data;
+            for (let i = 0; i < d.length; i += 4) {
+                const y = (i / 4) / w;
+                const scan = (y - Math.floor(y)) < 0.005 ? 30 : 0;
+                const r = Math.random();
+                let v;
+                if (r < 0.02) v = 255;
+                else if (r < 0.06) v = 10 + scan;
+                else if (r < 0.28) v = 20;
+                else v = 2;
+                d[i] = d[i+1] = d[i+2] = Math.min(255, v + scan);
+                d[i+3] = 255;
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        // ------------- 小工具：抖一下整页 -------------
+        function tremblePage() {
+            document.body.classList.remove('tremble');
+            void document.body.offsetWidth;
+            document.body.classList.add('tremble');
+        }
+        // ------------- 小工具：划一条扫描线 -------------
+        function runScanLine() {
+            if (!scanLine) return;
+            scanLine.classList.remove('run');
+            void scanLine.offsetWidth;
+            scanLine.classList.add('run');
+        }
+        // ------------- 小工具：叠一帧全屏噪点 -------------
+        function blinkNoise() {
+            drawNoiseFrameOnce();
+            if (!noiseOverlay) return;
+            noiseOverlay.classList.remove('show');
+            void noiseOverlay.offsetWidth;
+            noiseOverlay.classList.add('show');
+        }
+
+        // ------------- 整页随机间歇性小惊吓（页面打开后持续，弱到强随机） -------------
+        // 规律：8~22秒随机挑 1 个：噪点/扫描线/抖动/鬼影/文字乱码，出现 1 次就消失
+        function scheduleRandomScare() {
+            const next = 8000 + Math.floor(Math.random() * 14000);   // 8~22s
+            setTimeout(function(){
+                if (!document.body) return;
+                const pick = Math.random();
+                if (pick < 0.22) {            // 22%：噪点一下
+                    blinkNoise();
+                } else if (pick < 0.42) {     // 20%：一条扫描线扫过
+                    runScanLine();
+                } else if (pick < 0.58) {     // 16%：整页极轻抖
+                    tremblePage();
+                } else if (pick < 0.76 && playedOnce && ghostLayer) {  // 18%：鬼影（必须图已经刷出来了才有效）
+                    ghostLayer.classList.remove('show');
+                    void ghostLayer.offsetWidth;
+                    ghostLayer.classList.add('show');
+                    // 叠个抖动一起
+                    if (Math.random() < 0.5) tremblePage();
+                } else if (pick < 0.96) {     // 20%：正文随机挑一小段 glitch 乱码 1 帧
+                    glitchRandomText();
+                } else {                      // 4%：运气不好，来一套小套餐：噪点+扫描线+轻微抖动
+                    blinkNoise();
+                    setTimeout(runScanLine, 80);
+                    setTimeout(tremblePage, 160);
+                }
+                scheduleRandomScare();        // 继续下一次
+            }, next);
+        }
+
+        // ------------- 正文文字局部 glitch：随机挑一段 <span>/<li> 做 120ms 色偏错位 -------------
+        function glitchRandomText() {
+            if (!docBody) return;
+            const pool = docBody.querySelectorAll('.mr-row span, .mr-list li, .doc-subtitle');
+            if (!pool.length) return;
+            const el = pool[Math.floor(Math.random() * pool.length)];
+            if (!el) return;
+            // 保存原文本到 data-text
+            el.setAttribute('data-text', el.textContent);
+            el.classList.add('glitch');
+            el.classList.remove('active');
+            void el.offsetWidth;
+            el.classList.add('active');
+            setTimeout(function(){
+                el.classList.remove('active');
+                el.removeAttribute('data-text');
+            }, 140);
+            // 20% 概率再补一次轻微抖动
+            if (Math.random() < 0.2) setTimeout(tremblePage, 30);
+        }
+
+        // 启动随机惊吓循环（页面加载好后 12 秒开始第一次）
+        setTimeout(scheduleRandomScare, 12000);
+
+        /* =========================================================
+         *  核心：BO3 刷新按钮 → 闪白 → 卡顿解码（雪花 + 14切片 + 撕裂 + 抖动 + 灰度）→ 跳脸放大
+         * ========================================================= */
+        if (btnRefresh) {
+            btnRefresh.addEventListener('click', function onHeroRefresh() {
+                if (playedOnce) return;   // 只允许触发一次
+                btnRefresh.classList.add('loading');
+                const span = btnRefresh.querySelector('span');
+                const icon = btnRefresh.querySelector('svg');
+                if (span) span.textContent = '正在重新建立连接…';
+                if (icon) { icon.classList.add('spin'); }
+
+                const delay = 600 + Math.floor(Math.random() * 350);
+                setTimeout(function(){
+                    // 1) 全屏猛闪一下白（压迫感）
+                    if (flashWhite) {
+                        flashWhite.classList.remove('flash');
+                        void flashWhite.offsetWidth;
+                        flashWhite.classList.add('flash');
+                        setTimeout(function(){ flashWhite.classList.remove('flash'); }, 460);
+                    }
+                    // 2) 整页抖一下 + 噪点 + 扫描线套餐跟上
+                    tremblePage();
+                    setTimeout(blinkNoise, 50);
+                    setTimeout(runScanLine, 120);
+                    // 3) 卡顿解码：雪花 → 14 条水平切片逐片刷出 → 撕裂 → 抖动 → 灰度 → 最终稳定 → 跳脸
+                    playGlitchReveal();
+                }, delay);
             });
         }
-        (function(){
-            const btn=document.getElementById('siteSearchBtn');
-            const inp=document.getElementById('siteSearchInput');
-            function go(){ const q=(inp&&inp.value||'').trim();
-                window.location.href='search.html'+(q?'?q='+encodeURIComponent(q):''); }
-            btn&&btn.addEventListener('click',go);
-            inp&&inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();go();} });
-        })();
 
-        // 把正文的每个 .mr-h2（一共 10 段）加 id=s1..s10，让侧栏锚点能跳
-        (function(){
-            var hs = document.querySelectorAll('.doc-body .mr-h2');
-            for (var i=0;i<hs.length;i++) { hs[i].id = 's' + (i+1); }
-        })();
-        // 侧栏锚点平滑滚动
-        document.querySelectorAll('.side a[href^="#"]').forEach(a=>{
-            a.addEventListener('click',e=>{
-                const id=a.getAttribute('href').slice(1); if(!id) return;
-                const t=document.getElementById(id); if(!t) return;
-                e.preventDefault();
-                window.scrollTo({top: t.getBoundingClientRect().top + window.pageYOffset - 150, behavior:'smooth'});
+        function playGlitchReveal() {
+            if (!hero) return;
+            playedOnce = true;
+
+            // Stage 0：预加载
+            const preImg = new Image();
+            preImg.crossOrigin = 'anonymous';
+            let stageStarted = false;
+            preImg.onerror = function() {
+                failedPanel.style.display = 'flex';
+                failedPanel.innerHTML =
+                    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;padding:20px;text-align:center;line-height:2;">影像加载持续失败<br>请稍后重试或联系信息科（内线 8037）</div>';
+            };
+            preImg.onload = function() {
+                if (stageStarted) return;
+                stageStarted = true;
+                startGlitchStage(preImg);
+            };
+            preImg.src = IMG_SRC;
+            if (preImg.complete && !stageStarted) {
+                stageStarted = true;
+                setTimeout(function(){ startGlitchStage(preImg); }, 0);
+            }
+        }
+
+        function startGlitchStage(loadedImg) {
+            // 先移除失败面板
+            if (failedPanel) failedPanel.style.display = 'none';
+            hero.innerHTML = '';    // 清空：失败面板已删，caption 也删，后面手动加回来
+
+            // ========== Stage 1：静态 canvas 雪花噪点（150~220ms 模拟连接抖动） ==========
+            const noiseCanvas = document.createElement('canvas');
+            noiseCanvas.style.position = 'absolute';
+            noiseCanvas.style.inset = '0';
+            noiseCanvas.style.width = '100%';
+            noiseCanvas.style.height = '100%';
+            noiseCanvas.style.display = 'block';
+            noiseCanvas.style.zIndex = '1';
+            hero.appendChild(noiseCanvas);
+            const ctx = noiseCanvas.getContext('2d');
+            function resizeCanvas() {
+                const dpr = Math.max(1, window.devicePixelRatio || 1);
+                const r = hero.getBoundingClientRect();
+                const w = Math.max(1, Math.floor(r.width));
+                const h = Math.max(1, Math.floor(r.height));
+                noiseCanvas.width = w * dpr;
+                noiseCanvas.height = h * dpr;
+                noiseCanvas.style.width = w + 'px';
+                noiseCanvas.style.height = h + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                return { w, h };
+            }
+            const size = resizeCanvas();
+            let noiseRAF = null;
+            let frameCount = 0;
+            const totalFrames = 8;
+            function drawNoiseFrame() {
+                const imgData = ctx.createImageData(size.w, size.h);
+                const d = imgData.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    const y = (i / 4) / size.w;
+                    const scan = (y - Math.floor(y)) < 0.01 ? 30 : 0;
+                    const r = Math.random();
+                    let v;
+                    if (r < 0.02) v = 255;
+                    else if (r < 0.06) v = 10 + scan;
+                    else if (r < 0.28) v = 20;
+                    else v = 2;
+                    d[i] = d[i+1] = d[i+2] = Math.min(255, v + scan);
+                    d[i+3] = 255;
+                }
+                ctx.putImageData(imgData, 0, 0);
+                frameCount++;
+                if (frameCount < totalFrames) {
+                    noiseRAF = requestAnimationFrame(drawNoiseFrame);
+                }
+            }
+            noiseRAF = requestAnimationFrame(drawNoiseFrame);
+
+            // ========== Stage 2：14 条水平切片逐片刷出（随机延迟 + 2~3 条长时间卡顿 + 撕裂） ==========
+            const N = 14;
+            const sliceWrap = document.createElement('div');
+            sliceWrap.style.position = 'absolute';
+            sliceWrap.style.inset = '0';
+            sliceWrap.style.zIndex = '2';
+            sliceWrap.style.padding = '44px 36px';
+            sliceWrap.style.display = 'flex';
+            sliceWrap.style.alignItems = 'center';
+            sliceWrap.style.justifyContent = 'center';
+            hero.appendChild(sliceWrap);
+
+            // 切片内部再套一层容器，用于按比例 contain 显示 img（和 padding 44px 36px 配合）
+            const slicesInner = document.createElement('div');
+            slicesInner.style.position = 'relative';
+            slicesInner.style.width = '100%';
+            slicesInner.style.maxHeight = '540px';
+            slicesInner.style.aspectRatio = 'auto';
+            slicesInner.style.flex = '1';
+            slicesInner.style.height = '100%';
+            slicesInner.style.maxWidth = '100%';
+            sliceWrap.appendChild(slicesInner);
+
+            const slices = [];
+            const offsets = new Array(N).fill(0);
+            const tearIdx = new Set();
+            let t1 = Math.floor(Math.random() * N);
+            let t2 = (t1 + 2 + Math.floor(Math.random() * 6)) % N;
+            let t3 = (t2 + 2 + Math.floor(Math.random() * 6)) % N;
+            tearIdx.add(t1); tearIdx.add(t2); tearIdx.add(t3);
+            tearIdx.forEach(function(i){
+                offsets[i] = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.floor(Math.random() * 7));
             });
-        });
+            for (let i = 0; i < N; i++) {
+                const slice = document.createElement('div');
+                slice.style.position = 'absolute';
+                slice.style.inset = '0';
+                slice.style.opacity = '0';
+                slice.style.overflow = 'hidden';
+                slice.style.transform = 'translateX(' + (offsets[i] || 0) + 'px)';
+                slice.style.transition = 'opacity 0.06s linear';
+                const topPct = (i * (100 / N));
+                const bottomPct = 100 - ((i + 1) * (100 / N));
+                slice.style.clipPath = 'inset(' + topPct + '% 0 ' + Math.max(0, bottomPct) + '% 0)';
+                slice.style.webkitClipPath = 'inset(' + topPct + '% 0 ' + Math.max(0, bottomPct) + '% 0)';
+                const imgEl = document.createElement('img');
+                imgEl.src = IMG_SRC;
+                imgEl.alt = '';
+                imgEl.style.position = 'absolute';
+                imgEl.style.inset = '0';
+                imgEl.style.width = '100%';
+                imgEl.style.height = '100%';
+                imgEl.style.objectFit = 'contain';
+                imgEl.style.objectPosition = 'center center';
+                imgEl.style.pointerEvents = 'none';
+                imgEl.style.borderRadius = '4px';
+                imgEl.style.boxShadow = '0 16px 48px rgba(0,0,0,0.55)';
+                slice.appendChild(imgEl);
+                slicesInner.appendChild(slice);
+                slices.push(slice);
+            }
+
+            const delays = slices.map(function(_, i){
+                const base = i * (4 + Math.floor(Math.random() * 6));
+                const rnd = 20 + Math.floor(Math.random() * 90);
+                let stall = 0;
+                if (i === Math.floor(N * 0.3) || i === Math.floor(N * 0.72)) {
+                    stall = 140 + Math.floor(Math.random() * 190);
+                }
+                return base + rnd + stall;
+            });
+            const SLICE_START = 130;
+
+            // ========== Stage 3：切片全部出来后 → 整图抖 3 次 → 100ms 灰度 → 最终稳定图 → BO3跳脸放大 ==========
+            const maxDelay = Math.max.apply(null, delays) + SLICE_START;
+            setTimeout(function(){
+                if (noiseRAF) { try { cancelAnimationFrame(noiseRAF); } catch(_) {} noiseRAF = null; }
+                slices.forEach(function(s, i){
+                    setTimeout(function(){
+                        s.style.opacity = '1';
+                        if (tearIdx.has(i)) {
+                            setTimeout(function(){
+                                s.style.transform = 'translateX(' + (-(offsets[i] || 0) / 2) + 'px)';
+                            }, 90 + Math.floor(Math.random() * 60));
+                        }
+                    }, SLICE_START + delays[i]);
+                });
+            }, 170);
+
+            const glitchStart = SLICE_START + maxDelay + 70;
+            setTimeout(function(){
+                // 抖 3 次
+                let shakes = 0;
+                const shakeSeq = [3, -2, 2];
+                (function doShake(){
+                    if (shakes >= shakeSeq.length) {
+                        sliceWrap.style.filter = 'grayscale(0.9) contrast(1.25)';
+                        // 稳定 100ms 后：替换成单张 img，然后 BO3 跳脸放大 + 再抖一下 + 再加鬼影
+                        setTimeout(function(){
+                            // 移除切片、雪花
+                            hero.innerHTML = '';
+                            const stableImg = document.createElement('img');
+                            stableImg.className = 'hero-normal';
+                            stableImg.src = IMG_SRC;
+                            stableImg.alt = IMG_ALT;
+                            stableImg.onerror = function(){
+                                hero.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#bbb;font-size:13px;letter-spacing:1px;">影像资料暂无</div>';
+                            };
+                            hero.appendChild(stableImg);
+
+                            // 鬼影层重新放回去（随机间歇性用）
+                            const newGhost = document.createElement('div');
+                            newGhost.className = 'ghost-layer';
+                            newGhost.id = 'ghostLayer';
+                            newGhost.innerHTML = '<img src="' + IMG_SRC + '" alt="">';
+                            hero.appendChild(newGhost);
+                            // 更新引用（scheduleRandomScare 里用到）
+                            window.__ghostLayerRef = newGhost;
+
+                            // 加回 caption
+                            const cap = document.createElement('span');
+                            cap.className = 'hero-caption';
+                            cap.textContent = '▲ 影像资料：慢性噬神经性全组织崩解症 · 头颅 MRI（双侧海马 T2 高信号）· ——BO3';
+                            hero.appendChild(cap);
+
+                            // 触发跳脸动画（突然放大靠近）
+                            stableImg.classList.remove('jump-scare');
+                            void stableImg.offsetWidth;
+                            stableImg.classList.add('jump-scare');
+
+                            // 跳脸期间：整页抖 + 扫描线 + 噪点（三重压迫）
+                            tremblePage();
+                            setTimeout(blinkNoise, 60);
+                            setTimeout(runScanLine, 130);
+                            setTimeout(tremblePage, 200);   // 跳脸到一半再抖一次
+                            setTimeout(function(){
+                                // 结尾加一个鬼影闪一下
+                                newGhost.classList.remove('show');
+                                void newGhost.offsetWidth;
+                                newGhost.classList.add('show');
+                            }, 320);
+
+                        }, 110);
+                        return;
+                    }
+                    const dx = shakeSeq[shakes++];
+                    sliceWrap.style.transform = 'translateX(' + dx + 'px)';
+                    // 每次抖动都带一点点整页微震 + 雪花
+                    if (shakes === 1) { blinkNoise(); }
+                    if (shakes === 2) { tremblePage(); }
+                    setTimeout(doShake, 70);
+                })();
+            }, glitchStart);
+        }
+
+        // 把 ghostLayer 的引用同步一下（避免 scheduleRandomScare 里找不到）
+        setInterval(function(){
+            if (!document.getElementById('ghostLayer')) {
+                const existing = document.querySelector('.ghost-layer');
+                if (existing) window.__ghostLayerRef = existing;
+            }
+        }, 1000);
+    })();
     </script>
 </body>
 </html>

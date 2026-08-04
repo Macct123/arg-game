@@ -324,144 +324,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ===== Modal 详情弹窗 ===== */
-        .modal-mask {
-            position: fixed; inset: 0;
-            background: rgba(8,18,28,0.72);
-            z-index: 9999;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 30px 14px;
-            backdrop-filter: blur(2px);
-        }
-        .modal-mask.show { display: flex; animation: fadeIn 0.2s ease both; }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .modal-box {
-            width: 100%;
-            max-width: 980px;
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.3);
-            overflow: hidden;
-            animation: popIn 0.22s ease both;
-            max-height: calc(100vh - 60px);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        @keyframes popIn { from{transform: translateY(14px) scale(0.99); opacity:0} to{transform: translateY(0) scale(1); opacity:1} }
-        .modal-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 24px;
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .modal-header .modal-title {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .modal-header .modal-title .code-chip {
-            display: inline-block;
-            padding: 3px 12px;
-            background: rgba(255,255,255,0.16);
-            border-radius: 20px;
-            font-size: 12.5px;
-            font-family: "Consolas","Courier New", monospace;
-            letter-spacing: 1.5px;
-        }
-        .modal-header .modal-close {
-            width: 32px; height: 32px;
-            border: none;
-            background: rgba(255,255,255,0.14);
-            color: #fff;
-            border-radius: 50%;
-            font-size: 17px;
-            line-height: 1;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .modal-header .modal-close:hover { background: rgba(255,255,255,0.26); transform: rotate(90deg); }
-        .modal-hero {
-            position: relative;
-            width: 100%;
-            height: 38vh;
-            min-height: 260px;
-            max-height: 460px;
-            background: radial-gradient(ellipse at center, #1a2127 0%, #05070a 78%);
-            overflow: visible;
-            flex-shrink: 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
-        .modal-hero img {
-            width: 100%; height: 100%;
-            object-fit: contain;
-            object-position: center center;
-            display: block;
-            animation: imgIn 0.46s ease both;
-        }
-        @keyframes imgIn { from{opacity:0; transform:scale(1.02)} to{opacity:1; transform:scale(1)} }
-        .modal-body {
-            padding: 26px 32px 30px;
-            color: #2b3a44;
-            font-size: 14px;
-            line-height: 2;
-            overflow-y: auto;
-            flex: 1;
-        }
-        .doc-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary-dark);
-            letter-spacing: 2px;
-            text-align: center;
-            padding: 2px 0 14px;
-            margin-bottom: 16px;
-            border-bottom: 2px solid rgba(26,82,118,0.35);
-        }
-        .doc-h2 {
-            font-size: 15.5px;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: 0.8px;
-            margin: 16px 0 10px;
-            padding: 6px 12px;
-            background: linear-gradient(90deg, rgba(41,128,185,0.08), transparent);
-            border-left: 4px solid var(--primary);
-        }
-        .doc-h2:first-of-type { margin-top: 4px; }
-        .doc-para { text-indent: 2em; }
-        .doc-sign {
-            margin-top: 24px;
-            padding-top: 14px;
-            border-top: 1px dashed rgba(0,0,0,0.12);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            color: #4a5a63;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .doc-sign .right { text-align: right; }
-        .doc-sign .stamp {
-            display: inline-block;
-            color: #8a1b1b;
-            border: 2px solid rgba(169,40,40,0.6);
-            padding: 10px 20px;
-            border-radius: 10px;
-            transform: rotate(-6deg);
-            font-weight: 800;
-            letter-spacing: 4px;
-            font-size: 16px;
-            margin-top: 8px;
-            background: rgba(250, 238, 238, 0.55);
-            font-family: "STKaiti", "KaiTi", "楷体", serif;
-        }
-
         /* 响应式 */
         @media (max-width: 820px) {
             .header-search { min-width: 100%; flex-basis: 100%; order: 3; }
@@ -469,10 +331,7 @@
             .main-nav a { padding: 13px 16px; font-size: 14px; }
             .search-card { padding: 22px 18px 28px; border-radius: 12px; }
             .search-wrap { padding: 26px 12px 48px; }
-            .modal-body { padding: 20px 18px 24px; }
             .footer-grid { grid-template-columns: 1fr; gap: 22px; }
-            .doc-sign { flex-direction: column; align-items: flex-start; }
-            .doc-sign .right { text-align: left; }
         }
     </style>
 </head>
@@ -574,49 +433,6 @@
         </div>
     </footer>
 
-    <!-- 详情 Modal -->
-    <div id="entryModal" class="modal-mask" role="dialog" aria-modal="true">
-        <div class="modal-box" role="document">
-            <div class="modal-header">
-                <div class="modal-title" id="modalTitle">
-                    <span id="modalTitleMain">公开信息</span>
-                    <span class="code-chip" id="modalChip">BO3</span>
-                </div>
-                <button id="entryModalClose" class="modal-close" type="button" aria-label="关闭">✕</button>
-            </div>
-            <div class="modal-hero" id="modalHero">
-                <img src="BO3.jpg" alt="2001年前后基础设施升级 相关历史影像资料">
-            </div>
-            <div class="modal-body" id="modalBody">
-                <div class="doc-title">公 开 信 息 答 复</div>
-
-                <div class="doc-h2">一、事件经过</div>
-                <p class="doc-para">
-                    2001 年前后，为顺应医疗信息化建设的发展趋势，提升医院管理效率，我院启动了院内信息系统的基础设施升级工作。在此期间，我院购置了一批新型计算机设备用于替换原有的老旧设备。
-                </p>
-                <p class="doc-para">
-                    为避免国有资产闲置浪费，并考虑到当时部分临床科室确有信息化办公的基础需求，经院领导班子集体研究决定，将此次设备更新中替换下来的一批旧电脑及配套设备，无偿调配给当时部分在职的医技人员个人使用，用于支持其业务学习及科室办公辅助。
-                </p>
-
-                <div class="doc-h2">二、后续处理说明</div>
-                <p class="doc-para">
-                    此事件系我院早期信息化建设过程中的特定历史遗留问题。我院将本着尊重历史、实事求是的原则，积极配合上级主管部门对此类历史事务的核查与处理。同时，我院将引以为鉴，严格执行现行的《公立医院国有资产处置管理补充规定》及《事业单位国有资产管理暂行办法》等相关法规，坚决杜绝任何可能造成国有资产流失或违反廉洁从业准则的行为发生，确保医院资产管理规范、透明。
-                </p>
-
-                <div class="doc-sign">
-                    <div>
-                        <div><b>答复部门：</b>院综合办公室（信访与公开信息科）</div>
-                        <div style="margin-top:6px;"><b>归档编号：</b>GK-2001-007</div>
-                    </div>
-                    <div class="right">
-                        <div><b>签收盖章：</b></div>
-                        <div class="stamp">院办公章</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         /* ===== 1. 顶部日期实时更新 ===== */
         (function updateTopDate() {
@@ -702,7 +518,7 @@
             code: 'BO3',
             title: '2001年前后，我院基础设施升级工作',
             date: '档案日期：2001-09-18 · 公开（公开信息答复）',
-            modalTitle: '公开信息 · 2001 年基础设施升级及资产调配事项'
+            link: 'bo3.html'
         };
         function getQueryParam(name) {
             const s = (window.location.search || '').slice(1);
@@ -740,11 +556,10 @@
 
             if (hit) {
                 summary.innerHTML = '找到 <b style="color:var(--primary);">1</b> 条相关结果';
-                // 卡片：只显示词条名 + 标题 + 点击进入详情
+                // 卡片：只显示词条名 + 标题；点击直接跳转到独立详情页 bo3.html
                 const entry = document.createElement('a');
                 entry.className = 'hit-entry';
-                entry.setAttribute('role', 'button');
-                entry.setAttribute('tabindex', '0');
+                entry.href = HIT_ENTRY.link;
                 entry.innerHTML =
                     '<div class="entry-top">' +
                       '<div class="entry-key">' +
@@ -753,14 +568,9 @@
                       '<div class="entry-meta">' + HIT_ENTRY.date + '</div>' +
                     '</div>' +
                     '<div class="entry-title">' + HIT_ENTRY.title + '</div>' +
-                    '<div class="entry-action">查看详情</div>';
+                    '<div class="entry-action">查看详情 ›</div>';
                 container.innerHTML = '';
                 container.appendChild(entry);
-                function openEntry() { openModal(HIT_ENTRY); }
-                entry.addEventListener('click', function(e){ e.preventDefault(); openEntry(); });
-                entry.addEventListener('keydown', function(e){
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEntry(); }
-                });
             } else {
                 summary.innerHTML = '找到 <b>0</b> 条相关结果';
                 renderNoResult(container, q, '请尝试更换关键词，或查看科室导航、新闻动态栏目。');
@@ -781,34 +591,6 @@
                   '<div class="no-sub">' + tipText + '</div>' +
                 '</div>';
         }
-
-        /* ===== 5. 打开/关闭详情 Modal ===== */
-        const entryModal = document.getElementById('entryModal');
-        const entryModalClose = document.getElementById('entryModalClose');
-        const modalTitleMain = document.getElementById('modalTitleMain');
-        const modalChip = document.getElementById('modalChip');
-        function openModal(data) {
-            if (!entryModal) return;
-            if (modalTitleMain) modalTitleMain.textContent = data.modalTitle || '公开信息';
-            if (modalChip) modalChip.textContent = data.code || 'BO3';
-            entryModal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-            try { entryModalClose && entryModalClose.focus(); } catch(_) {}
-        }
-        function closeModal() {
-            if (!entryModal) return;
-            entryModal.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-        if (entryModalClose) entryModalClose.addEventListener('click', closeModal);
-        if (entryModal) {
-            entryModal.addEventListener('click', function(e) {
-                if (e.target === entryModal) closeModal();
-            });
-        }
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
-        });
 
         // DOM Ready 渲染
         if (document.readyState === 'complete' || document.readyState === 'interactive') {

@@ -5,5 +5,8 @@
 # 本地临时批处理脚本（不入库）
 _batch_*.py
 _diag_*.py
+_fix_*.py
 _remove_watermark.py
 _dew*.py
+_remove_watermark.py
+_*.py

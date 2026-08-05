@@ -123,6 +123,39 @@
     }
     .doc-h2:first-of-type { margin-top: 6px; }
     .doc-para { text-indent: 2em; margin-bottom: 10px; }
+    /* 正文内嵌图（放在段落之间） */
+    .doc-figure {
+        margin: 26px auto 28px;
+        text-align: center;
+        background: linear-gradient(135deg, #f6f9fc, #eef4f9);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px 22px 16px;
+        max-width: 98%;
+    }
+    .doc-figure img {
+        width: auto;
+        max-width: 100%;
+        max-height: 520px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+        background: #000;
+    }
+    .doc-figure .fig-cap {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 4px 16px;
+        font-size: 13px;
+        color: var(--sub);
+        letter-spacing: 0.6px;
+        line-height: 1.8;
+        background: #fff;
+        border: 1px dashed rgba(41,128,185,0.35);
+        border-radius: 20px;
+    }
     .doc-sign {
         margin-top: 30px; padding-top: 18px; border-top: 1px dashed rgba(0,0,0,0.14);
         display: flex; justify-content: space-between; align-items: flex-end;
@@ -250,12 +283,6 @@
 
             <!-- 主栏 -->
             <main class="main" id="top">
-                <!-- 首屏大图：用户要求图片展示的地方，放 BO3.jpg -->
-                <div class="hero-image" id="hero">
-                    <img src="BO3.jpg" alt="2001年前后基础设施升级 相关历史影像资料">
-                    <span class="hero-caption">▲ 历史影像资料（归档编号 GK-2001-007）</span>
-                </div>
-
                 <div class="doc-body">
                     <div class="doc-code-row">档案编号：GK-2001-007 &nbsp;|&nbsp; BO3</div>
                     <h2 class="doc-title">公 开 信 息 答 复</h2>
@@ -268,6 +295,12 @@
                     <p class="doc-para">
                         为避免国有资产闲置浪费，并考虑到当时部分临床科室确有信息化办公的基础需求，经院领导班子集体研究决定，将此次设备更新中替换下来的一批旧电脑及配套设备，无偿调配给当时部分在职的医技人员个人使用，用于支持其业务学习及科室办公辅助。
                     </p>
+
+                    <!-- BO3 图片：一和二之间（用户要求），内嵌正文图，id=hero 锚点保留供侧栏跳转 -->
+                    <div class="doc-figure" id="hero">
+                        <img src="BO3.jpg" alt="2001年前后基础设施升级 相关历史影像资料">
+                        <div class="fig-cap">▲ 历史影像资料（归档编号 GK-2001-007）</div>
+                    </div>
 
                     <h3 class="doc-h2" id="s2">二、后续处理说明</h3>
                     <p class="doc-para">

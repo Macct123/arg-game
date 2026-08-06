@@ -795,7 +795,7 @@
     /* ===== 联系我们 - 对话界面 ===== */
     const STORAGE_KEY = 'fj3h_contact_chat_v1';
 
-    // 可转接医生的联系方式（仅陆敬尧主任开放）
+    // 可转接医生的联系方式（陆敬尧主任 + 王志强医生）
     const DOCTOR_CONTACTS = {
         '陆敬尧': {
             title: '骨科中心主任 | 主任医师 | 博士生导师 | 教授',
@@ -805,6 +805,15 @@
             phone: '333-3625 3828 转骨科中心分诊台',
             page: 'lu-jingyao.html',
             tip: '如需加号或手术咨询，建议选择周二特需门诊时段当面沟通。'
+        },
+        '王志强': {
+            title: '神经内科主治医师 | 信息科兼职管理员',
+            dept: '神经内科（兼信息科）',
+            location: '住院楼4层 神经内科病区 / 信息科机房',
+            clinic: '专家门诊：每周三下午',
+            phone: '333-3625 3828 转神经内科分诊台',
+            page: 'about.html',
+            tip: '非就诊事项建议选择专家门诊时段当面沟通。'
         }
     };
 
@@ -814,12 +823,16 @@
         return `${p(n.getHours())}:${p(n.getMinutes())}`;
     }
 
-    // 当前对话方：客服 bot / 主任 doctor-lu
+    // 当前对话方：客服 bot / 陆敬尧主任 doctor-lu / 王志强医生 doctor-wang
     let currentSpeaker = 'bot';
 
-    // 主任命中：按对话阶段分别处理
+    // 陆敬尧主任：按对话阶段分别处理
     // stage: 'intro' 等姓名电话 → 'ask' 等病情描述 → 'done'
     let doctorStage = 'intro';
+
+    // 王志强医生：独立对话阶段
+    // stage: 'intro' 等用户发言 → 'bo3_ok' 已经提到BO3，等待药剂答案 → 'done' 完成
+    let wangStage = 'intro';
 
     // 插入中间横线+文字的转接提示（对话中间显示"现在对话的是主任"）
     function appendDivider(text) {
@@ -856,8 +869,10 @@
             return null;
         }
 
-        // 主任对话方（陆敬尧）消息
-        const isDoctor = opts.speaker === 'doctor-lu' || currentSpeaker === 'doctor-lu';
+        // 医生对话方（陆敬尧主任 / 王志强医生）消息
+        const isLu = opts.speaker === 'doctor-lu' || (currentSpeaker === 'doctor-lu' && !opts.speaker);
+        const isWang = opts.speaker === 'doctor-wang' || (currentSpeaker === 'doctor-wang' && !opts.speaker);
+        const isDoctor = isLu || isWang;
         const wrap = document.createElement('div');
         wrap.className = 'msg ' + (role === 'user' ? 'msg-user' : (isDoctor ? 'msg-doctor' : 'msg-bot'));
 
@@ -868,8 +883,8 @@
         avatar.className = 'msg-avatar';
         if (role === 'user') {
             avatar.textContent = '我';
-        } else if (isDoctor) {
-            // 主任头像用图片（主任.jpg）
+        } else if (isLu) {
+            // 陆敬尧主任头像用图片（主任.jpg）
             const img = document.createElement('img');
             img.src = '主任.jpg';
             img.alt = '陆敬尧主任头像';
@@ -878,6 +893,9 @@
                 avatar.textContent = '陆';
             };
             avatar.appendChild(img);
+        } else if (isWang) {
+            // 王志强医生：文字首字"王"（和主任同气泡样式）
+            avatar.textContent = '王';
         } else {
             avatar.textContent = '客';
         }
@@ -890,8 +908,10 @@
         const name = document.createElement('span');
         if (role === 'user') {
             name.textContent = '我';
-        } else if (isDoctor) {
+        } else if (isLu) {
             name.textContent = '陆敬尧 · 骨科主任医师';
+        } else if (isWang) {
+            name.textContent = '王志强 · 神经内科主治医师';
         } else {
             name.textContent = '酆江三院客服';
         }
@@ -1009,10 +1029,89 @@
             };
         }
 
+        // —— 王志强医生对话模式 ——
+        if (currentSpeaker === 'doctor-wang') {
+            // 阶段1：刚转接进来，等用户回复 → 判断是否包含 "BO3"
+            if (wangStage === 'intro') {
+                // 只要任意位置包含 BO3（大小写不敏感）就命中
+                if (/BO3/i.test(t)) {
+                    wangStage = 'bo3_ok';
+                    return {
+                        actions: [
+                            {
+                                type: 'message',
+                                speaker: 'doctor-wang',
+                                text: '你对这个感兴趣？又或者说你也发现了这里的不对劲，如果你是真的想去探究这件事，先回答我一个问题：\n在咪达唑仑，阿莫西林，布洛芬，氨氯地平，二甲双胍这五种药剂中，哪种药剂具有致幻性？'
+                            }
+                        ]
+                    };
+                }
+                // 没提到 BO3 → 温和提示
+                return {
+                    actions: [
+                        {
+                            type: 'message',
+                            speaker: 'doctor-wang',
+                            text: '有什么事可以直说。如果是正规就诊，建议你先挂号走流程；如果你是想聊"别的事"，请直接说关键词，我时间不多。'
+                        }
+                    ]
+                };
+            }
+
+            // 阶段2：已经提到 BO3 → 等答案，判有没有包含 "咪达唑仑"
+            if (wangStage === 'bo3_ok') {
+                if (t.includes('咪达唑仑')) {
+                    wangStage = 'done';
+                    return {
+                        actions: [
+                            {
+                                type: 'message',
+                                speaker: 'doctor-wang',
+                                text: '不错，年轻人。说句实话我打算辞职了，如果你还想追究想去，我的管理员账号可以给你<br>' +
+                                      '账户：<span class="code-em">ZhiQiang_Wang123</span><br>' +
+                                      '密码：<span class="code-em">Taihnti tsee gnig.s k</span>',
+                                useHtml: true
+                            },
+                            { type: 'divider', text: '王志强 医生已离线，当前转回客服接待' },
+                            { type: 'switchSpeaker', speaker: 'bot' },
+                            { type: 'setWangStage', stage: 'intro' },
+                            {
+                                type: 'message',
+                                speaker: 'bot',
+                                text: '您好，我是酆江市第三医院在线客服，王志强医生已结束本次对话。\n' +
+                                      '如有其他咨询、预约、挂号、报告查询、医保结算等问题，可直接留言，我将为您继续服务。'
+                            }
+                        ]
+                    };
+                }
+                // 答错了 → 提示再想想
+                return {
+                    actions: [
+                        {
+                            type: 'message',
+                            speaker: 'doctor-wang',
+                            text: '你再好好想想。答错了我就帮不了你了。这不是普通的药理题，答错是会出人命的。'
+                        }
+                    ]
+                };
+            }
+
+            // 阶段3：流程走完 → 通用收尾
+            return {
+                actions: [
+                    {
+                        type: 'message',
+                        speaker: 'doctor-wang',
+                        text: '该说的我都说了。密码要记好。剩下的看你自己了，保重。'
+                    }
+                ]
+            };
+        }
+
         // —— 客服模式 ——
 
         // ① 【优先命中】转接+医生姓名：
-        //   - 仅陆敬尧：插入转接分割线，切换对话方为主任，主任发问候话术
+        //   - 陆敬尧 / 王志强：插入转接分割线，切换对应对话方，发送问候话术
         //   - 其他姓名：未找到 → 提示
         const transMatch = t.match(/^\s*转接\s*[+＋]?\s*([\u4e00-\u9fa5·]{2,10})\s*$/);
         if (transMatch) {
@@ -1027,6 +1126,20 @@
                             type: 'message',
                             speaker: 'doctor-lu',
                             text: '您好，这里是酆江市第三医院，我是骨科主任医师陆敬尧医生。请问现在方便通话吗？想先跟您确认一下，请告诉我您的姓名及电话。'
+                        }
+                    ]
+                };
+            }
+            if (docName === '王志强') {
+                return {
+                    actions: [
+                        { type: 'divider', text: '现在对话的是 王志强 医生' },
+                        { type: 'switchSpeaker', speaker: 'doctor-wang' },
+                        { type: 'setWangStage', stage: 'intro' },
+                        {
+                            type: 'message',
+                            speaker: 'doctor-wang',
+                            text: '你好，我是王志强医生，请问有什么事情'
                         }
                     ]
                 };
@@ -1125,9 +1238,19 @@
             if (m.speaker) opts.speaker = m.speaker;
             appendMessage(m.role, m.text, opts);
         });
-        // 恢复当前对话方 & 阶段（粗略判断：历史末尾是主任消息，且 stage 未推进，按最后一个带 stage 的记录恢复）
-        const lastDoctorMsg = [...history].reverse().find(m => m.speaker === 'doctor-lu');
-        if (lastDoctorMsg) currentSpeaker = 'doctor-lu';
+        // 恢复当前对话方 & 阶段（粗略判断：看历史末尾最后一条医生/客服消息是谁）
+        const lastBotLike = [...history].reverse().find(m => m.role === 'bot' && m.speaker);
+        if (lastBotLike && (lastBotLike.speaker === 'doctor-lu' || lastBotLike.speaker === 'doctor-wang')) {
+            currentSpeaker = lastBotLike.speaker;
+        } else {
+            const lastDoctorMsg = [...history].reverse().find(m => m.speaker === 'doctor-lu');
+            const lastWangMsg = [...history].reverse().find(m => m.speaker === 'doctor-wang');
+            if (lastWangMsg && (!lastDoctorMsg || history.indexOf(lastWangMsg) > history.indexOf(lastDoctorMsg))) {
+                currentSpeaker = 'doctor-wang';
+            } else if (lastDoctorMsg) {
+                currentSpeaker = 'doctor-lu';
+            }
+        }
     }
 
     // ===== 串行调度 bot 回复序列：每条都有独立「思考/打字中」动画 + 随机延迟 =====
@@ -1179,6 +1302,11 @@
                 }
                 if (a.type === 'setStage') {
                     doctorStage = a.stage || 'intro';
+                    next();
+                    return;
+                }
+                if (a.type === 'setWangStage') {
+                    wangStage = a.stage || 'intro';
                     next();
                     return;
                 }

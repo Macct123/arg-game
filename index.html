@@ -58,7 +58,7 @@
             border: 1px solid rgba(255,255,255,0.15);
             color: rgba(255,255,255,0.85);
             padding: 2px 10px;
-            border-radius: 3px;
+            border-radius:0;
             cursor: pointer;
             font-size: 12px;
             transition: all var(--transition);
@@ -120,7 +120,7 @@
         .header-search {
             display: flex; align-items: center;
             background: var(--bg);
-            border-radius: 20px;
+            border-radius:0;
             padding: 0 4px 0 14px;
             border: 1px solid var(--border);
             transition: border-color var(--transition);
@@ -166,7 +166,7 @@
         }
         .main-nav a.active::after {
             content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
+            width: 24px; height: 3px; background: var(--accent-glow); border-radius:0;
         }
 
         /* ===== Banner / Hero 轮播 ===== */
@@ -254,7 +254,7 @@
         .hero-dot:hover { background: rgba(255,255,255,0.75); }
         .hero-dot.active {
             background: #fff;
-            width: 26px; border-radius: 6px;
+            width: 26px; border-radius:0;
         }
         .hero-content {
             text-align: center; color: #fff; position: relative; z-index: 3;
@@ -271,7 +271,7 @@
         }
         .hero-content .motto-divider {
             width: 60px; height: 2px; background: var(--accent-glow);
-            margin: 20px auto; border-radius: 1px;
+            margin: 20px auto; border-radius:0;
         }
         .hero-content .motto-desc {
             font-size: 14px; opacity: 0.65; letter-spacing: 2px;
@@ -283,7 +283,7 @@
             box-shadow: var(--shadow);
             margin-top: -40px;
             position: relative; z-index: 5;
-            border-radius: var(--radius);
+            border-radius:0;
         }
         .quick-bar .container {
             display: grid; grid-template-columns: repeat(6, 1fr);
@@ -320,7 +320,7 @@
 
         /* 通用卡片 */
         .card {
-            background: var(--card); border-radius: var(--radius);
+            background: var(--card); border-radius:0;
             box-shadow: var(--shadow); overflow: hidden;
             transition: box-shadow var(--transition);
         }
@@ -336,7 +336,7 @@
         }
         .card-header h3::before {
             content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            width: 4px; height: 18px; background: var(--accent); border-radius: 2px;
+            width: 4px; height: 18px; background: var(--accent); border-radius:0;
         }
         .card-header .more-link { font-size: 12px; color: var(--text-light); }
         .card-header .more-link:hover { color: var(--accent); }
@@ -358,7 +358,7 @@
         .btn-outline, .btn-primary-solid {
             flex: 1; min-width: 140px;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            height: 40px; padding: 0 14px; border-radius: 8px;
+            height: 40px; padding: 0 14px; border-radius:0;
             font-size: 13.5px; font-weight: 600; letter-spacing: 0.8px;
             transition: all .2s ease; cursor: pointer; text-decoration: none;
             white-space: nowrap;
@@ -434,7 +434,7 @@
         .dept-list li a:hover { color: var(--accent); }
         .dept-tag {
             font-size: 11px; background: rgba(22,160,133,0.1); color: var(--accent);
-            padding: 1px 6px; border-radius: 3px; margin-left: auto;
+            padding: 1px 6px; border-radius:0; margin-left: auto;
         }
 
         /* ===== 底部 ===== */
@@ -471,7 +471,7 @@
             color: #fefefe;
             background: rgba(231, 76, 60, 0.18);
             border: 1px dashed rgba(231, 76, 60, 0.55);
-            border-radius: 6px;
+            border-radius:0;
             text-align: center;
         }
         .fictional-disclaimer strong {
@@ -519,7 +519,7 @@
         /* ===== 滚动条 ===== */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius:0; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
     </style>
 </head>

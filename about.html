@@ -55,7 +55,7 @@
             border: 1px solid rgba(255,255,255,0.15);
             color: rgba(255,255,255,0.85);
             padding: 2px 10px;
-            border-radius: 3px;
+            border-radius:0;
             cursor: pointer;
             font-size: 12px;
             transition: all var(--transition);
@@ -111,7 +111,7 @@
         .header-search {
             display: flex; align-items: center;
             background: var(--bg);
-            border-radius: 20px;
+            border-radius:0;
             padding: 0 4px 0 14px;
             border: 1px solid var(--border);
             transition: border-color var(--transition);
@@ -155,7 +155,7 @@
         }
         .main-nav a.active::after {
             content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
+            width: 24px; height: 3px; background: var(--accent-glow); border-radius:0;
         }
         .page-banner {
             height: 140px;
@@ -184,7 +184,7 @@
         .main-content { padding: 40px 0; min-height: 500px; }
         .content-container {
             background: #fff;
-            border-radius: var(--radius);
+            border-radius:0;
             box-shadow: var(--shadow);
             min-height: 400px;
             padding: 36px 44px 48px;
@@ -209,7 +209,7 @@
         .stat-card {
             background: linear-gradient(135deg, rgba(41,128,185,0.08), rgba(22,160,133,0.08));
             border: 1px solid rgba(41,128,185,0.2);
-            border-radius: 10px; padding: 24px 16px 20px;
+            border-radius:0; padding: 24px 16px 20px;
             text-align: center; transition: transform .25s ease, box-shadow .25s ease;
         }
         .stat-card:hover {
@@ -226,7 +226,7 @@
         /* 宣传视频 */
         .video-wrap {
             margin-top: 20px;
-            border-radius: 12px; overflow: hidden;
+            border-radius:0; overflow: hidden;
             border: 1px solid var(--border);
             box-shadow: 0 6px 24px rgba(0,0,0,0.08);
             background: #000;
@@ -285,7 +285,7 @@
             color: #fefefe;
             background: rgba(231, 76, 60, 0.18);
             border: 1px dashed rgba(231, 76, 60, 0.55);
-            border-radius: 6px;
+            border-radius:0;
             text-align: center;
         }
         .fictional-disclaimer strong {
@@ -306,7 +306,7 @@
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius:0; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
     </style>
 </head>

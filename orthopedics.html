@@ -58,7 +58,7 @@
             border: 1px solid rgba(255,255,255,0.15);
             color: rgba(255,255,255,0.85);
             padding: 2px 10px;
-            border-radius: 3px;
+            border-radius:0;
             cursor: pointer;
             font-size: 12px;
             transition: all var(--transition);
@@ -120,7 +120,7 @@
         .header-search {
             display: flex; align-items: center;
             background: var(--bg);
-            border-radius: 20px;
+            border-radius:0;
             padding: 0 4px 0 14px;
             border: 1px solid var(--border);
             transition: border-color var(--transition);
@@ -166,7 +166,7 @@
         }
         .main-nav a.active::after {
             content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24px; height: 3px; background: var(--accent-glow); border-radius: 2px;
+            width: 24px; height: 3px; background: var(--accent-glow); border-radius:0;
         }
 
         /* ===== 页面Banner ===== */
@@ -209,7 +209,7 @@
             top: 72px;
             align-self: start;
             background: #fff;
-            border-radius: var(--radius);
+            border-radius:0;
             box-shadow: var(--shadow);
             padding: 24px;
             height: fit-content;
@@ -222,7 +222,7 @@
         .dept-cats { display: flex; flex-direction: column; gap: 4px; }
         .dept-cats a {
             display: block; padding: 10px 12px;
-            border-radius: 6px; font-size: 14px;
+            border-radius:0; font-size: 14px;
             color: var(--text); transition: all 0.2s;
         }
         .dept-cats a:hover {
@@ -246,7 +246,7 @@
         .dept-main {
             min-width: 0;
             background: #fff;
-            border-radius: var(--radius);
+            border-radius:0;
             box-shadow: var(--shadow);
             padding: 40px;
         }
@@ -260,7 +260,7 @@
         }
         .dept-section-title::before {
             content: ''; width: 5px; height: 24px;
-            background: var(--accent); border-radius: 3px;
+            background: var(--accent); border-radius:0;
         }
         .dept-intro-text p {
             text-indent: 2em; margin-bottom: 14px;
@@ -274,7 +274,7 @@
             margin: 28px 0;
             padding: 24px;
             background: linear-gradient(135deg, rgba(26,82,118,0.04), rgba(22,160,133,0.04));
-            border-radius: var(--radius);
+            border-radius:0;
         }
         .stat-item { text-align: center; }
         .stat-num {
@@ -296,7 +296,7 @@
             color: var(--primary-light);
             font-size: 13px;
             padding: 5px 12px;
-            border-radius: 16px;
+            border-radius:0;
         }
         /* 专家团队 */
         .doctors-grid {
@@ -310,7 +310,7 @@
             gap: 20px;
             padding: 24px;
             background: var(--bg);
-            border-radius: var(--radius);
+            border-radius:0;
             border: 1px solid var(--border);
             transition: all 0.25s;
         }
@@ -328,7 +328,7 @@
         .doctor-avatar {
             width: 100%;
             aspect-ratio: 3 / 4;
-            border-radius: var(--radius);
+            border-radius:0;
             background: linear-gradient(135deg, #dfe6e9, #b2bec3);
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 42px; font-weight: 700;
@@ -343,7 +343,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            border-radius: inherit;
+            border-radius:0;
         }
         .doctor-info { min-width: 0; }
         .doctor-name {
@@ -357,7 +357,7 @@
             font-size: 12px;
             background: var(--accent);
             color: #fff;
-            border-radius: 4px;
+            border-radius:0;
             font-weight: 500;
         }
         .doctor-title {
@@ -376,7 +376,7 @@
             display: inline-block;
             width: 3px; height: 14px;
             background: var(--accent);
-            border-radius: 2px;
+            border-radius:0;
         }
         .doctor-block p, .doctor-block li {
             font-size: 13.5px;
@@ -397,7 +397,7 @@
         .clinic-info {
             background: #fff;
             padding: 10px 14px;
-            border-radius: 6px;
+            border-radius:0;
             border-left: 3px solid var(--accent);
             font-size: 13px; color: var(--text);
             line-height: 2;
@@ -474,7 +474,7 @@
             color: #fefefe;
             background: rgba(231, 76, 60, 0.18);
             border: 1px dashed rgba(231, 76, 60, 0.55);
-            border-radius: 6px;
+            border-radius:0;
             text-align: center;
         }
         .fictional-disclaimer strong {

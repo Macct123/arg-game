@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -1229,29 +1229,77 @@
         };
     }
 
+    function saveChatState() {
+        // 把对话方和阶段写成一条 type=meta 的记录，追加/替换到 history 末尾
+        let i = history.length;
+        while (i-- > 0) {
+            if (history[i] && history[i].type === 'state') {
+                history.splice(i, 1);
+                break;
+            }
+        }
+        history.push({
+            type: 'state',
+            currentSpeaker: currentSpeaker,
+            doctorStage: doctorStage,
+            wangStage: wangStage,
+            time: nowStr()
+        });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); } catch (_) {}
+    }
+    function loadChatHistory() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return [];
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+        } catch (_) {
+            return [];
+        }
+    }
+    function saveChatHistory(list) {
+        // 保留旧接口但内部交给 saveChatState 处理：先写入历史，再补 state 快照
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch (_) {}
+    }
+
     const history = loadChatHistory();
-    let sessionStarted = history.length > 0;
+    let sessionStarted = history.some(m => m && m.type !== 'state') > false;
 
     function renderHistory() {
+        const savedState = history.filter(m => m && m.type === 'state').slice(-1)[0];
         history.forEach(m => {
+            if (!m) return;
+            if (m.type === 'state') return; // 纯状态记录不渲染
+            if (m.type === 'divider') { appendDivider(m.text); return; }
             const opts = { time: m.time };
             if (m.useHtml) opts.useHtml = true;
             if (m.speaker) opts.speaker = m.speaker;
             appendMessage(m.role, m.text, opts);
         });
-        // 恢复当前对话方 & 阶段（粗略判断：看历史末尾最后一条医生/客服消息是谁）
-        const lastBotLike = [...history].reverse().find(m => m.role === 'bot' && m.speaker);
-        if (lastBotLike && (lastBotLike.speaker === 'doctor-lu' || lastBotLike.speaker === 'doctor-wang')) {
-            currentSpeaker = lastBotLike.speaker;
-        } else {
-            const lastDoctorMsg = [...history].reverse().find(m => m.speaker === 'doctor-lu');
-            const lastWangMsg = [...history].reverse().find(m => m.speaker === 'doctor-wang');
-            if (lastWangMsg && (!lastDoctorMsg || history.indexOf(lastWangMsg) > history.indexOf(lastDoctorMsg))) {
-                currentSpeaker = 'doctor-wang';
-            } else if (lastDoctorMsg) {
-                currentSpeaker = 'doctor-lu';
+        // 用最后一条 state 快照精确恢复
+        if (savedState) {
+            currentSpeaker = savedState.currentSpeaker || 'bot';
+            doctorStage = savedState.doctorStage || 'intro';
+            wangStage = savedState.wangStage || 'intro';
+            return;
+        }
+        // 兼容旧数据：从历史中的 divider 推断是否已经转医生/已经转回客服
+        let latestDividerSpeaker = null; // 'lu-online' | 'lu-offline' | 'wang-online' | 'wang-offline'
+        for (let i = history.length - 1; i >= 0; i--) {
+            const m = history[i];
+            if (!m || m.type !== 'divider' || !m.text) continue;
+            if (m.text.includes('现在对话的是')) {
+                if (m.text.includes('陆敬尧')) { latestDividerSpeaker = 'lu-online'; break; }
+                if (m.text.includes('王志强')) { latestDividerSpeaker = 'wang-online'; break; }
+            }
+            if (m.text.includes('已下线') || m.text.includes('转回客服接待')) {
+                if (m.text.includes('陆敬尧')) { latestDividerSpeaker = 'lu-offline'; break; }
+                if (m.text.includes('王志强')) { latestDividerSpeaker = 'wang-offline'; break; }
             }
         }
+        if (latestDividerSpeaker === 'lu-online') { currentSpeaker = 'doctor-lu'; doctorStage = 'ask'; }
+        else if (latestDividerSpeaker === 'wang-online') { currentSpeaker = 'doctor-wang'; wangStage = 'bo3_ok'; }
+        else { currentSpeaker = 'bot'; } // lu-offline / wang-offline 或无记录 → 客服
     }
 
     // ===== 串行调度 bot 回复序列：每条都有独立「思考/打字中」动画 + 随机延迟 =====
@@ -1298,21 +1346,26 @@
             setTimeout(() => {
                 if (a.type === 'switchSpeaker') {
                     currentSpeaker = a.speaker;
+                    saveChatState();
                     next();
                     return;
                 }
                 if (a.type === 'setStage') {
                     doctorStage = a.stage || 'intro';
+                    saveChatState();
                     next();
                     return;
                 }
                 if (a.type === 'setWangStage') {
                     wangStage = a.stage || 'intro';
+                    saveChatState();
                     next();
                     return;
                 }
                 if (a.type === 'divider') {
                     appendDivider(a.text);
+                    history.push({ type: 'divider', text: a.text, time: nowStr() });
+                    saveChatState();
                     next();
                     return;
                 }
@@ -1340,7 +1393,7 @@
                             speaker: a.speaker || currentSpeaker,
                             useHtml: !!a.useHtml
                         });
-                        saveChatHistory(history);
+                        saveChatState();
                         next();
                     }, delay);
                     return;

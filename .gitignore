@@ -10,3 +10,7 @@ _remove_watermark.py
 _dew*.py
 _remove_watermark.py
 _*.py
+
+# temp ssh keys
+.ssh_tmp/
+_*.bat

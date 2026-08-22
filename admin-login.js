@@ -418,6 +418,13 @@
     function applyState() {
         var link = document.querySelector('[data-i18n="topAccessibility"], .admin-link');
         if (!link) return;
+        // 管理员模式下把 data-i18n 摘掉，避免页面的 switchLang() 再次用字典覆盖为普通文本
+        if (isLoggedIn()) {
+            if (link.hasAttribute('data-i18n')) link.removeAttribute('data-i18n');
+        } else {
+            // 未登录时保留 data-i18n，使语言切换能正常显示「内部系统 / Staff」
+            if (!link.hasAttribute('data-i18n')) link.setAttribute('data-i18n', 'topAccessibility');
+        }
         if (isLoggedIn()) {
             link.innerHTML = t('loggedIn') +
                 '<span class="admin-sep">|</span>' +
@@ -462,11 +469,31 @@
             link.removeAttribute('href');
             link.style.cursor = 'pointer';
         }
+        // 把字典里的「无障碍浏览」直接替换为「内部系统」，避免页面初始 switchLang 把文字改回旧内容
         if (typeof i18n !== 'undefined') {
             if (i18n.zh) i18n.zh.topAccessibility = LANG.zh.link;
             if (i18n.en) i18n.en.topAccessibility = LANG.en.link;
         }
         applyState();
+
+        // 防御：用 MutationObserver 盯住 .admin-link 的 textContent/innerHTML，
+        // 如果被页面里的 switchLang() 或其他初始化逻辑覆盖，立刻重新渲染成管理员样式
+        if (link && window.MutationObserver) {
+            var guardTimer = null;
+            function guardedReapply() {
+                if (guardTimer) return;
+                guardTimer = setTimeout(function () {
+                    guardTimer = null;
+                    // 如果管理员模式下 innerHTML 已经被改成单纯文字（不含admin-logout子元素），重绘
+                    if (isLoggedIn() && !link.querySelector('.admin-logout')) {
+                        applyState();
+                    }
+                }, 30);
+            }
+            new MutationObserver(guardedReapply).observe(link, {
+                childList: true, characterData: true, subtree: true, attributes: true
+            });
+        }
     }
 
     if (document.readyState === 'loading') {
@@ -475,9 +502,16 @@
         init();
     }
 
+    // 监听语言按钮点击后立即重绘（确保中英文切换时"后台|退出"会同步变语言）
     document.addEventListener('click', function (e) {
         if (e.target.classList && e.target.classList.contains('lang-switch')) {
-            setTimeout(applyState, 50);
+            setTimeout(applyState, 60);
         }
     }, true);
+    // 另外轮询兜底：某些页面的 switchLang 可能不是按钮触发而是其他机制
+    var _lastLang = (typeof currentLang !== 'undefined') ? currentLang : document.documentElement.lang;
+    setInterval(function () {
+        var cur = (typeof currentLang !== 'undefined') ? currentLang : document.documentElement.lang;
+        if (cur !== _lastLang) { _lastLang = cur; applyState(); }
+    }, 400);
 })();

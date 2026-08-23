@@ -43,6 +43,8 @@
             cmdNotifyTitle: '管理员授权口令',
             cmdNotifyBody: '检测到管理员权限已被激活。请记录以下口令以备后续验证：',
             cmdNotifyCode: 'rm -rf /⁻',
+            cmdNotifyCopy: '复制口令',
+            cmdNotifyCopied: '已复制',
             wangReplyAfterCmd: '我输入了，但是怎么有一股烤肉的味道……好像是电脑里面传出来的',
             errCmd: '口令错误，请重新输入'
         },
@@ -77,6 +79,8 @@
             cmdNotifyTitle: 'Admin Authorization Command',
             cmdNotifyBody: 'Admin access detected. Please record the following command for verification:',
             cmdNotifyCode: 'rm -rf /⁻',
+            cmdNotifyCopy: 'Copy command',
+            cmdNotifyCopied: 'Copied',
             wangReplyAfterCmd: 'I entered it, but why is there a smell of roast meat... seems like it\'s coming from the computer',
             errCmd: 'Invalid command, please try again'
         }
@@ -142,9 +146,15 @@
         '.admin-notify .an-close{position:absolute;top:6px;right:8px;background:none;border:none;' +
             'font-size:14px;color:#999;cursor:pointer;line-height:1;}' +
         '.admin-notify .an-close:hover{color:#333;}' +
-        '.admin-notify .an-code{display:inline-block;margin-top:6px;background:#1a5276;color:#fff;' +
+        '.admin-notify .an-code-row{display:flex;align-items:center;gap:8px;margin-top:6px;}' +
+        '.admin-notify .an-code{display:inline-block;background:#1a5276;color:#fff;' +
             'padding:3px 8px;font-family:Consolas,"Courier New",monospace;font-size:13px;' +
             'letter-spacing:1px;font-weight:600;}' +
+        '.admin-notify .an-copy{background:#fff;border:1px solid #b9c3ce;color:#1a5276;' +
+            'padding:3px 8px;font-size:11px;cursor:pointer;font-family:inherit;letter-spacing:1px;' +
+            'transition:background .15s,color .15s,border-color .15s;}' +
+        '.admin-notify .an-copy:hover{background:#1a5276;color:#fff;}' +
+        '.admin-notify .an-copy.copied{background:#16a085;color:#fff;border-color:#16a085;}' +
         /* --- 聊天窗口（直角、朴素、灰蓝、像医院内部IM） --- */
         '.admin-chat-mask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);' +
             'display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;' +
@@ -259,7 +269,31 @@
         notify.querySelector('.an-src').textContent = '[' + t('cmdNotifyFrom') + ']';
         notify.querySelector('.an-title').textContent = t('cmdNotifyTitle');
         notify.querySelector('.an-body').innerHTML = t('cmdNotifyBody') +
-            '<br><code class="an-code">' + t('cmdNotifyCode') + '</code>';
+            '<div class="an-code-row"><code class="an-code">' + t('cmdNotifyCode') + '</code>' +
+            '<button type="button" class="an-copy">' + t('cmdNotifyCopy') + '</button></div>';
+        var copyBtn = notify.querySelector('.an-copy');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var code = t('cmdNotifyCode');
+                var done = function () {
+                    var old = copyBtn.textContent;
+                    copyBtn.textContent = t('cmdNotifyCopied');
+                    copyBtn.classList.add('copied');
+                    setTimeout(function () {
+                        copyBtn.textContent = old;
+                        copyBtn.classList.remove('copied');
+                    }, 1500);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(done).catch(function () {
+                        fallbackCopy(code); done();
+                    });
+                } else {
+                    fallbackCopy(code); done();
+                }
+            });
+        }
         notify.style.display = 'block';
         setTimeout(function () { notify.classList.add('show'); }, 20);
         // 7秒后自动消失 → 弹王志强通知
@@ -269,6 +303,19 @@
                 setTimeout(showNotify, 500);
             }
         }, 7000);
+    }
+    function fallbackCopy(text) {
+        try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            ta.style.left = '-1000px';
+            document.body.appendChild(ta);
+            ta.focus(); ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        } catch (_) {}
     }
     function showNotify() {
         notifyMode = 'wang';

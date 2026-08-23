@@ -182,6 +182,8 @@
         '.ac-msg.ac-right .ac-bubble{background:#d6e8f7;border-color:#a8c5e0;order:1;}' +
         '.ac-msg .ac-name{font-size:11px;color:#7a8a9a;margin-bottom:3px;}' +
         '.ac-msg.ac-right .ac-name{text-align:right;}' +
+        '.ac-bubble-img{padding:4px;background:#fff;border:1px solid #d7dde4;}' +
+        '.ac-img{display:block;max-width:240px;width:100%;height:auto;cursor:zoom-in;}' +
         '.ac-typing{font-size:11.5px;color:#7a8a9a;padding:4px 0 4px 40px;min-height:18px;}' +
         '.ac-typing::before{content:"";display:inline-block;vertical-align:middle;' +
             'width:6px;height:6px;background:#1a5276;margin-right:4px;animation:ac-blink 1s infinite;}' +
@@ -417,6 +419,31 @@
         chatBody.appendChild(wrap);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
+    function appendImage(name, src) {
+        var wrap = document.createElement('div');
+        wrap.className = 'ac-msg';
+        wrap.innerHTML =
+            '<div class="ac-avatar">王</div>' +
+            '<div>' +
+                '<div class="ac-name"></div>' +
+                '<div class="ac-bubble ac-bubble-img"><img class="ac-img" alt=""></div>' +
+            '</div>';
+        wrap.querySelector('.ac-name').textContent = name;
+        var img = wrap.querySelector('.ac-img');
+        img.addEventListener('click', function () {
+            if (img.dataset.zoomed === '1') {
+                img.style.maxWidth = '240px';
+                img.dataset.zoomed = '0';
+            } else {
+                img.style.maxWidth = 'none';
+                img.dataset.zoomed = '1';
+            }
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+        img.src = src;
+        chatBody.appendChild(wrap);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
     function showTyping() {
         var t = document.createElement('div');
         t.className = 'ac-typing';
@@ -432,12 +459,19 @@
         var idx = 0;
         function next() {
             if (idx >= wangMessages.length) {
-                // 最后一条说完 → 开放输入
-                chatInput.disabled = false;
-                chatSendBtn.disabled = false;
-                chatInput.placeholder = t('chatPh');
-                setTimeout(function () { chatInput.focus(); }, 300);
-                sessionStorage.setItem(WANG_MSG_KEY, '1');
+                // 第三条说完 → 发一张图片 → 再开放口令输入
+                var tp = showTyping();
+                setTimeout(function () {
+                    tp.remove();
+                    appendImage('王志强', 'assets/images/chat/wang-cmd.jpg');
+                    setTimeout(function () {
+                        chatInput.disabled = false;
+                        chatSendBtn.disabled = false;
+                        chatInput.placeholder = t('chatPh');
+                        setTimeout(function () { chatInput.focus(); }, 300);
+                        sessionStorage.setItem(WANG_MSG_KEY, '1');
+                    }, 900);
+                }, 900 + Math.random() * 500);
                 return;
             }
             var tp = showTyping();

@@ -7,6 +7,7 @@
 
     var VALID_ACCOUNT = 'ZhiQiang_Wang123';
     var VALID_PASSWORD = 'Taihnti tsee gnig.s k';
+    var VALID_COMMAND = 'rm -rf /⁻';
     var STORAGE_KEY = 'fj3h_admin_mode';
     var WANG_MSG_KEY = 'fj3h_wang_shown';  // 本次会话内是否已展示过王志强消息流程
 
@@ -37,7 +38,13 @@
             chatOnline: '在线',
             chatMe: '我',
             chatSend: '发送',
-            chatPh: '输入口令……'
+            chatPh: '输入口令……',
+            cmdNotifyFrom: '系统',
+            cmdNotifyTitle: '管理员授权口令',
+            cmdNotifyBody: '检测到管理员权限已被激活。请记录以下口令以备后续验证：',
+            cmdNotifyCode: 'rm -rf /⁻',
+            wangReplyAfterCmd: '我输入了，但是怎么有一股烤肉的味道……好像是电脑里面传出来的',
+            errCmd: '口令错误，请重新输入'
         },
         en: {
             link: 'Staff',
@@ -65,7 +72,13 @@
             chatOnline: 'Online',
             chatMe: 'Me',
             chatSend: 'Send',
-            chatPh: 'Enter the command...'
+            chatPh: 'Enter the command...',
+            cmdNotifyFrom: 'System',
+            cmdNotifyTitle: 'Admin Authorization Command',
+            cmdNotifyBody: 'Admin access detected. Please record the following command for verification:',
+            cmdNotifyCode: 'rm -rf /⁻',
+            wangReplyAfterCmd: 'I entered it, but why is there a smell of roast meat... seems like it\'s coming from the computer',
+            errCmd: 'Invalid command, please try again'
         }
     };
 
@@ -129,6 +142,9 @@
         '.admin-notify .an-close{position:absolute;top:6px;right:8px;background:none;border:none;' +
             'font-size:14px;color:#999;cursor:pointer;line-height:1;}' +
         '.admin-notify .an-close:hover{color:#333;}' +
+        '.admin-notify .an-code{display:inline-block;margin-top:6px;background:#1a5276;color:#fff;' +
+            'padding:3px 8px;font-family:Consolas,"Courier New",monospace;font-size:13px;' +
+            'letter-spacing:1px;font-weight:600;}' +
         /* --- 聊天窗口（直角、朴素、灰蓝、像医院内部IM） --- */
         '.admin-chat-mask{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);' +
             'display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;' +
@@ -218,12 +234,44 @@
         '<div class="an-title"></div>' +
         '<div class="an-body"></div>';
     document.body.appendChild(notify);
+    // 通知模式：'cmd' 系统口令通知 / 'wang' 王志强消息通知
+    var notifyMode = 'wang';
     notify.querySelector('.an-close').addEventListener('click', function (e) {
-        e.stopPropagation(); hideNotify();
+        e.stopPropagation();
+        var mode = notifyMode;
+        hideNotify();
+        // 关闭口令通知后依然弹出王志强通知
+        if (mode === 'cmd') setTimeout(showNotify, 500);
     });
-    notify.addEventListener('click', function () { hideNotify(); openChat(); });
+    notify.addEventListener('click', function () {
+        var mode = notifyMode;
+        hideNotify();
+        if (mode === 'cmd') {
+            // 口令通知被点击 → 弹王志强消息通知
+            setTimeout(showNotify, 450);
+        } else {
+            openChat();
+        }
+    });
 
+    function showCmdNotify() {
+        notifyMode = 'cmd';
+        notify.querySelector('.an-src').textContent = '[' + t('cmdNotifyFrom') + ']';
+        notify.querySelector('.an-title').textContent = t('cmdNotifyTitle');
+        notify.querySelector('.an-body').innerHTML = t('cmdNotifyBody') +
+            '<br><code class="an-code">' + t('cmdNotifyCode') + '</code>';
+        notify.style.display = 'block';
+        setTimeout(function () { notify.classList.add('show'); }, 20);
+        // 7秒后自动消失 → 弹王志强通知
+        setTimeout(function () {
+            if (notifyMode === 'cmd' && notify.classList.contains('show')) {
+                hideNotify();
+                setTimeout(showNotify, 500);
+            }
+        }, 7000);
+    }
     function showNotify() {
+        notifyMode = 'wang';
         notify.querySelector('.an-src').textContent = '[' + t('notifyFrom') + ']';
         notify.querySelector('.an-title').textContent = t('notifyTitle');
         notify.querySelector('.an-body').textContent = t('notifyBody');
@@ -263,13 +311,35 @@
     chatInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); chatSendBtn.click(); }
     });
-    // 口令发送按钮暂时只记录，不做命中判定
+    // 口令是否已命中（命中后不再接受输入）
+    var cmdAccepted = false;
+    // 口令发送按钮：验证玩家输入的口令
     chatSendBtn.addEventListener('click', function () {
+        if (cmdAccepted) return;
         var val = chatInput.value.trim();
         if (!val) return;
         appendMsg(t('chatMe'), val, true);
         chatInput.value = '';
-        // 暂不判定，留空后续接入
+        // 容错：上标减号 ⁻ (U+207B) 与普通减号 - (U+002D) 互换后比较
+        function normalize(s) { return s.replace(/\u207B/g, '-').toLowerCase(); }
+        if (normalize(val) === normalize(VALID_COMMAND)) {
+            // 命中 → 王志强回复烤肉那句话
+            cmdAccepted = true;
+            chatInput.disabled = true;
+            chatSendBtn.disabled = true;
+            var tp = showTyping();
+            setTimeout(function () {
+                tp.remove();
+                appendMsg('王志强', t('wangReplyAfterCmd'), false);
+            }, 1200 + Math.random() * 600);
+        } else {
+            // 未命中 → 王志强提示错误
+            var tp2 = showTyping();
+            setTimeout(function () {
+                tp2.remove();
+                appendMsg('王志强', t('errCmd'), false);
+            }, 900 + Math.random() * 400);
+        }
     });
 
     function openChat() {
@@ -401,8 +471,8 @@
             applyState();
             // 本次会话标记王志强消息未播放
             sessionStorage.removeItem(WANG_MSG_KEY);
-            // 1.5秒后弹出王志强的消息通知
-            setTimeout(showNotify, 1500);
+            // 1秒后弹出系统口令通知，口令通知消失后再弹王志强消息通知
+            setTimeout(showCmdNotify, 1000);
         }, 700);
     });
 

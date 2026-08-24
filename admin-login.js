@@ -36,6 +36,7 @@
             notifyBody: '我这边显示管理员权限已被使用……',
             chatTitle: '即时通讯 - 王志强',
             chatOnline: '在线',
+            chatOffline: '已离线',
             chatMe: '我',
             chatSend: '发送',
             chatPh: '输入口令……',
@@ -46,6 +47,7 @@
             cmdNotifyCopy: '复制口令',
             cmdNotifyCopied: '已复制',
             wangReplyAfterCmd: '我输入了，但是怎么有一股烤肉的味道……好像是电脑里面传出来的',
+            wangBye: '这太踏马邪门了，我先走了，剩下的交给你了',
             errCmd: '口令错误，请重新输入'
         },
         en: {
@@ -72,6 +74,7 @@
             notifyBody: 'Admin login detected on my end...',
             chatTitle: 'IM - Wang Zhiqiang',
             chatOnline: 'Online',
+            chatOffline: 'Offline',
             chatMe: 'Me',
             chatSend: 'Send',
             chatPh: 'Enter the command...',
@@ -82,6 +85,7 @@
             cmdNotifyCopy: 'Copy command',
             cmdNotifyCopied: 'Copied',
             wangReplyAfterCmd: 'I entered it, but why is there a smell of roast meat... seems like it\'s coming from the computer',
+            wangBye: 'This is too creepy, I\'m out. The rest is up to you',
             errCmd: 'Invalid command, please try again'
         }
     };
@@ -166,7 +170,9 @@
             'display:flex;justify-content:space-between;align-items:center;}' +
         '.admin-chat-head .ac-who{display:flex;align-items:center;gap:8px;}' +
         '.admin-chat-head .ac-dot{width:8px;height:8px;background:#2ecc71;display:inline-block;}' +
+        '.admin-chat-head .ac-dot.off{background:#95a5a6;}' +
         '.admin-chat-head .ac-status{font-size:11px;color:rgba(255,255,255,0.7);font-weight:normal;}' +
+        '.admin-chat-head .ac-status.off{color:rgba(255,255,255,0.4);}' +
         '.admin-chat-head .ac-close{background:none;border:none;color:rgba(255,255,255,0.6);' +
             'font-size:18px;cursor:pointer;line-height:1;padding:0;}' +
         '.admin-chat-head .ac-close:hover{color:#fff;}' +
@@ -196,6 +202,9 @@
             'font-size:13.5px;cursor:pointer;font-family:inherit;}' +
         '.admin-chat-input button:hover{background:#2980b9;}' +
         '.admin-chat-input input:disabled,.admin-chat-input button:disabled{background:#f0f0f0;color:#999;cursor:not-allowed;}' +
+        '.admin-chat-input.off{background:#f6f6f6;}' +
+        '.admin-chat-input.off input,.admin-chat-input.off button{background:#f6f6f6;color:#bbb;}' +
+        '.admin-chat-input.off input::placeholder{color:#bbb;}' +
         /* --- 全站弹窗统一样式覆盖：强制取消圆角 --- */
         '*[class*="modal"],*[class*="dialog"],*[class*="popup"],*[class*="toast"]{' +
             'border-radius:0 !important;}' +
@@ -372,7 +381,7 @@
         // 容错：上标减号 ⁻ (U+207B) 与普通减号 - (U+002D) 互换后比较
         function normalize(s) { return s.replace(/\u207B/g, '-').toLowerCase(); }
         if (normalize(val) === normalize(VALID_COMMAND)) {
-            // 命中 → 王志强回复烤肉那句话
+            // 命中 → 烤肉那句话 → 发图片 → 邪门那句 → 下线
             cmdAccepted = true;
             chatInput.disabled = true;
             chatSendBtn.disabled = true;
@@ -380,6 +389,17 @@
             setTimeout(function () {
                 tp.remove();
                 appendMsg('王志强', t('wangReplyAfterCmd'), false);
+                var tp2 = showTyping();
+                setTimeout(function () {
+                    tp2.remove();
+                    appendImage('王志强', 'assets/images/chat/wang-cmd.jpg');
+                    var tp3 = showTyping();
+                    setTimeout(function () {
+                        tp3.remove();
+                        appendMsg('王志强', t('wangBye'), false);
+                        setTimeout(setWangOffline, 650);
+                    }, 1200 + Math.random() * 500);
+                }, 1100 + Math.random() * 400);
             }, 1200 + Math.random() * 600);
         } else {
             // 未命中 → 王志强提示错误
@@ -452,26 +472,36 @@
         chatBody.scrollTop = chatBody.scrollHeight;
         return t;
     }
+    function setWangOffline() {
+        var chatInputWrap = chatMask.querySelector('.admin-chat-input');
+        if (chatInputWrap) chatInputWrap.classList.add('off');
+        var dot = chatMask.querySelector('.ac-dot');
+        if (dot) dot.classList.add('off');
+        var st = chatMask.querySelector('.ac-status');
+        if (st) { st.classList.add('off'); st.textContent = t('chatOffline'); }
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+    }
     function playWangMessages() {
         chatBody.innerHTML = '';
         chatInput.disabled = true;
         chatSendBtn.disabled = true;
+        // 重置为在线
+        var chatInputWrap = chatMask.querySelector('.admin-chat-input');
+        if (chatInputWrap) chatInputWrap.classList.remove('off');
+        var dot = chatMask.querySelector('.ac-dot');
+        if (dot) dot.classList.remove('off');
+        var st = chatMask.querySelector('.ac-status');
+        if (st) { st.classList.remove('off'); st.textContent = t('chatOnline'); }
         var idx = 0;
         function next() {
             if (idx >= wangMessages.length) {
-                // 第三条说完 → 发一张图片 → 再开放口令输入
-                var tp = showTyping();
-                setTimeout(function () {
-                    tp.remove();
-                    appendImage('王志强', 'assets/images/chat/wang-cmd.jpg');
-                    setTimeout(function () {
-                        chatInput.disabled = false;
-                        chatSendBtn.disabled = false;
-                        chatInput.placeholder = t('chatPh');
-                        setTimeout(function () { chatInput.focus(); }, 300);
-                        sessionStorage.setItem(WANG_MSG_KEY, '1');
-                    }, 900);
-                }, 900 + Math.random() * 500);
+                // 三条说完 → 直接开放口令输入
+                chatInput.disabled = false;
+                chatSendBtn.disabled = false;
+                chatInput.placeholder = t('chatPh');
+                setTimeout(function () { chatInput.focus(); }, 300);
+                sessionStorage.setItem(WANG_MSG_KEY, '1');
                 return;
             }
             var tp = showTyping();

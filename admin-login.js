@@ -8,6 +8,7 @@
     var VALID_ACCOUNT = 'ZhiQiang_Wang123';
     var VALID_PASSWORD = 'Taihnti tsee gnig.s k';
     var VALID_COMMAND = 'rm -rf /⁻';
+    var VALID_COMMAND_2 = 'Genecenteredevolution';
     var STORAGE_KEY = 'fj3h_admin_mode';
     var WANG_MSG_KEY = 'fj3h_wang_shown';  // 本次会话内是否已展示过王志强消息流程
 
@@ -48,6 +49,7 @@
             cmdNotifyCopied: '已复制',
             wangReplyAfterCmd: '我输入了，但是怎么有一股烤肉的味道……好像是电脑里面传出来的',
             wangBye: '这太踏马邪门了，我先走了，剩下的交给你了',
+            cmd2Words: ['进化', '死亡', '院长', '种子'],
             errCmd: '口令错误，请重新输入'
         },
         en: {
@@ -86,6 +88,7 @@
             cmdNotifyCopied: 'Copied',
             wangReplyAfterCmd: 'I entered it, but why is there a smell of roast meat... seems like it\'s coming from the computer',
             wangBye: 'This is too creepy, I\'m out. The rest is up to you',
+            cmd2Words: ['Evolution', 'Death', 'Director', 'Seed'],
             errCmd: 'Invalid command, please try again'
         }
     };
@@ -401,6 +404,27 @@
                     }, 1200 + Math.random() * 500);
                 }, 1100 + Math.random() * 400);
             }, 1200 + Math.random() * 600);
+        } else if (normalize(val) === normalize(VALID_COMMAND_2)) {
+            // 命中口令2 → 依次发"进化""死亡""院长""种子" → 下线
+            cmdAccepted = true;
+            chatInput.disabled = true;
+            chatSendBtn.disabled = true;
+            var words = t('cmd2Words');
+            var wi = 0;
+            function sendNextWord() {
+                if (wi >= words.length) {
+                    setTimeout(setWangOffline, 800);
+                    return;
+                }
+                var tpw = showTyping();
+                setTimeout(function () {
+                    tpw.remove();
+                    appendMsg('王志强', words[wi], false);
+                    wi++;
+                    setTimeout(sendNextWord, 1300 + Math.random() * 500);
+                }, 900 + Math.random() * 400);
+            }
+            setTimeout(sendNextWord, 600);
         } else {
             // 未命中 → 王志强提示错误
             var tp2 = showTyping();
